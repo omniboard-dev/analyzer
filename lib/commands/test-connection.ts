@@ -1,6 +1,6 @@
 import { Argv } from 'yargs';
 
-import { ping } from '../services/api.service';
+import * as api from '../services/api.service';
 import { createLogger } from '../services/logger.service';
 
 const logger = createLogger('TEST CONNECTION');
@@ -21,7 +21,7 @@ export const builder = (yargs: Argv) =>
 
 export const handler = async (argv: any) => {
   try {
-    const { organization } = await ping();
+    const { organization } = await api.ping();
     logger.success('connection successful, organization:', organization);
   } catch (err) {
     logger.error('connection failed, details:', err?.message);

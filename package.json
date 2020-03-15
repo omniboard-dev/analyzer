@@ -13,8 +13,10 @@
     "format": "prettier lib/**/*.{ts,json} --write"
   },
   "dependencies": {
+    "@types/listr": "^0.14.2",
     "chalk": "^3.0.0",
     "got": "^10.6.0",
+    "listr": "^0.14.3",
     "yargs": "^15.1.0"
   },
   "devDependencies": {

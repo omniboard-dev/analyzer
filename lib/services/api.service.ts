@@ -5,11 +5,14 @@ import { createLogger } from './logger.service';
 let api: Got;
 const logger = createLogger('API SERVICE');
 
-export const createApiService = (apiKey: string) => {
+export const createApiService = (apiKey: string, dev = false) => {
   api = got.extend({
-    prefixUrl: 'https://api.omniboard.dev',
+    retry: 0,
+    responseType: 'json',
+    resolveBodyOnly: true,
+    prefixUrl: dev ? 'http://localhost:8080' : 'https://api.omniboard.dev',
     headers: {
-      'ob-api-key': apiKey
+      'omniboard-api-key': apiKey
     },
     hooks: {
       // beforeRequest: [options => logger.info(options)]
@@ -18,4 +21,7 @@ export const createApiService = (apiKey: string) => {
 };
 
 export const ping = (): { organization: string } =>
-  api<{ organization: string }>('ping').json() as any;
+  api<{ organization: string }>('ping') as any;
+
+export const uploadProject = (project: any) =>
+  api.put('project', { json: project });
