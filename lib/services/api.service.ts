@@ -12,9 +12,7 @@ export const createApiService = (argv: any) => {
     logger.debug(`No API key provided, API tasks will be skipped`);
   } else {
     logger.debug(
-      `Upload results to to Omniboard ${
-        argv.dev ? '(DEV localhost:8080)' : ''
-      }`
+      `Upload results to to Omniboard ${argv.dev ? '(DEV localhost:8080)' : ''}`
     );
   }
 
@@ -37,3 +35,5 @@ export const ping = (): { organization: string } =>
 
 export const uploadProject = (project: any) =>
   api.put('project', { json: project });
+
+export const getChecks = (): Promise<any[]> => api('check') as any;
