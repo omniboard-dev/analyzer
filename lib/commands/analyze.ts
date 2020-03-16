@@ -1,7 +1,6 @@
 import { Argv } from 'yargs';
-import Listr from 'listr';
 
-import { formatTime } from '../utils/time';
+import { runner } from '../utils/process';
 import { createLogger } from '../services/logger.service';
 import { projectInfoTask } from '../tasks/project-info.task';
 import { saveProjectApiTask } from '../tasks/save-project-api.task';
@@ -14,24 +13,30 @@ export const command = 'analyze';
 
 export const aliases = ['$0', 'a'];
 
-export const describe = 'Analyze project';
+export const describe =
+  'Analyze project and update it on Omniboard (or generate local json)';
 
-export const builder = (yargs: Argv) => yargs;
-
-export const handler = async (argv: any) => {
-  const start = new Date().getTime();
-  logger.info('Start');
-  const tasks = [
-    projectInfoTask,
-    prepareProjectDataTask,
-    saveProjectJsonTask,
-    saveProjectApiTask
-  ];
-  await new Listr(tasks)
-    .run(argv)
-    .then(res => {
-      const duration = new Date().getTime() - start;
-      logger.info(`Finished: ${formatTime(duration)}`);
+export const builder = (yargs: Argv) =>
+  yargs
+    .option('json', {
+      type: 'boolean',
+      default: false,
+      description: 'Store data in local json file'
     })
-    .catch(err => logger.error(err));
-};
+    .option('json-path', {
+      type: 'string',
+      default: './dist/omniboard.json',
+      description: 'Location of local json file'
+    });
+
+export const handler = async (argv: any) =>
+  runner(
+    [
+      projectInfoTask,
+      prepareProjectDataTask,
+      saveProjectJsonTask,
+      saveProjectApiTask
+    ],
+    argv,
+    logger
+  );

@@ -4,7 +4,7 @@ let verbose = false;
 
 export const setVerbose = () => (verbose = true);
 
-export const createLogger = (context: string) => {
+export const createLogger = (context: string): Logger => {
   const prefix = `@omniboard/analyzer [${context}]`;
   return {
     debug: (...args: any) =>
@@ -15,3 +15,11 @@ export const createLogger = (context: string) => {
     error: (...args: any) => console.log(chalk.red.bold(prefix, ...args))
   };
 };
+
+export interface Logger {
+  debug(...args: any): void;
+  info(...args: any): void;
+  success(...args: any): void;
+  warning(...args: any): void;
+  error(...args: any): void;
+}
