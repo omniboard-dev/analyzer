@@ -1,12 +1,17 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function findFiles(filenameRegexp: string) {
+export function findFiles(
+  includePattern: string,
+  includeFlags: string = 'i',
+  excludePattern: string = '(^\\.|node_modules|coverage|dist)',
+  excludeFlags: string = 'i'
+) {
   const results = [];
   const stack = ['.'];
 
-  const includeRegexp = new RegExp(filenameRegexp, 'i');
-  const excludeRegexp = new RegExp('(^\\.|node_modules|coverage|dist)', 'i');
+  const includeRegexp = new RegExp(includePattern, includeFlags);
+  const excludeRegexp = new RegExp(excludePattern, excludeFlags);
 
   while (stack.length > 0) {
     const currentPath = stack.pop() as string;
@@ -39,4 +44,9 @@ export function writeJson(destinationPath: string, data: any) {
   const stringifiedData = JSON.stringify(data, null, 2);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(destinationPath, stringifiedData);
+}
+
+export function readFile(path: string) {
+  const buffer = fs.readFileSync(path);
+  return buffer.toString();
 }

@@ -1,15 +1,20 @@
 import Listr, { ListrTask } from 'listr';
 
-import { Options } from '../options.interface';
+import { Context, Options } from '../interface';
 import { Logger } from '../services/logger.service';
 
 import { formatTime } from './time';
 
-export const runner = async (tasks: ListrTask[], options: Options, logger: Logger) => {
+export const runner = async (
+  tasks: ListrTask[],
+  options: Options,
+  logger: Logger
+) => {
   const start = new Date().getTime();
   logger.info('Start');
-  await new Listr(tasks)
-    .run({ options })
+  const context: Context = { options, results: {}, definitions: {} };
+  await new Listr(tasks, { collapse: false } as any)
+    .run(context)
     .then(res => {
       const duration = new Date().getTime() - start;
       logger.info(`Finished (${formatTime(duration)})`);
