@@ -12,7 +12,6 @@ export const runChecksTask: ListrTask = {
     }
   },
   task: async (ctx: Context, task) => {
-    ctx.results.checks = {};
     const checkTasks = ctx.definitions.checks!.map(definition => ({
       title: `Check "${definition.name}"`,
       task: async (ctx: Context, task: ListrTaskWrapper) => {
@@ -33,19 +32,28 @@ export const runChecksTask: ListrTask = {
           filesExcludePatternFlags
         );
         task.title = `${task.title}, found ${files.length} files`;
+
+        const matches = [];
         for (const file of files) {
           const content = fs.readFile(file);
+
           const regexp = new RegExp(
             contentPattern,
             contentPatternFlags || 'ig'
           );
-          const matches = regexp.exec(content);
-          ctx.results.checks![name] = {
-            name,
-            value: (matches?.length ?? 0) > 0,
-            matches
-          };
+          const matchesForFile = [...content.matchAll(regexp)];
+          if (matchesForFile?.length) {
+            matches.push({
+              file,
+              matches: matchesForFile.map(m => m[0])
+            });
+          }
         }
+        ctx.results.checks![name] = {
+          name,
+          value: matches.length > 0,
+          matches
+        };
         const duration = new Date().getTime() - start;
         task.title = `${task.title}, finished (${formatTime(duration)})`;
       }

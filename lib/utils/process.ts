@@ -12,7 +12,7 @@ export const runner = async (
 ) => {
   const start = new Date().getTime();
   logger.info('Start');
-  const context: Context = { options, results: {}, definitions: {} };
+  const context: Context = { options, results: { checks: {} }, definitions: {} };
   await new Listr(tasks, { collapse: false } as any)
     .run(context)
     .then(res => {

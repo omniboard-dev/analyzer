@@ -1,4 +1,4 @@
-import Listr, { ListrTask } from 'listr';
+import { ListrTask } from 'listr';
 
 import { Context } from '../interface';
 import * as api from '../services/api.service';
@@ -10,13 +10,5 @@ export const saveProjectApiTask: ListrTask = {
       return `Please provide --api-key argument or OMNIBOARD_API_KEY env variable`;
     }
   },
-  task: (ctx, task) =>
-    new Listr([
-      {
-        title: 'Upload project data',
-        task: (ctx: Context, task) => {
-          return api.uploadProject(ctx.processedResults);
-        }
-      }
-    ])
+  task: (ctx, task) => api.uploadProject(ctx.processedResults)
 };

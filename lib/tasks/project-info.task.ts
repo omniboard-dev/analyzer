@@ -14,6 +14,7 @@ export const projectInfoTask: ListrTask = {
             const files = findFiles('package.json');
             const names = files.map(f => readJson(f).name).filter(Boolean);
 
+            ctx.results.name = names[0];
             ctx.results.info = {
               name: names[0],
               names
