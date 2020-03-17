@@ -11,6 +11,7 @@ export interface Context {
     checks?: RegexpProjectCheckDefinition[];
   };
   results: {
+    name?: string;
     info?: ProjectInfo;
     checks?: {
       [key: string]: ProjectCheck;
@@ -19,16 +20,21 @@ export interface Context {
   processedResults?: any;
 }
 
-export interface ProjectCheck {
-  name: string;
-  value: boolean;
-  matches: string[] | null;
-}
-
 export interface ProjectInfo {
   name: string;
   names: string[];
   [key: string]: any;
+}
+
+export interface ProjectCheck {
+  name: string;
+  value: boolean;
+  matches: ProjectCheckMatch[];
+}
+
+export interface ProjectCheckMatch {
+  file: string;
+  matches: string[];
 }
 
 export interface RegexpProjectCheckDefinition {
