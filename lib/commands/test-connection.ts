@@ -2,7 +2,7 @@ import { Argv } from 'yargs';
 
 import { runner } from '../utils/process';
 import { createLogger } from '../services/logger.service';
-import { testConnectionTask } from '../tasks/testConnectionTask';
+import { testConnectionTask } from '../tasks/test-connection.task';
 
 const logger = createLogger('TEST CONNECTION');
 

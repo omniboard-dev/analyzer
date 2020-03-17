@@ -1,14 +1,10 @@
 import { ListrTask } from 'listr';
 
+import { Context } from '../interface';
+
 export const prepareProjectDataTask: ListrTask = {
   title: 'Prepare project data',
-  task: (ctx, task) => {
-    ctx.projectData = {
-      name: ctx.name,
-      info: {
-        names: ctx.names
-      },
-      checks: { usesOldApi: true }
-    };
+  task: (ctx: Context, task) => {
+    ctx.processedResults = { ...ctx.results };
   }
 };
