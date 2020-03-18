@@ -34,6 +34,6 @@ export const ping = (): { organization: string } =>
   api<{ organization: string }>('ping') as any;
 
 export const uploadProject = (project: any) =>
-  api.put('project', { json: project });
+  api.put('project/cli', { json: project });
 
-export const getChecks = (): Promise<any[]> => api('check') as any;
+export const getChecks = (): Promise<any[]> => api('check/cli') as any;

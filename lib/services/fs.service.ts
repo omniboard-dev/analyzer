@@ -3,15 +3,18 @@ import * as path from 'path';
 
 export function findFiles(
   includePattern: string,
-  includeFlags: string = 'i',
-  excludePattern: string = '(^\\.|node_modules|coverage|dist)',
-  excludeFlags: string = 'i'
+  includeFlags?: string,
+  excludePattern?: string,
+  excludeFlags?: string
 ) {
   const results = [];
   const stack = ['.'];
 
-  const includeRegexp = new RegExp(includePattern, includeFlags);
-  const excludeRegexp = new RegExp(excludePattern, excludeFlags);
+  const includeRegexp = new RegExp(includePattern, includeFlags || 'i');
+  const excludeRegexp = new RegExp(
+    excludePattern || '(^\\.|node_modules|coverage|dist)',
+    excludeFlags || 'i'
+  );
 
   while (stack.length > 0) {
     const currentPath = stack.pop() as string;
