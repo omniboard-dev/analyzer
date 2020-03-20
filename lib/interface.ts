@@ -8,7 +8,7 @@ export interface Options {
 export interface Context {
   options: Options;
   definitions: {
-    checks?: RegexpProjectCheckDefinition[];
+    checks?: CheckRegexp[];
   };
   results: {
     name?: string;
@@ -37,8 +37,9 @@ export interface ProjectCheckMatch {
   matches: string[];
 }
 
-export interface RegexpProjectCheckDefinition {
+export interface CheckRegexp {
   name: string;
+  disabled: boolean;
   filesPattern: string;
   filesPatternFlags?: string;
   filesExcludePattern?: string;
