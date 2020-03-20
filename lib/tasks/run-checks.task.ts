@@ -14,6 +14,7 @@ export const runChecksTask: ListrTask = {
   task: async (ctx: Context, task) => {
     const checkTasks = ctx.definitions.checks!.map(definition => ({
       title: `Check "${definition.name}"`,
+      skip: async (ctx: Context) => (definition.disabled ? 'Check disabled' : false as any),
       task: async (ctx: Context, task: ListrTaskWrapper) => {
         const start = new Date().getTime();
         const {
@@ -55,7 +56,7 @@ export const runChecksTask: ListrTask = {
           matches
         };
         const duration = new Date().getTime() - start;
-        task.title = `${task.title}, finished (${formatTime(duration)})`;
+        task.title = `${task.title}, matches: ${matches.length} (${formatTime(duration)})`;
       }
     }));
 
