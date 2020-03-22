@@ -12,7 +12,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "format": "prettier lib/**/*.{ts,json} --write",
-    "release": "standard-version -a && git push --follow-tags origin master && npm publish"
+    "release": "npm run format && npm run build && standard-version -a && git push --follow-tags origin master && npm publish --access public"
   },
   "dependencies": {
     "@types/listr": "^0.14.2",
