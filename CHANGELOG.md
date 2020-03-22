@@ -1,5 +1,13 @@
-# Changelog - @omniboard/analyzer
-For more, check out docs at [Omniboard.dev](https://www.omniboard.dev/docs)
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.2](https://github.com/omniboard-dev/analyzer/compare/v0.1.1...v0.1.2) (2020-03-22)
+
+
+### Features
+
+* **docs:** add readme ([629cd7a](https://github.com/omniboard-dev/analyzer/commit/629cd7a30d0fdd698c8fea066946611188dceaef))
 
 ### 0.1.1 (2020-03-22)
 
