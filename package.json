@@ -1,6 +1,6 @@
 {
   "name": "@omniboard/analyzer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
   "bin": {
@@ -34,7 +34,7 @@
     "url": "git+https://github.com/omniboard-dev/analyzer.git"
   },
   "keywords": [
-    "omniboard"
+    "omniboard.dev"
   ],
   "author": "Tomas Trajan <@tomastrajan>",
   "license": "MIT",
