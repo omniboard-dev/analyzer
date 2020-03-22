@@ -34,7 +34,12 @@ export interface ProjectCheck {
 
 export interface ProjectCheckMatch {
   file: string;
-  matches: string[];
+  matches: ProjectCheckMatchDetails[];
+}
+
+export interface ProjectCheckMatchDetails {
+  match: string;
+  groups: { [key: string]: any }
 }
 
 export interface CheckRegexp {
