@@ -1,8 +1,9 @@
 {
   "name": "@omniboard/analyzer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
+  "private": false,
   "bin": {
     "omniboard": "./dist/index.js"
   },
@@ -10,7 +11,8 @@
     "start": "node -r ts-node/register lib/index.ts",
     "build": "tsc",
     "watch": "tsc --watch",
-    "format": "prettier lib/**/*.{ts,json} --write"
+    "format": "prettier lib/**/*.{ts,json} --write",
+    "release": "standard-version -a && git push --follow-tags origin master && npm publish"
   },
   "dependencies": {
     "@types/listr": "^0.14.2",
