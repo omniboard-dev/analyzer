@@ -1,7 +1,7 @@
 import Listr, { ListrTask, ListrTaskWrapper } from 'listr';
 
 import * as fs from '../services/fs.service';
-import { Context } from '../interface';
+import { Context, ProjectCheckMatch, ProjectCheckMatchDetails } from '../interface';
 import { formatTime } from '../utils/time';
 
 export const runChecksTask: ListrTask = {
@@ -14,7 +14,8 @@ export const runChecksTask: ListrTask = {
   task: async (ctx: Context, task) => {
     const checkTasks = ctx.definitions.checks!.map(definition => ({
       title: `Check "${definition.name}"`,
-      skip: async (ctx: Context) => (definition.disabled ? 'Check disabled' : false as any),
+      skip: async (ctx: Context) =>
+        definition.disabled ? 'Check disabled' : (false as any),
       task: async (ctx: Context, task: ListrTaskWrapper) => {
         const start = new Date().getTime();
         const {
@@ -34,7 +35,7 @@ export const runChecksTask: ListrTask = {
         );
         task.title = `${task.title}, found ${files.length} files`;
 
-        const matches = [];
+        const matches: ProjectCheckMatch[] = [];
         for (const file of files) {
           const content = fs.readFile(file);
 
@@ -46,7 +47,10 @@ export const runChecksTask: ListrTask = {
           if (matchesForFile?.length) {
             matches.push({
               file,
-              matches: matchesForFile.map(m => m[0])
+              matches: matchesForFile.map(m => ({
+                match: m[0],
+                groups: m.groups
+              } as ProjectCheckMatchDetails))
             });
           }
         }
@@ -56,7 +60,9 @@ export const runChecksTask: ListrTask = {
           matches
         };
         const duration = new Date().getTime() - start;
-        task.title = `${task.title}, matches: ${matches.length} (${formatTime(duration)})`;
+        task.title = `${task.title}, matches: ${matches.length} (${formatTime(
+          duration
+        )})`;
       }
     }));
 
