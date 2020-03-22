@@ -1,6 +1,5 @@
-# Changelog
-
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+# Changelog - @omniboard/analyzer
+For more, check out docs at [Omniboard.dev](https://www.omniboard.dev/docs)
 
 ### 0.1.1 (2020-03-22)
 
