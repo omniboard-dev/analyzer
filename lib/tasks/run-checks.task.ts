@@ -1,7 +1,11 @@
 import Listr, { ListrTask, ListrTaskWrapper } from 'listr';
 
 import * as fs from '../services/fs.service';
-import { Context, ProjectCheckMatch, ProjectCheckMatchDetails } from '../interface';
+import {
+  Context,
+  ProjectCheckMatch,
+  ProjectCheckMatchDetails
+} from '../interface';
 import { formatTime } from '../utils/time';
 
 export const runChecksTask: ListrTask = {
@@ -47,10 +51,13 @@ export const runChecksTask: ListrTask = {
           if (matchesForFile?.length) {
             matches.push({
               file,
-              matches: matchesForFile.map(m => ({
-                match: m[0],
-                groups: m.groups
-              } as ProjectCheckMatchDetails))
+              matches: matchesForFile.map(
+                m =>
+                  ({
+                    match: m[0],
+                    groups: m.groups
+                  } as ProjectCheckMatchDetails)
+              )
             });
           }
         }

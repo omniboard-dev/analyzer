@@ -39,7 +39,7 @@ export interface ProjectCheckMatch {
 
 export interface ProjectCheckMatchDetails {
   match: string;
-  groups: { [key: string]: any }
+  groups: { [key: string]: any };
 }
 
 export interface CheckRegexp {
