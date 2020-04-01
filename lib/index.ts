@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+process.env.GLOBAL_AGENT_ENVIRONMENT_VARIABLE_NAMESPACE  = '';
+
+import 'global-agent/bootstrap';
 import yargs, { Argv } from 'yargs';
 
 import * as analyzeCommand from './commands/analyze';

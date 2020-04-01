@@ -17,6 +17,7 @@
   "dependencies": {
     "@types/listr": "^0.14.2",
     "chalk": "^3.0.0",
+    "global-agent": "^2.1.8",
     "got": "^10.6.0",
     "listr": "^0.14.3",
     "yargs": "^15.1.0"
