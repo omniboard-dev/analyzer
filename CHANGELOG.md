@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/omniboard-dev/analyzer/compare/v0.1.2...v0.1.3) (2020-04-01)
+
+
+### Features
+
+* **proxy:** add support for proxy when ENV variables are present ([d57e71d](https://github.com/omniboard-dev/analyzer/commit/d57e71db1d384828acdf15655f9395ff7429ad1f))
+
 ### [0.1.2](https://github.com/omniboard-dev/analyzer/compare/v0.1.1...v0.1.2) (2020-03-22)
 
 
