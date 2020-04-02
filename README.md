@@ -34,7 +34,7 @@ The `@omniboard/abalyzer` will retrieve and run most recent checks and upload re
 ## FAQ
 
 #### Is this uploading my source to the cloud?
-No. The `@omniboard/analyzer` runs checks against your source code (or even generated artifacts) and uploads results of these checks to the cloud service for further processing. The uplaoded content is then just metadata describing the projects but NOT the projects themselves.
+No. The `@omniboard/analyzer` runs checks against your source code (or even generated artifacts) and uploads results of these checks to the cloud service for further processing. The uploaded content is then just metadata describing the projects and results but NOT the projects themselves.
 
 In theory, a check which matches everything could be constructed but such result will be rejected as it would be of unreasonable size...
 
