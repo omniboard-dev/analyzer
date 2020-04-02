@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/omniboard-dev/analyzer/compare/v0.1.3...v0.1.4) (2020-04-02)
+
+
+### Features
+
+* **cli:** add short aliases for help and version ([588bc8d](https://github.com/omniboard-dev/analyzer/commit/588bc8d365babb39f4aa4d7e8528df12d58bbcfd))
+
+
+### Bug Fixes
+
+* **docs:** typos ([32e2bd9](https://github.com/omniboard-dev/analyzer/commit/32e2bd9b3ac436628b687a18fa6f6414d955699a))
+
 ### [0.1.3](https://github.com/omniboard-dev/analyzer/compare/v0.1.2...v0.1.3) (2020-04-01)
 
 
