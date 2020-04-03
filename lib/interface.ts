@@ -51,4 +51,6 @@ export interface CheckRegexp {
   filesExcludePatternFlags?: string;
   contentPattern: string;
   contentPatternFlags?: string;
+  projectNamePattern?: string;
+  projectNamePatternFlags?: string;
 }
