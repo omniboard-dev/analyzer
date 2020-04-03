@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/omniboard-dev/analyzer/compare/v0.1.4...v0.1.5) (2020-04-03)
+
+
+### Features
+
+* **tasks:** skip check when project name does NOT match provided pattern ([fffdfcb](https://github.com/omniboard-dev/analyzer/commit/fffdfcbd50f070a599b96f404d8ab159da24800c))
+
 ### [0.1.4](https://github.com/omniboard-dev/analyzer/compare/v0.1.3...v0.1.4) (2020-04-02)
 
 
