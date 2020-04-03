@@ -18,8 +18,23 @@ export const runChecksTask: ListrTask = {
   task: async (ctx: Context, task) => {
     const checkTasks = ctx.definitions.checks!.map(definition => ({
       title: `Check "${definition.name}"`,
-      skip: async (ctx: Context) =>
-        definition.disabled ? 'Check disabled' : (false as any),
+      skip: async (ctx: Context): Promise<any> => {
+        if (definition.disabled) {
+          return 'Check disabled';
+        } else if (definition.projectNamePattern) {
+          const projectNameRegexp = new RegExp(
+            definition.projectNamePattern,
+            definition.projectNamePatternFlags || 'i'
+          );
+          if (!projectNameRegexp.test(ctx.results.name || '')) {
+            return `Project name ${ctx.results.name} does not match provided pattern ${definition.projectNamePattern}`;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      },
       task: async (ctx: Context, task: ListrTaskWrapper) => {
         const start = new Date().getTime();
         const {
