@@ -12,6 +12,7 @@ export interface Context {
   };
   results: {
     name?: string;
+    repository?: string;
     info?: ProjectInfo;
     checks?: {
       [key: string]: ProjectCheck;
@@ -23,6 +24,8 @@ export interface Context {
 export interface ProjectInfo {
   name: string;
   names: string[];
+  repository?: string;
+  repositories?: string[];
   [key: string]: any;
 }
 

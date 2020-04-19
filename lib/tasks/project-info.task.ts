@@ -9,7 +9,7 @@ export const projectInfoTask: ListrTask = {
     new Listr(
       [
         {
-          title: 'Get poject name',
+          title: 'Get project name',
           task: (ctx: Context, task) => {
             const files = findFiles('package.json');
             const names = files.map(f => readJson(f).name).filter(Boolean);
@@ -19,6 +19,26 @@ export const projectInfoTask: ListrTask = {
               name: names[0],
               names
             };
+          }
+        },
+        {
+          title: 'Get project repository',
+          task: (ctx: Context, task) => {
+            const files = findFiles('package.json');
+            const repositories = Array.from(
+              new Set(
+                files
+                  .map(f => readJson(f)?.repository?.url)
+                  .filter(Boolean)
+                  .map(url => url.replace('git+', ''))
+              )
+            );
+
+            ctx.results.info = {
+              ...ctx.results.info,
+              repository: repositories[0],
+              repositories
+            } as any;
           }
         }
       ],
