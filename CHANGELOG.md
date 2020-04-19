@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/omniboard-dev/analyzer/compare/v0.1.5...v0.1.6) (2020-04-19)
+
+
+### Features
+
+* **tasks:** retrieve and store project repository url ([8bee0c9](https://github.com/omniboard-dev/analyzer/commit/8bee0c95119ec32bfece6c877cd1936c3a7ff444))
+
 ### [0.1.5](https://github.com/omniboard-dev/analyzer/compare/v0.1.4...v0.1.5) (2020-04-03)
 
 
