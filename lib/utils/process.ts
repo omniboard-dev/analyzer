@@ -27,6 +27,9 @@ export const runner = async (
       const duration = new Date().getTime() - start;
       logger.error(`Finished (${formatTime(duration)}) with error`);
       logger.error(err);
+      if (err?.response?.body?.message) {
+        logger.error(err.response.body.message);
+      }
       process.exit(1);
     });
 };
