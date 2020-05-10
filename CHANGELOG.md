@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/omniboard-dev/analyzer/compare/v0.1.6...v0.1.7) (2020-05-10)
+
+
+### Features
+
+* **process:** display subscription limit error message ([307fb5d](https://github.com/omniboard-dev/analyzer/commit/307fb5d64b28627f34cee09b793e0b0a4786daae))
+
 ### [0.1.6](https://github.com/omniboard-dev/analyzer/compare/v0.1.5...v0.1.6) (2020-04-19)
 
 
