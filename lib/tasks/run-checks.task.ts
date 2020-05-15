@@ -1,12 +1,8 @@
 import Listr, { ListrTask, ListrTaskWrapper } from 'listr';
 
-import * as fs from '../services/fs.service';
-import {
-  Context,
-  ProjectCheckMatch,
-  ProjectCheckMatchDetails
-} from '../interface';
-import { formatTime } from '../utils/time';
+import { CheckType, Context } from '../interface';
+import { sizeCheckTaskFactory } from '../checks/size.check';
+import { contentCheckTaskFactory } from '../checks/content.check';
 
 export const runChecksTask: ListrTask = {
   title: 'Run project checks',
@@ -16,7 +12,7 @@ export const runChecksTask: ListrTask = {
     }
   },
   task: async (ctx: Context, task) => {
-    const checkTasks = ctx.definitions.checks!.map(definition => ({
+    const checkTasks: any = ctx.definitions.checks!.map(definition => ({
       title: `Check "${definition.name}"`,
       skip: async (ctx: Context): Promise<any> => {
         if (definition.disabled) {
@@ -35,57 +31,22 @@ export const runChecksTask: ListrTask = {
           return false;
         }
       },
-      task: async (ctx: Context, task: ListrTaskWrapper) => {
-        const start = new Date().getTime();
-        const {
-          name,
-          filesPattern,
-          filesPatternFlags,
-          filesExcludePattern,
-          filesExcludePatternFlags,
-          contentPattern,
-          contentPatternFlags
-        } = definition;
-        const files = fs.findFiles(
-          filesPattern,
-          filesPatternFlags,
-          filesExcludePattern,
-          filesExcludePatternFlags
-        );
-        task.title = `${task.title}, found ${files.length} files`;
-
-        const matches: ProjectCheckMatch[] = [];
-        for (const file of files) {
-          const content = fs.readFile(file);
-
-          const regexp = new RegExp(
-            contentPattern,
-            contentPatternFlags || 'ig'
-          );
-          const matchesForFile = [...content.matchAll(regexp)];
-          if (matchesForFile?.length) {
-            matches.push({
-              file,
-              matches: matchesForFile.map(
-                m =>
-                  ({
-                    match: m[0],
-                    groups: m.groups
-                  } as ProjectCheckMatchDetails)
-              )
-            });
-          }
+      task: (() => {
+        if (definition.type === CheckType.CONTENT) {
+          return contentCheckTaskFactory(definition);
+        } else if (definition.type === CheckType.SIZE) {
+          return sizeCheckTaskFactory(definition);
+        } else {
+          return function unknownCheckTask(
+            ctx: Context,
+            task: ListrTaskWrapper
+          ) {
+            task.skip(
+              `Implementation for a check with type "${definition.type}" not found`
+            );
+          };
         }
-        ctx.results.checks![name] = {
-          name,
-          value: matches.length > 0,
-          matches
-        };
-        const duration = new Date().getTime() - start;
-        task.title = `${task.title}, matches: ${matches.length} (${formatTime(
-          duration
-        )})`;
-      }
+      })()
     }));
 
     return new Listr(checkTasks);

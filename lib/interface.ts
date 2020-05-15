@@ -8,7 +8,7 @@ export interface Options {
 export interface Context {
   options: Options;
   definitions: {
-    checks?: CheckRegexp[];
+    checks?: CheckDefinition[];
   };
   results: {
     name?: string;
@@ -31,8 +31,10 @@ export interface ProjectInfo {
 
 export interface ProjectCheck {
   name: string;
+  type: CheckType;
   value: boolean;
-  matches: ProjectCheckMatch[];
+  matches?: ProjectCheckMatch[];
+  size?: ProjectCheckSize;
 }
 
 export interface ProjectCheckMatch {
@@ -40,13 +42,26 @@ export interface ProjectCheckMatch {
   matches: ProjectCheckMatchDetails[];
 }
 
+export interface ProjectCheckSize {
+  total: number;
+  totalHumanReadable: string;
+  details: ProjectCheckSizeDetails[];
+}
+
+export interface ProjectCheckSizeDetails {
+  file: string;
+  size: number;
+  sizeHumanReadable: string;
+}
+
 export interface ProjectCheckMatchDetails {
   match: string;
   groups: { [key: string]: any };
 }
 
-export interface CheckRegexp {
+export interface CheckDefinition {
   name: string;
+  type: CheckType;
   disabled: boolean;
   filesPattern: string;
   filesPatternFlags?: string;
@@ -56,4 +71,9 @@ export interface CheckRegexp {
   contentPatternFlags?: string;
   projectNamePattern?: string;
   projectNamePatternFlags?: string;
+}
+
+export enum CheckType {
+  CONTENT = 'content',
+  SIZE = 'size'
 }
