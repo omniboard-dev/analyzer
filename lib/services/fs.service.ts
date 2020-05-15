@@ -1,5 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import filesize from 'filesize';
+
+const REGEXP_MATCH_NOTHING = /a^/;
 
 export function findFiles(
   includePattern: string,
@@ -11,10 +14,9 @@ export function findFiles(
   const stack = ['.'];
 
   const includeRegexp = new RegExp(includePattern, includeFlags || 'i');
-  const excludeRegexp = new RegExp(
-    excludePattern || '(^\\.|node_modules|coverage|dist)',
-    excludeFlags || 'i'
-  );
+  const excludeRegexp = excludePattern
+    ? new RegExp(excludePattern, excludeFlags)
+    : REGEXP_MATCH_NOTHING;
 
   while (stack.length > 0) {
     const currentPath = stack.pop() as string;
@@ -29,7 +31,7 @@ export function findFiles(
       nextPath =>
         !excludeRegexp.test(nextPath) &&
         fs.lstatSync(nextPath).isFile() &&
-        includeRegexp.test(nextPath)
+        includeRegexp.test(nextPath.replace(/\\/g, '/'))
     );
     results.push(...files);
     stack.push(...dirs);
@@ -52,4 +54,12 @@ export function writeJson(destinationPath: string, data: any) {
 export function readFile(path: string) {
   const buffer = fs.readFileSync(path);
   return buffer.toString();
+}
+
+export function getFileSize(path: string) {
+  return fs.statSync(path).size;
+}
+
+export function getHumanReadableFileSize(size: number) {
+  return filesize(size);
 }

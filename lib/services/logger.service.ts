@@ -1,11 +1,15 @@
+import path from 'path';
 import chalk from 'chalk';
+
+import { readJson } from './fs.service';
 
 let verbose = false;
 
 export const setVerbose = () => (verbose = true);
 
 export const createLogger = (context: string): Logger => {
-  const prefix = `@omniboard/analyzer [${context}]`;
+  const version = readJson(path.join(__dirname, '../../package.json')).version;
+  const prefix = `@omniboard/analyzer v${version} [${context}]`;
   return {
     debug: (...args: any) =>
       verbose ? console.log(chalk.grey(prefix, ...args)) : () => {},
