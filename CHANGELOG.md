@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.10](https://github.com/omniboard-dev/analyzer/compare/v0.1.9...v0.1.10) (2020-06-25)
+
+
+### Features
+
+* **checks:** improve progress logging ([69fe5dd](https://github.com/omniboard-dev/analyzer/commit/69fe5dd25c2e9a662f6ce4a2ec82594943eaf76f))
+
 ### [0.1.9](https://github.com/omniboard-dev/analyzer/compare/v0.1.8...v0.1.9) (2020-05-15)
 
 
