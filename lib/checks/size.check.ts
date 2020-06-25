@@ -6,7 +6,7 @@ import {
   ProjectCheckSizeDetails
 } from '../interface';
 import * as fs from '../services/fs.service';
-import { formatTime } from '../utils/time';
+import { formatTime, tick } from '../utils/time';
 
 const DEFAULT_EXCLUDE_PATTERN = 'node_modules';
 const DEFAULT_EXCLUDE_PATTERN_FLAGS = 'i';
@@ -38,6 +38,7 @@ export function sizeCheckTaskFactory(definition: CheckDefinition) {
         size,
         sizeHumanReadable: fs.getHumanReadableFileSize(size)
       });
+      await tick();
     }
     sizeDetails.sort((s1, s2) => s2.size - s1.size);
     const total = sizeDetails.reduce((r, s) => r + s.size, 0);
@@ -56,6 +57,7 @@ export function sizeCheckTaskFactory(definition: CheckDefinition) {
     task.title = `${
       task.title
     }, total size: ${totalHumanReadable} (${formatTime(duration)})`;
+    await tick();
   }
   return contentCheckTask;
 }

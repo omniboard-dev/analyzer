@@ -5,7 +5,7 @@ import {
   ProjectCheckMatch,
   ProjectCheckMatchDetails
 } from '../interface';
-import { formatTime } from '../utils/time';
+import { formatTime, tick } from '../utils/time';
 import * as fs from '../services/fs.service';
 
 const DEFAULT_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
@@ -50,6 +50,7 @@ export function contentCheckTaskFactory(definition: CheckDefinition) {
           )
         });
       }
+      await tick();
     }
     ctx.results.checks![name] = {
       name,
@@ -61,6 +62,7 @@ export function contentCheckTaskFactory(definition: CheckDefinition) {
     task.title = `${task.title}, matches: ${matches.length} (${formatTime(
       duration
     )})`;
+    await tick();
   }
   return contentCheckTask;
 }

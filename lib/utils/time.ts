@@ -1,3 +1,7 @@
+export function tick() {
+  return new Promise(resolve => setTimeout(resolve, 0));
+}
+
 export function formatTime(milliseconds: number) {
   const roundTowardsZero = milliseconds > 0 ? Math.floor : Math.ceil;
   const min = roundTowardsZero(milliseconds / 60000);
