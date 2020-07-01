@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.11](https://github.com/omniboard-dev/analyzer/compare/v0.1.10...v0.1.11) (2020-07-01)
+
+
+### Features
+
+* **workspace:** add engines field, update readme ([1d0ecfe](https://github.com/omniboard-dev/analyzer/commit/1d0ecfe4aa1dc7aff9f0fb54f64aa5b6bf0ea978))
+
 ### [0.1.10](https://github.com/omniboard-dev/analyzer/compare/v0.1.9...v0.1.10) (2020-06-25)
 
 
