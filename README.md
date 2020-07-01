@@ -37,9 +37,17 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 
 ## FAQ
 
-#### Is this uploading my source to the cloud?
+#### Is it possible to run @mniboard/analyzer behind organization proxy?
+**Yes**
 
-No. The `@omniboard/analyzer` runs checks against your source code (or even generated artifacts) 
+The `@omniboard/analyzer` uses [global-agent](https://github.com/gajus/global-agent) library which will uses
+`HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables (case sensitive) and use them to make requests
+to `https://api.omniboard.dev`
+
+#### Is this uploading my source code to the cloud?
+**No**
+
+The `@omniboard/analyzer` runs checks against your source code (or even generated artifacts) 
 and uploads results of these checks to the cloud service for further processing. 
 The uploaded content is then just metadata describing the projects and results but NOT the projects themselves.
 
