@@ -37,7 +37,13 @@ export function contentCheckTaskFactory(definition: CheckDefinition) {
       const content = fs.readFile(file);
 
       const regexp = new RegExp(contentPattern, contentPatternFlags || 'ig');
-      const matchesForFile = [...(content as any).matchAll(regexp)];
+      // const matchesForFile = [...(content as any).matchAll(regexp)]; // TODO node v12+
+      const matchesForFile = [];
+      let match
+      while ((match = regexp.exec(content)) !== null) {
+        matchesForFile.push(match);
+        await tick();
+      }
       if (matchesForFile?.length) {
         matches.push({
           file,
