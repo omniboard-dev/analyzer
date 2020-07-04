@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.12](https://github.com/omniboard-dev/analyzer/compare/v0.1.11...v0.1.12) (2020-07-04)
+
+
+### Bug Fixes
+
+* **checks:** use older regexp api to support node 10 ([6aacfc7](https://github.com/omniboard-dev/analyzer/commit/6aacfc70d255fc280d229d6c479f4c9ccd8056fd))
+
 ### [0.1.11](https://github.com/omniboard-dev/analyzer/compare/v0.1.10...v0.1.11) (2020-07-01)
 
 
