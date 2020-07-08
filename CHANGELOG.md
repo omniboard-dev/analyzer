@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.13](https://github.com/omniboard-dev/analyzer/compare/v0.1.12...v0.1.13) (2020-07-08)
+
+
+### Bug Fixes
+
+* **env:** handle both lower and uppercase proxy env variables ([4ad3954](https://github.com/omniboard-dev/analyzer/commit/4ad3954bf1690c230a22005be32ae04f5800dd12))
+
 ### [0.1.12](https://github.com/omniboard-dev/analyzer/compare/v0.1.11...v0.1.12) (2020-07-04)
 
 
