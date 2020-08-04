@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.1.15 (2020-08-04)
+
+
+### Features
+
+* **api:** optional api request debug ([0830c44](https://github.com/omniboard-dev/analyzer/commit/0830c44882b28b987082caa8ff15f2f0fd674205))
+* **checks:** capture regexp groups ([2473679](https://github.com/omniboard-dev/analyzer/commit/2473679ab02bcc983a31f2e84383a700ad57c672))
+* **checks:** content and size checks ([022feab](https://github.com/omniboard-dev/analyzer/commit/022feab21c56b07c380606c416a9704cb376e9d0))
+* **checks:** improve progress logging ([d45323a](https://github.com/omniboard-dev/analyzer/commit/d45323adad1d9197892f8416504e641e1da7bf77))
+* **checks:** skip disabled checks ([0d0d81c](https://github.com/omniboard-dev/analyzer/commit/0d0d81cc222a27645360ec5958c2ef313c17340b))
+* **cli:** add short aliases for help and version ([cfd22ff](https://github.com/omniboard-dev/analyzer/commit/cfd22ff0340645a1ad09939cd9f9cc4cfdb12de1))
+* **commands:** add test-connection command ([f6d7ab9](https://github.com/omniboard-dev/analyzer/commit/f6d7ab9eb81fdc79e37b6df63aebf96201661efb))
+* **docs:** add readme ([d11baf2](https://github.com/omniboard-dev/analyzer/commit/d11baf217162de794490e3a89b22fa11d2a842e6))
+* **lib:** improve architecture, add runner, use skip instead of error ([74ece38](https://github.com/omniboard-dev/analyzer/commit/74ece383878e33d5bb235254f26ee4dd01323d13))
+* **process:** display subscription limit error message ([96966b5](https://github.com/omniboard-dev/analyzer/commit/96966b5fc7f4a12bc5b48c35bd8afe70b0410035))
+* **proxy:** add support for proxy when ENV variables are present ([59acd04](https://github.com/omniboard-dev/analyzer/commit/59acd047631649d65c6db0c43aff698fd98a6a8e))
+* **tasks:** add project info, prepare and save tasks ([f729154](https://github.com/omniboard-dev/analyzer/commit/f729154782de8eca99eb6f51023f6066c7d08194))
+* **tasks:** add retrieve checks task ([2224cd9](https://github.com/omniboard-dev/analyzer/commit/2224cd986e6465fb886af226f37801938d8f9b67))
+* **tasks:** add run checks task, improve typing (context) ([50efee1](https://github.com/omniboard-dev/analyzer/commit/50efee16266b24f4b91b81c1c7475fbfd5569cbe))
+* **tasks:** retrieve and store project repository url ([fbd0007](https://github.com/omniboard-dev/analyzer/commit/fbd0007f7626dc4cc3b5f32d08401db5f2c487a7))
+* **tasks:** skip check when project name does NOT match provided pattern ([6bfc8a2](https://github.com/omniboard-dev/analyzer/commit/6bfc8a2b75c3383539fa5272c0794d0d3d63b1b0))
+* **workspace:** add engines field, update readme ([93134ba](https://github.com/omniboard-dev/analyzer/commit/93134bacfe622a58548f8df125ef316c4ddafb9e))
+* **workspace:** initial workspace setup ([2f302bc](https://github.com/omniboard-dev/analyzer/commit/2f302bcc88049c8f4961a6072a5d15c072a48832))
+
+
+### Bug Fixes
+
+* **checks:** use older regexp api to support node 10 ([c18ddd2](https://github.com/omniboard-dev/analyzer/commit/c18ddd296ffe107202ad209ee195ad3d5367ec01))
+* **docs:** typos ([fbfb0ab](https://github.com/omniboard-dev/analyzer/commit/fbfb0ab766a8f59b6c30a3e4c5084368239a745e))
+* **env:** handle both lower and uppercase proxy env variables ([aae4cd6](https://github.com/omniboard-dev/analyzer/commit/aae4cd6f9b4830a33c445bf6c851d8cde84be895))
+* **lib:** run checks resolve all matches ([7c35320](https://github.com/omniboard-dev/analyzer/commit/7c3532012d748c84c2a76688e3b9488386be3540))
+* **services:** regexp defaults, api url ([aca7934](https://github.com/omniboard-dev/analyzer/commit/aca79340bc7613d29e77aac4e83ff9169978793a))
+
 ### [0.1.14](https://github.com/omniboard-dev/analyzer/compare/v0.1.13...v0.1.14) (2020-08-04)
 
 
