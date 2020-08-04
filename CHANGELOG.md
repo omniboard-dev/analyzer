@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14](https://github.com/omniboard-dev/analyzer/compare/v0.1.13...v0.1.14) (2020-08-04)
+
+
+### Features
+
+* **api:** optional api request debug ([98583b9](https://github.com/omniboard-dev/analyzer/commit/98583b9896909b4ffdbb33294b24a8ae31ed2176))
+
 ### [0.1.13](https://github.com/omniboard-dev/analyzer/compare/v0.1.12...v0.1.13) (2020-07-08)
 
 
