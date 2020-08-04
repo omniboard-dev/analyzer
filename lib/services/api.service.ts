@@ -6,7 +6,7 @@ let api: Got;
 const logger = createLogger('API SERVICE');
 
 export const createApiService = (argv: any) => {
-  const { dev, apiKey } = argv;
+  const { dev, apiKey, debug } = argv;
   const key = apiKey || process.env.OMNIBOARD_API_KEY;
   if (!key) {
     logger.debug(`No API key provided, API tasks will be skipped`);
@@ -25,7 +25,7 @@ export const createApiService = (argv: any) => {
       'omniboard-api-key': key
     },
     hooks: {
-      // beforeRequest: [options => logger.info(options)]
+      beforeRequest: debug ? [options => logger.info(options)] : []
     }
   });
 };
