@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/omniboard-dev/analyzer/compare/v0.1.15...v1.0.0) (2020-12-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* **process:** run check tasks concurrently (perf improvement)
+
+### Features
+
+* **process:** run check tasks concurrently ([17ee231](https://github.com/omniboard-dev/analyzer/commit/17ee231e257bc2df828f3196815e4504ff511a61))
+
 ### 0.1.15 (2020-08-04)
 
 
