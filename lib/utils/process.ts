@@ -1,4 +1,4 @@
-import Listr, { ListrTask } from 'listr';
+import { Listr, ListrTask } from 'listr2';
 
 import { Context, Options } from '../interface';
 import { Logger } from '../services/logger.service';
@@ -17,7 +17,9 @@ export const runner = async (
     results: { checks: {} },
     definitions: {}
   };
-  await new Listr(tasks, { collapse: false } as any)
+  await new Listr(tasks, {
+    rendererOptions: { collapse: false, showTimer: true }
+  })
     .run(context)
     .then(res => {
       const duration = new Date().getTime() - start;
@@ -25,11 +27,21 @@ export const runner = async (
     })
     .catch(err => {
       const duration = new Date().getTime() - start;
-      logger.error(`Finished (${formatTime(duration)}) with error`);
-      logger.error(err);
-      if (err?.response?.body?.message) {
-        logger.error(err.response.body.message);
+
+      if (options.errorsAsWarnings) {
+        logger.warning(`Finished (${formatTime(duration)}) with error`);
+        logger.warning(err);
+        if (err?.response?.body?.message) {
+          logger.warning(err.response.body.message);
+        }
+        process.exit(0);
+      } else {
+        logger.error(`Finished (${formatTime(duration)}) with error`);
+        logger.error(err);
+        if (err?.response?.body?.message) {
+          logger.error(err.response.body.message);
+        }
+        process.exit(1);
       }
-      process.exit(1);
     });
 };

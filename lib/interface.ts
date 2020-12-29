@@ -2,6 +2,7 @@ export interface Options {
   verbose: boolean;
   json: boolean;
   jsonPath: string;
+  errorsAsWarnings: boolean;
   apiKey?: string;
 }
 

@@ -1,4 +1,4 @@
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 
 import { Context } from '../interface';
 

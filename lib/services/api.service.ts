@@ -9,7 +9,7 @@ export const createApiService = (argv: any) => {
   const { dev, apiKey, debug } = argv;
   const key = apiKey || process.env.OMNIBOARD_API_KEY;
   if (!key) {
-    logger.debug(`No API key provided, API tasks will be skipped`);
+    logger.debug(`No API key provided, API related tasks will be skipped`);
   } else {
     logger.debug(
       `Upload results to to Omniboard ${argv.dev ? '(DEV localhost:8080)' : ''}`

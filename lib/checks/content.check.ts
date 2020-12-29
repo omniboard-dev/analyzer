@@ -1,19 +1,20 @@
-import { ListrTaskWrapper } from 'listr';
+import { ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 import {
   CheckDefinition,
   Context,
   ProjectCheckMatch,
   ProjectCheckMatchDetails
 } from '../interface';
-import { formatTime, tick } from '../utils/time';
 import * as fs from '../services/fs.service';
 
 const DEFAULT_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
 const DEFAULT_EXCLUDE_PATTERN_FLAGS = 'i';
 
 export function contentCheckTaskFactory(definition: CheckDefinition) {
-  async function contentCheckTask(ctx: Context, task: ListrTaskWrapper) {
-    const start = new Date().getTime();
+  async function contentCheckTask(
+    ctx: Context,
+    task: ListrTaskWrapper<Context, ListrDefaultRenderer>
+  ) {
     const {
       name,
       type,
@@ -42,7 +43,6 @@ export function contentCheckTaskFactory(definition: CheckDefinition) {
       let match;
       while ((match = regexp.exec(content)) !== null) {
         matchesForFile.push(match);
-        await tick();
       }
       if (matchesForFile?.length) {
         matches.push({
@@ -56,7 +56,6 @@ export function contentCheckTaskFactory(definition: CheckDefinition) {
           )
         });
       }
-      await tick();
     }
     ctx.results.checks![name] = {
       name,
@@ -64,11 +63,6 @@ export function contentCheckTaskFactory(definition: CheckDefinition) {
       value: matches.length > 0,
       matches
     };
-    const duration = new Date().getTime() - start;
-    task.title = `${task.title}, matches: ${matches.length} (${formatTime(
-      duration
-    )})`;
-    await tick();
   }
   return contentCheckTask;
 }

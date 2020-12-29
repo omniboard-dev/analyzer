@@ -20,10 +20,11 @@
   "dependencies": {
     "@types/listr": "^0.14.2",
     "chalk": "^3.0.0",
+    "enquirer": "^2.3.6",
     "filesize": "^6.1.0",
     "global-agent": "^2.1.8",
     "got": "^11.5.1",
-    "listr": "^0.14.3",
+    "listr2": "^3.2.3",
     "yargs": "^15.1.0"
   },
   "devDependencies": {

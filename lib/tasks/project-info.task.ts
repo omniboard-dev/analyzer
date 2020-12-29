@@ -1,4 +1,4 @@
-import Listr, { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 
 import { Context } from '../interface';
 import { findFiles, readJson } from '../services/fs.service';
@@ -9,7 +9,7 @@ const PROJECT_INFO_TASK_PATTERN_FLAGS = 'i';
 export const projectInfoTask: ListrTask = {
   title: 'Resolve basic project info',
   task: (ctx, task) =>
-    new Listr(
+    task.newListr(
       [
         {
           title: 'Get project name',
@@ -55,6 +55,6 @@ export const projectInfoTask: ListrTask = {
           }
         }
       ],
-      {}
+      { rendererOptions: { collapse: true } }
     )
 };

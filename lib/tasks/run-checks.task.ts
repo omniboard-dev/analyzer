@@ -1,4 +1,4 @@
-import Listr, { ListrTask, ListrTaskWrapper } from 'listr';
+import { ListrTask, ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 
 import { CheckType, Context } from '../interface';
 import { sizeCheckTaskFactory } from '../checks/size.check';
@@ -9,6 +9,8 @@ export const runChecksTask: ListrTask = {
   skip: (ctx: Context) => {
     if (!ctx.definitions.checks || !ctx.definitions.checks?.length) {
       return `No checks found`;
+    } else {
+      return false;
     }
   },
   task: async (ctx: Context, task) => {
@@ -39,7 +41,7 @@ export const runChecksTask: ListrTask = {
         } else {
           return function unknownCheckTask(
             ctx: Context,
-            task: ListrTaskWrapper
+            task: ListrTaskWrapper<Context, ListrDefaultRenderer>
           ) {
             task.skip(
               `Implementation for a check with type "${definition.type}" not found`
@@ -49,6 +51,8 @@ export const runChecksTask: ListrTask = {
       })()
     }));
 
-    return new Listr(checkTasks);
+    return task.newListr(checkTasks, {
+      concurrent: true
+    });
   }
 };
