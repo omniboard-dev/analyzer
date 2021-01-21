@@ -1,10 +1,14 @@
 import { ListrTask } from 'listr2';
 
-import { Context } from '../interface';
-import { findFiles, readJson } from '../services/fs.service';
-
-const PROJECT_INFO_TASK_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
-const PROJECT_INFO_TASK_PATTERN_FLAGS = 'i';
+import { Context, ProjectType } from '../interface';
+import {
+  findProjectNamesMaven,
+  findProjectNamesNpm,
+  findProjectRepositoriesMaven,
+  findProjectRepositoriesNpm,
+  isMavenWorkspace,
+  isNpmWorkspace
+} from '../services/project.service';
 
 export const projectInfoTask: ListrTask = {
   title: 'Resolve basic project info',
@@ -13,39 +17,39 @@ export const projectInfoTask: ListrTask = {
       [
         {
           title: 'Get project name',
-          task: (ctx: Context, task) => {
-            const files = findFiles(
-              'package.json',
-              undefined,
-              PROJECT_INFO_TASK_EXCLUDE_PATTERN,
-              PROJECT_INFO_TASK_PATTERN_FLAGS
-            );
-            const names = files.map(f => readJson(f).name).filter(Boolean);
-
-            ctx.results.name = names[0];
-            ctx.results.info = {
-              name: names[0],
-              names
-            };
+          task: async (ctx: Context, task) => {
+            let names: string[] = [];
+            if (isNpmWorkspace()) {
+              names = findProjectNamesNpm();
+              ctx.results.name = names[0];
+              ctx.results.info = {
+                type: ProjectType.NPM,
+                name: names[0],
+                names
+              };
+            }
+            if (isMavenWorkspace()) {
+              names = await findProjectNamesMaven();
+              ctx.results.name = names[0];
+              ctx.results.info = {
+                type: ProjectType.MAVEN,
+                name: names[0],
+                names
+              };
+            }
           }
         },
         {
           title: 'Get project repository',
-          task: (ctx: Context, task) => {
-            const files = findFiles(
-              'package.json',
-              undefined,
-              PROJECT_INFO_TASK_EXCLUDE_PATTERN,
-              PROJECT_INFO_TASK_PATTERN_FLAGS
-            );
-            const repositories = Array.from(
-              new Set(
-                files
-                  .map(f => readJson(f)?.repository?.url)
-                  .filter(Boolean)
-                  .map(url => url.replace('git+', ''))
-              )
-            );
+          task: async (ctx: Context, task) => {
+            let repositories: string[] = [];
+
+            if (ctx.results.info?.type === ProjectType.NPM) {
+              repositories = findProjectRepositoriesNpm();
+            }
+            if (ctx.results.info?.type === ProjectType.MAVEN) {
+              repositories = await findProjectRepositoriesMaven();
+            }
 
             ctx.results.info = {
               ...ctx.results.info,

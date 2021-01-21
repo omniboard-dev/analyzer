@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import filesize from 'filesize';
+import * as xml2js from 'xml2js';
 
 const REGEXP_MATCH_NOTHING = /a^/;
 
@@ -42,6 +43,11 @@ export function findFiles(
 export function readJson(path: string) {
   const buffer = fs.readFileSync(path);
   return JSON.parse(buffer.toString());
+}
+
+export function readXml(path: string) {
+  const buffer = fs.readFileSync(path);
+  return xml2js.parseStringPromise(buffer);
 }
 
 export function writeJson(destinationPath: string, data: any) {

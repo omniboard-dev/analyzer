@@ -13,7 +13,6 @@ export interface Context {
   };
   results: {
     name?: string;
-    repository?: string;
     info?: ProjectInfo;
     checks?: {
       [key: string]: ProjectCheck;
@@ -25,6 +24,7 @@ export interface Context {
 export interface ProjectInfo {
   name: string;
   names: string[];
+  type?: ProjectType;
   repository?: string;
   repositories?: string[];
   [key: string]: any;
@@ -77,4 +77,9 @@ export interface CheckDefinition {
 export enum CheckType {
   CONTENT = 'content',
   SIZE = 'size'
+}
+
+export enum ProjectType {
+  NPM = 'npm',
+  MAVEN = 'MAVEN'
 }
