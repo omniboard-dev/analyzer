@@ -57,7 +57,8 @@ function findPackageJsonFiles() {
 function findPomXmlFiles() {
   return findFiles(
     'pom.xml',
-    undefined
+    '',
+    '.teamcity'
     // TODO what to exclude in java repo?
   );
 }
