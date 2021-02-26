@@ -3,6 +3,9 @@ import { ListrTask, ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 import { CheckType, Context } from '../interface';
 import { sizeCheckTaskFactory } from '../checks/size.check';
 import { contentCheckTaskFactory } from '../checks/content.check';
+import { resolveActiveFlags } from '../utils/regexp';
+
+const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 
 export const runChecksTask: ListrTask = {
   title: 'Run project checks',
@@ -22,7 +25,10 @@ export const runChecksTask: ListrTask = {
         } else if (definition.projectNamePattern) {
           const projectNameRegexp = new RegExp(
             definition.projectNamePattern,
-            definition.projectNamePatternFlags || 'i'
+            resolveActiveFlags(
+              definition.projectNamePatternFlags,
+              DEFAULT_PROJECT_NAME_PATTERN_FLAGS
+            )
           );
           if (!projectNameRegexp.test(ctx.results.name || '')) {
             return `Project name ${ctx.results.name} does not match provided pattern ${definition.projectNamePattern}`;

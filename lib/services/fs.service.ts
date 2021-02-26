@@ -2,8 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import filesize from 'filesize';
 import * as xml2js from 'xml2js';
+import { resolveActiveFlags } from '../utils/regexp';
 
 const REGEXP_MATCH_NOTHING = /a^/;
+const DEFAULT_INCLUDE_FILES_FLAG = 'i';
 
 export function findFiles(
   includePattern: string,
@@ -14,7 +16,10 @@ export function findFiles(
   const results = [];
   const stack = ['.'];
 
-  const includeRegexp = new RegExp(includePattern, includeFlags || 'i');
+  const includeRegexp = new RegExp(
+    includePattern,
+    resolveActiveFlags(includeFlags, DEFAULT_INCLUDE_FILES_FLAG)
+  );
   const excludeRegexp = excludePattern
     ? new RegExp(excludePattern, excludeFlags)
     : REGEXP_MATCH_NOTHING;
