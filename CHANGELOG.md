@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/omniboard-dev/analyzer/compare/v1.1.1...v1.2.0) (2021-02-26)
+
+
+### Features
+
+* **flags:** add option to unset default pattern flags with EMPTY token ([704f4c5](https://github.com/omniboard-dev/analyzer/commit/704f4c58ad98d8a1bff2344d02f23133416fb55b))
+
 ### [1.1.1](https://github.com/omniboard-dev/analyzer/compare/v1.1.0...v1.1.1) (2021-02-25)
 
 
