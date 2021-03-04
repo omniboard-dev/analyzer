@@ -2,6 +2,7 @@ import { ListrTask, ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 
 import { CheckType, Context } from '../interface';
 import { sizeCheckTaskFactory } from '../checks/size.check';
+import { xpathCheckTaskFactory } from '../checks/xpath.check';
 import { contentCheckTaskFactory } from '../checks/content.check';
 import { resolveActiveFlags } from '../utils/regexp';
 
@@ -17,45 +18,55 @@ export const runChecksTask: ListrTask = {
     }
   },
   task: async (ctx: Context, task) => {
-    const checkTasks: any = ctx.definitions.checks!.map(definition => ({
-      title: `Check "${definition.name}"`,
-      skip: async (ctx: Context): Promise<any> => {
-        if (definition.disabled) {
-          return 'Check disabled';
-        } else if (definition.projectNamePattern) {
-          const projectNameRegexp = new RegExp(
-            definition.projectNamePattern,
-            resolveActiveFlags(
-              definition.projectNamePatternFlags,
-              DEFAULT_PROJECT_NAME_PATTERN_FLAGS
-            )
-          );
-          if (!projectNameRegexp.test(ctx.results.name || '')) {
-            return `Project name ${ctx.results.name} does not match provided pattern ${definition.projectNamePattern}`;
+    const checkTasks: any = ctx.definitions
+      .checks!.filter(definition => definition.type !== CheckType.META)
+      .map(definition => ({
+        title: `[${definition.type.padEnd(7, ' ')}] "${definition.name}"`,
+        skip: async (ctx: Context): Promise<any> => {
+          if (definition.disabled) {
+            return `[${definition.type.padEnd(7, ' ')}] "${
+              definition.name
+            }": DISABLED`;
+          } else if (definition.projectNamePattern) {
+            const projectNameRegexp = new RegExp(
+              definition.projectNamePattern,
+              resolveActiveFlags(
+                definition.projectNamePatternFlags,
+                DEFAULT_PROJECT_NAME_PATTERN_FLAGS
+              )
+            );
+            if (!projectNameRegexp.test(ctx.results.name || '')) {
+              return `[${definition.type.padEnd(7, ' ')}] "${
+                definition.name
+              }": project name ${ctx.results.name} does not match pattern ${
+                definition.projectNamePattern
+              }`;
+            } else {
+              return false;
+            }
           } else {
             return false;
           }
-        } else {
-          return false;
-        }
-      },
-      task: (() => {
-        if (definition.type === CheckType.CONTENT) {
-          return contentCheckTaskFactory(definition);
-        } else if (definition.type === CheckType.SIZE) {
-          return sizeCheckTaskFactory(definition);
-        } else {
-          return function unknownCheckTask(
-            ctx: Context,
-            task: ListrTaskWrapper<Context, ListrDefaultRenderer>
-          ) {
-            task.skip(
-              `Implementation for a check with type "${definition.type}" not found`
-            );
-          };
-        }
-      })()
-    }));
+        },
+        task: (() => {
+          if (definition.type === CheckType.CONTENT) {
+            return contentCheckTaskFactory(definition);
+          } else if (definition.type === CheckType.XPATH) {
+            return xpathCheckTaskFactory(definition);
+          } else if (definition.type === CheckType.SIZE) {
+            return sizeCheckTaskFactory(definition);
+          } else {
+            return function unknownCheckTask(
+              ctx: Context,
+              task: ListrTaskWrapper<Context, ListrDefaultRenderer>
+            ) {
+              task.skip(
+                `Implementation for a with type "${definition.type}" not found`
+              );
+            };
+          }
+        })()
+      }));
 
     return task.newListr(checkTasks, {
       concurrent: true

@@ -76,7 +76,9 @@ export interface CheckDefinition {
 
 export enum CheckType {
   CONTENT = 'content',
-  SIZE = 'size'
+  XPATH = 'xpath',
+  SIZE = 'size',
+  META = 'meta'
 }
 
 export enum ProjectType {

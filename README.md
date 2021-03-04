@@ -14,18 +14,23 @@
 
 ### Run in projects
 
-Make sure that you have already set `OMNIBOARD_API_KEY` environment variable in the given environment
+Make sure you have already set `OMNIBOARD_API_KEY` environment variable in the given environment
 
-1. `npm i -D @omniboard/analyzer` in the project we want to analyze (dev dependency)
-2. run `npx omniboard` (or run `omniboard` as a npm script, eg `"postbuild": "omniboard""`)
+1. install it using `npm i -D @omniboard/analyzer` in the project we want to analyze (dev dependency)
+2. run it using `npx omniboard` (or run `omniboard` as a npm script, eg `"postbuild": "omniboard""`)
+
+or
+
+1. `npx @omniboard/analyzer` (in case it was not pre installed)
 
 ## Options
 
 Run `omniboard --help` for list of all supported commands and options (`omniboard <command> --help`, provides even more details)
 
-- `--help` - prints help
+- `--help` - print help
 - `--verbose` - print debug log statements
 - `--api-key` - pass in API key when not set as an environment variable
+- `--errors-as-warnings` - exit with success (0) even in case of errors and log them as warnings (useful for CI)
 
 ## How it works
 
@@ -37,11 +42,11 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 
 ## FAQ
 
-#### Is it possible to run @mniboard/analyzer behind organization proxy?
+#### Is it possible to run @omniboard/analyzer behind organization proxy?
 **Yes**
 
 The `@omniboard/analyzer` uses [global-agent](https://github.com/gajus/global-agent) library which will uses
-`HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables (case sensitive) and use them to make requests
+`HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables and use them to make requests
 to `https://api.omniboard.dev`
 
 #### Is this uploading my source code to the cloud?
@@ -52,4 +57,7 @@ and uploads results of these checks to the cloud service for further processing.
 The uploaded content is then just metadata describing the projects and results but NOT the projects themselves.
 
 In theory, a check which matches everything could be constructed but such result will 
-be rejected as it would be of unreasonable size...
+be rejected as the payload would be too large. The limits of how much data can be stored 
+per check and per all checks for a project can be customized in organization settings in the Omniboard.dev app.
+
+

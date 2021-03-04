@@ -1,4 +1,12 @@
-import { ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
+import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
+
+import {
+  DEFAULT_CHECK_EXECUTION_TIMEOUT,
+  DEFAULT_EXCLUDE_FILES_PATTERN,
+  DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS,
+  DEFAULT_INCLUDE_FILES_FLAG
+} from '../consts';
+import { resolveActiveFlags } from '../utils/regexp';
 import {
   CheckDefinition,
   Context,
@@ -6,12 +14,8 @@ import {
   ProjectCheckMatchDetails
 } from '../interface';
 import * as fs from '../services/fs.service';
-import { resolveActiveFlags } from '../utils/regexp';
 
-const DEFAULT_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
-const DEFAULT_EXCLUDE_PATTERN_FLAGS = 'i';
 const DEFAULT_CONTENT_PATTERN_FLAGS = 'ig';
-const DEFAULT_CHECK_EXECUTION_TIMEOUT = 10_000; // 10s
 
 export function contentCheckTaskFactory(definition: CheckDefinition) {
   async function contentCheckTask(
@@ -30,11 +34,11 @@ export function contentCheckTaskFactory(definition: CheckDefinition) {
     } = definition;
     const files = fs.findFiles(
       filesPattern,
-      filesPatternFlags,
-      filesExcludePattern || DEFAULT_EXCLUDE_PATTERN,
+      resolveActiveFlags(filesPatternFlags, DEFAULT_INCLUDE_FILES_FLAG),
+      filesExcludePattern || DEFAULT_EXCLUDE_FILES_PATTERN,
       resolveActiveFlags(
         filesExcludePatternFlags,
-        DEFAULT_EXCLUDE_PATTERN_FLAGS
+        DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS
       )
     );
 

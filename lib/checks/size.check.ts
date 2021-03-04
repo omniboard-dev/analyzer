@@ -7,28 +7,17 @@ import {
 } from '../interface';
 import * as fs from '../services/fs.service';
 
-const DEFAULT_EXCLUDE_PATTERN = 'node_modules';
-const DEFAULT_EXCLUDE_PATTERN_FLAGS = 'i';
+import { getCheckFiles } from './check.service';
 
 export function sizeCheckTaskFactory(definition: CheckDefinition) {
   async function contentCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
-    const {
-      name,
-      type,
-      filesPattern,
-      filesPatternFlags,
-      filesExcludePattern,
-      filesExcludePatternFlags
-    } = definition;
-    const files = fs.findFiles(
-      filesPattern,
-      filesPatternFlags,
-      filesExcludePattern || DEFAULT_EXCLUDE_PATTERN,
-      filesExcludePatternFlags || DEFAULT_EXCLUDE_PATTERN_FLAGS
-    );
+    const { name, type } = definition;
+
+    const files = getCheckFiles(definition);
+
     task.title = `${task.title}, found ${files.length} files`;
 
     const sizeDetails: ProjectCheckSizeDetails[] = [];

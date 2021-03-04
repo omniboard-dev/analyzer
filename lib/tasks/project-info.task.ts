@@ -17,7 +17,7 @@ export const projectInfoTask: ListrTask = {
       [
         {
           title: 'Get project name',
-          task: async (ctx: Context, task) => {
+          task: (ctx: Context, task) => {
             let names: string[] = [];
             if (isNpmWorkspace()) {
               names = findProjectNamesNpm();
@@ -29,7 +29,7 @@ export const projectInfoTask: ListrTask = {
               };
             }
             if (isMavenWorkspace()) {
-              names = await findProjectNamesMaven();
+              names = findProjectNamesMaven();
               ctx.results.name = names[0];
               ctx.results.info = {
                 type: ProjectType.MAVEN,
@@ -37,6 +37,7 @@ export const projectInfoTask: ListrTask = {
                 names
               };
             }
+            task.title = `${task.title}: ${ctx.results.name}`;
           }
         },
         {
@@ -48,7 +49,7 @@ export const projectInfoTask: ListrTask = {
               repositories = findProjectRepositoriesNpm();
             }
             if (ctx.results.info?.type === ProjectType.MAVEN) {
-              repositories = await findProjectRepositoriesMaven();
+              repositories = findProjectRepositoriesMaven();
             }
 
             ctx.results.info = {
@@ -56,9 +57,13 @@ export const projectInfoTask: ListrTask = {
               repository: repositories[0],
               repositories
             } as any;
+
+            if (ctx.results.info?.repository) {
+              task.title = `${task.title}: ${ctx.results.info?.repository}`;
+            }
           }
         }
       ],
-      { rendererOptions: { collapse: true } }
+      { rendererOptions: {} }
     )
 };

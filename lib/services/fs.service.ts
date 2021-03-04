@@ -1,11 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import filesize from 'filesize';
-import * as xml2js from 'xml2js';
-import { resolveActiveFlags } from '../utils/regexp';
+import { DOMParser } from 'xmldom';
 
 const REGEXP_MATCH_NOTHING = /a^/;
-const DEFAULT_INCLUDE_FILES_FLAG = 'i';
 
 export function findFiles(
   includePattern: string,
@@ -16,10 +14,7 @@ export function findFiles(
   const results = [];
   const stack = ['.'];
 
-  const includeRegexp = new RegExp(
-    includePattern,
-    resolveActiveFlags(includeFlags, DEFAULT_INCLUDE_FILES_FLAG)
-  );
+  const includeRegexp = new RegExp(includePattern, includeFlags);
   const excludeRegexp = excludePattern
     ? new RegExp(excludePattern, excludeFlags)
     : REGEXP_MATCH_NOTHING;
@@ -50,9 +45,11 @@ export function readJson(path: string) {
   return JSON.parse(buffer.toString());
 }
 
-export function readXml(path: string) {
+export function readXmlAsDom(path: string) {
   const buffer = fs.readFileSync(path);
-  return xml2js.parseStringPromise(buffer);
+  return new DOMParser().parseFromString(
+    buffer.toString().replace(/(\r)?\n/g, '')
+  );
 }
 
 export function writeJson(destinationPath: string, data: any) {

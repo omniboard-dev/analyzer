@@ -1,4 +1,5 @@
-import { findFiles, readJson, readXml } from './fs.service';
+import xpath from 'xpath';
+import { findFiles, readJson, readXmlAsDom } from './fs.service';
 
 const PROJECT_INFO_TASK_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
 const PROJECT_INFO_TASK_PATTERN_FLAGS = 'i';
@@ -17,9 +18,20 @@ export const findProjectNamesNpm = (): string[] => {
     .filter(Boolean);
 };
 
-export const findProjectNamesMaven = async (): Promise<string[]> => {
-  const poms = await Promise.all(findPomXmlFiles().map(f => readXml(f)));
-  return poms.map(pom => pom.project.artifactId[0]);
+export const findProjectNamesMaven = (): string[] => {
+  return findPomXmlFiles()
+    .map(f => readXmlAsDom(f))
+    .map(
+      document =>
+        xpath
+          .select(
+            'string(//*[local-name()="project"]/*[local-name()="artifactId"])',
+            document,
+            true
+          )
+          ?.toString() || ''
+    )
+    .filter(Boolean);
 };
 
 export const findProjectRepositoriesNpm = () => {
@@ -33,14 +45,20 @@ export const findProjectRepositoriesNpm = () => {
   );
 };
 
-export const findProjectRepositoriesMaven = async (): Promise<string[]> => {
-  const poms = await Promise.all(findPomXmlFiles().map(f => readXml(f)));
+export const findProjectRepositoriesMaven = (): string[] => {
   return Array.from(
     new Set(
-      poms
-        .map(pom => pom.project?.scm?.[0]?.url?.[0])
+      findPomXmlFiles()
+        .map(f => readXmlAsDom(f))
+        .flatMap(document =>
+          xpath.select(
+            'string(//*[local-name()="project"]/*[local-name()="scm"]/*[local-name()="url"])',
+            document,
+            true
+          )
+        )
         .filter(Boolean)
-        .map(url => sanitizeRepositoryUrl(url))
+        .map(url => sanitizeRepositoryUrl(url!.toString()))
     )
   );
 };
@@ -48,7 +66,7 @@ export const findProjectRepositoriesMaven = async (): Promise<string[]> => {
 function findPackageJsonFiles() {
   return findFiles(
     'package.json',
-    undefined,
+    'i',
     PROJECT_INFO_TASK_EXCLUDE_PATTERN,
     PROJECT_INFO_TASK_PATTERN_FLAGS
   );
@@ -57,9 +75,8 @@ function findPackageJsonFiles() {
 function findPomXmlFiles() {
   return findFiles(
     'pom.xml',
-    '',
-    '.teamcity'
-    // TODO what to exclude in java repo?
+    'i',
+    '.teamcity' // TODO what else to exclude in java repo?
   );
 }
 
