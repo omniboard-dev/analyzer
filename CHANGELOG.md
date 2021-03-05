@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/omniboard-dev/analyzer/compare/v1.2.1...v2.0.0) (2021-03-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **lib:** bump engines node version to >=12
+
+### Features
+
+* **lib:** use xpath xmldom instead of xml2js, refactor checks const / files resolution, add xpath check stub ([8ba09e3](https://github.com/omniboard-dev/analyzer/commit/8ba09e33b8fc728e8ee0f2270274385eeea4f727))
+* **lib:** xpath check implementation, check-pattern flag ([df6e9e7](https://github.com/omniboard-dev/analyzer/commit/df6e9e7061fac5ea5fd1e44bf2741a10ef6a603c))
+
+
+### Bug Fixes
+
+* **process:** force-exit process on finish (prevent waiting for check timeouts) ([bd182eb](https://github.com/omniboard-dev/analyzer/commit/bd182eb161fedbce64f7f2fc4f46dfa5f2d70df6))
+
 ### [1.2.1](https://github.com/omniboard-dev/analyzer/compare/v1.2.0...v1.2.1) (2021-03-03)
 
 
