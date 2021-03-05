@@ -24,6 +24,7 @@ export const runner = async (
     .then(res => {
       const duration = new Date().getTime() - start;
       logger.info(`Finished (${formatTime(duration)})`);
+      process.exit(0);
     })
     .catch(err => {
       const duration = new Date().getTime() - start;
