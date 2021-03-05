@@ -1,6 +1,11 @@
 import { ListrTask, ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 
-import { CheckType, Context } from '../interface';
+import {
+  CheckType,
+  ContentCheckDefinition,
+  Context,
+  XPathCheckDefinition
+} from '../interface';
 import { sizeCheckTaskFactory } from '../checks/size.check';
 import { xpathCheckTaskFactory } from '../checks/xpath.check';
 import { contentCheckTaskFactory } from '../checks/content.check';
@@ -19,7 +24,15 @@ export const runChecksTask: ListrTask = {
   },
   task: async (ctx: Context, task) => {
     const checkTasks: any = ctx.definitions
-      .checks!.filter(definition => definition.type !== CheckType.META)
+      .checks!.filter(definition => {
+        if (
+          ctx.options.checkPattern &&
+          !new RegExp(ctx.options.checkPattern, 'i').test(definition.name)
+        ) {
+          return false;
+        }
+        return definition.type !== CheckType.META;
+      })
       .map(definition => ({
         title: `[${definition.type.padEnd(7, ' ')}] "${definition.name}"`,
         skip: async (ctx: Context): Promise<any> => {
@@ -50,9 +63,11 @@ export const runChecksTask: ListrTask = {
         },
         task: (() => {
           if (definition.type === CheckType.CONTENT) {
-            return contentCheckTaskFactory(definition);
+            return contentCheckTaskFactory(
+              definition as ContentCheckDefinition
+            );
           } else if (definition.type === CheckType.XPATH) {
-            return xpathCheckTaskFactory(definition);
+            return xpathCheckTaskFactory(definition as XPathCheckDefinition);
           } else if (definition.type === CheckType.SIZE) {
             return sizeCheckTaskFactory(definition);
           } else {

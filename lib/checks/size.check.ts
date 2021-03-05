@@ -1,22 +1,23 @@
 import { ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 
 import {
-  CheckDefinition,
+  BaseCheckDefinition,
   Context,
   ProjectCheckSizeDetails
 } from '../interface';
 import * as fs from '../services/fs.service';
+import { DEFAULT_EXCLUDE_FILES_PATTERN_SIZE } from '../consts';
 
 import { getCheckFiles } from './check.service';
 
-export function sizeCheckTaskFactory(definition: CheckDefinition) {
+export function sizeCheckTaskFactory(definition: BaseCheckDefinition) {
   async function contentCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
     const { name, type } = definition;
 
-    const files = getCheckFiles(definition);
+    const files = getCheckFiles(definition, DEFAULT_EXCLUDE_FILES_PATTERN_SIZE);
 
     task.title = `${task.title}, found ${files.length} files`;
 

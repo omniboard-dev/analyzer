@@ -3,13 +3,14 @@ export interface Options {
   json: boolean;
   jsonPath: string;
   errorsAsWarnings: boolean;
+  checkPattern?: string;
   apiKey?: string;
 }
 
 export interface Context {
   options: Options;
   definitions: {
-    checks?: CheckDefinition[];
+    checks?: (ContentCheckDefinition | XPathCheckDefinition)[];
   };
   results: {
     name?: string;
@@ -60,7 +61,7 @@ export interface ProjectCheckMatchDetails {
   groups: { [key: string]: any };
 }
 
-export interface CheckDefinition {
+export interface BaseCheckDefinition {
   name: string;
   type: CheckType;
   disabled: boolean;
@@ -68,10 +69,18 @@ export interface CheckDefinition {
   filesPatternFlags?: string;
   filesExcludePattern?: string;
   filesExcludePatternFlags?: string;
-  contentPattern: string;
-  contentPatternFlags?: string;
   projectNamePattern?: string;
   projectNamePatternFlags?: string;
+}
+
+export interface ContentCheckDefinition extends BaseCheckDefinition {
+  contentPattern: string;
+  contentPatternFlags?: string;
+}
+
+export interface XPathCheckDefinition extends BaseCheckDefinition {
+  xpathExpression: string;
+  xpathNamespaces?: { prefix: string; uri: string }[];
 }
 
 export enum CheckType {

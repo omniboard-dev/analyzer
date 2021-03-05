@@ -1,45 +1,30 @@
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
 import {
-  DEFAULT_CHECK_EXECUTION_TIMEOUT,
-  DEFAULT_EXCLUDE_FILES_PATTERN,
-  DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS,
-  DEFAULT_INCLUDE_FILES_FLAG
-} from '../consts';
-import { resolveActiveFlags } from '../utils/regexp';
-import {
-  CheckDefinition,
+  ContentCheckDefinition,
   Context,
   ProjectCheckMatch,
   ProjectCheckMatchDetails
 } from '../interface';
+import {
+  DEFAULT_CHECK_EXECUTION_TIMEOUT,
+  DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
+} from '../consts';
+import { resolveActiveFlags } from '../utils/regexp';
+import { getCheckFiles } from './check.service';
 import * as fs from '../services/fs.service';
 
 const DEFAULT_CONTENT_PATTERN_FLAGS = 'ig';
 
-export function contentCheckTaskFactory(definition: CheckDefinition) {
+export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
   async function contentCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
-    const {
-      name,
-      type,
-      filesPattern,
-      filesPatternFlags,
-      filesExcludePattern,
-      filesExcludePatternFlags,
-      contentPattern,
-      contentPatternFlags
-    } = definition;
-    const files = fs.findFiles(
-      filesPattern,
-      resolveActiveFlags(filesPatternFlags, DEFAULT_INCLUDE_FILES_FLAG),
-      filesExcludePattern || DEFAULT_EXCLUDE_FILES_PATTERN,
-      resolveActiveFlags(
-        filesExcludePatternFlags,
-        DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS
-      )
+    const { name, type, contentPattern, contentPatternFlags } = definition;
+    const files = getCheckFiles(
+      definition,
+      DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
     );
 
     task.title = `${task.title}, found ${files.length} files`;

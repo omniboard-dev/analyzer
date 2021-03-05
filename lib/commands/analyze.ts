@@ -29,6 +29,11 @@ export const builder = (yargs: Argv) =>
       type: 'string',
       default: './dist/omniboard.json',
       description: 'Location of local json file'
+    })
+    .option('check-pattern', {
+      alias: 'cp',
+      type: 'string',
+      description: 'Only run checks matching provided pattern'
     });
 
 export const handler = async (argv: any) =>
