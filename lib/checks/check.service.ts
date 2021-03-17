@@ -6,6 +6,24 @@ import { BaseCheckDefinition } from '../interface';
 import { resolveActiveFlags } from '../utils/regexp';
 import * as fs from '../services/fs.service';
 
+export enum CheckResultSymbol {
+  FULFILLED = '✔️',
+  UNFULFILLED = '✖️',
+  UNCHECKED = '➖',
+  SKIPPED = '➖'
+}
+
+export function resolveCheckTaskFulfilledTitle(
+  { title }: { title: string },
+  matches: any[]
+) {
+  return `${
+    matches.length > 0
+      ? CheckResultSymbol.FULFILLED
+      : CheckResultSymbol.UNFULFILLED
+  } ${title}${matches.length > 0 ? `, found matches: ${matches.length}` : ''}`;
+}
+
 export function getCheckFiles(
   definition: BaseCheckDefinition,
   defaultExcludeFilesPattern: string

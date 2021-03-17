@@ -10,6 +10,7 @@ import { sizeCheckTaskFactory } from '../checks/size.check';
 import { xpathCheckTaskFactory } from '../checks/xpath.check';
 import { contentCheckTaskFactory } from '../checks/content.check';
 import { resolveActiveFlags } from '../utils/regexp';
+import { CheckResultSymbol } from '../checks/check.service';
 
 const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 
@@ -37,9 +38,10 @@ export const runChecksTask: ListrTask = {
         title: `[${definition.type.padEnd(7, ' ')}] "${definition.name}"`,
         skip: async (ctx: Context): Promise<any> => {
           if (definition.disabled) {
-            return `[${definition.type.padEnd(7, ' ')}] "${
-              definition.name
-            }": DISABLED`;
+            return `${CheckResultSymbol.SKIPPED} [${definition.type.padEnd(
+              7,
+              ' '
+            )}] "${definition.name}": DISABLED`;
           } else if (definition.projectNamePattern) {
             const projectNameRegexp = new RegExp(
               definition.projectNamePattern,
@@ -49,11 +51,12 @@ export const runChecksTask: ListrTask = {
               )
             );
             if (!projectNameRegexp.test(ctx.results.name || '')) {
-              return `[${definition.type.padEnd(7, ' ')}] "${
-                definition.name
-              }": project name ${ctx.results.name} does not match pattern ${
-                definition.projectNamePattern
-              }`;
+              return `${CheckResultSymbol.SKIPPED} [${definition.type.padEnd(
+                7,
+                ' '
+              )}] "${definition.name}": project ${
+                ctx.results.name
+              } doesn't match ${definition.projectNamePattern}`;
             } else {
               return false;
             }

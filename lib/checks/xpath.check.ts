@@ -8,7 +8,11 @@ import {
 } from '../consts';
 import { XPathCheckDefinition, Context, ProjectCheckMatch } from '../interface';
 
-import { getCheckFiles } from './check.service';
+import {
+  CheckResultSymbol,
+  getCheckFiles,
+  resolveCheckTaskFulfilledTitle
+} from './check.service';
 
 export function xpathCheckTaskFactory(definition: XPathCheckDefinition) {
   async function xpathCheckTask(
@@ -29,6 +33,7 @@ export function xpathCheckTaskFactory(definition: XPathCheckDefinition) {
         type,
         value: false
       };
+      task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
       return;
     }
 
@@ -75,6 +80,7 @@ export function xpathCheckTaskFactory(definition: XPathCheckDefinition) {
             value: matches.length > 0,
             matches
           };
+          task.title = resolveCheckTaskFulfilledTitle(task, matches);
           resolve();
         }
       }

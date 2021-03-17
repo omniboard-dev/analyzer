@@ -11,8 +11,13 @@ import {
   DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
 } from '../consts';
 import { resolveActiveFlags } from '../utils/regexp';
-import { getCheckFiles } from './check.service';
 import * as fs from '../services/fs.service';
+
+import {
+  CheckResultSymbol,
+  getCheckFiles,
+  resolveCheckTaskFulfilledTitle
+} from './check.service';
 
 const DEFAULT_CONTENT_PATTERN_FLAGS = 'ig';
 
@@ -35,6 +40,7 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
         type,
         value: false
       };
+      task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
       return;
     }
 
@@ -90,6 +96,7 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
             value: matches.length > 0,
             matches
           };
+          task.title = resolveCheckTaskFulfilledTitle(task, matches);
           resolve();
         }
       }

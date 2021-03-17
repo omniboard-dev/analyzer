@@ -8,7 +8,7 @@ import {
 import * as fs from '../services/fs.service';
 import { DEFAULT_EXCLUDE_FILES_PATTERN_SIZE } from '../consts';
 
-import { getCheckFiles } from './check.service';
+import { getCheckFiles, resolveCheckTaskFulfilledTitle } from './check.service';
 
 export function sizeCheckTaskFactory(definition: BaseCheckDefinition) {
   async function contentCheckTask(
@@ -43,6 +43,7 @@ export function sizeCheckTaskFactory(definition: BaseCheckDefinition) {
         details: sizeDetails
       }
     };
+    task.title = task.title = resolveCheckTaskFulfilledTitle(task, files);
   }
   return contentCheckTask;
 }
