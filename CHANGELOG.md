@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://github.com/omniboard-dev/analyzer/compare/v2.1.0...v2.1.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* **xpath:** only store xpath resutls with actual value, hide xmldom parse warnings ([19f8367](https://github.com/omniboard-dev/analyzer/commit/19f836725b250997a16ea66448fab5f319b8abda))
+
 ## [2.1.0](https://github.com/omniboard-dev/analyzer/compare/v2.0.0...v2.1.0) (2021-03-17)
 
 
