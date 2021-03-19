@@ -81,6 +81,7 @@ export interface ContentCheckDefinition extends BaseCheckDefinition {
 export interface XPathCheckDefinition extends BaseCheckDefinition {
   xpathExpression: string;
   xpathNamespaces?: { prefix: string; uri: string }[];
+  xpathSanitizeAngularTemplate?: boolean;
 }
 
 export enum CheckType {

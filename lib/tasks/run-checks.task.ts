@@ -70,7 +70,10 @@ export const runChecksTask: ListrTask = {
               definition as ContentCheckDefinition
             );
           } else if (definition.type === CheckType.XPATH) {
-            return xpathCheckTaskFactory(definition as XPathCheckDefinition);
+            return xpathCheckTaskFactory(
+              definition as XPathCheckDefinition,
+              ctx
+            );
           } else if (definition.type === CheckType.SIZE) {
             return sizeCheckTaskFactory(definition);
           } else {
