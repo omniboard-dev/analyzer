@@ -47,7 +47,16 @@ export function readJson(path: string) {
 
 export function readXmlAsDom(path: string) {
   const buffer = fs.readFileSync(path);
-  return new DOMParser().parseFromString(buffer.toString());
+  return new DOMParser({
+    locator: {},
+    errorHandler: {
+      warning() {},
+      error() {},
+      fatalError(error) {
+        console.error(error);
+      }
+    }
+  }).parseFromString(buffer.toString());
 }
 
 export function writeJson(destinationPath: string, data: any) {
