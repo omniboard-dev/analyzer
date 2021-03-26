@@ -14,6 +14,8 @@ export const runner = async (
   logger.info('Start');
   const context: Context = {
     options,
+    control: { skipEverySubsequentTask: false },
+    settings: {},
     results: { checks: {} },
     definitions: {}
   };

@@ -17,6 +17,9 @@ const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 export const runChecksTask: ListrTask = {
   title: 'Run project checks',
   skip: (ctx: Context) => {
+    if (ctx.control.skipEverySubsequentTask) {
+      return true;
+    }
     if (!ctx.definitions.checks || !ctx.definitions.checks?.length) {
       return `No checks found`;
     } else {

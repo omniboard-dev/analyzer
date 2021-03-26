@@ -3,12 +3,9 @@ import { ListrTask } from 'listr2';
 import { Context } from '../interface';
 import * as api from '../services/api.service';
 
-export const retrieveChecksTask: ListrTask = {
-  title: 'Retrieve project checks',
+export const retrieveSettingsTask: ListrTask = {
+  title: 'Retrieve settings',
   skip: (ctx: Context) => {
-    if (ctx.control.skipEverySubsequentTask) {
-      return true;
-    }
     if (!process.env.OMNIBOARD_API_KEY && !ctx.options.apiKey) {
       return `Please provide --api-key argument or OMNIBOARD_API_KEY env variable`;
     } else {
@@ -16,9 +13,6 @@ export const retrieveChecksTask: ListrTask = {
     }
   },
   task: async (ctx: Context, task) => {
-    const checks = await api.getChecks();
-    ctx.definitions.checks = checks;
-    task.title = `${task.title} successful, retrieved ${checks?.length ??
-      0} checks`;
+    ctx.settings = await api.getOrganizationSettings();
   }
 };

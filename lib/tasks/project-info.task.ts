@@ -38,10 +38,32 @@ export const projectInfoTask: ListrTask = {
               };
             }
             task.title = `${task.title}: ${ctx.results.name}`;
+
+            const {
+              projectsBlacklistPattern,
+              projectsBlacklistExplicit
+            } = ctx.settings;
+            if (
+              projectsBlacklistPattern &&
+              new RegExp(projectsBlacklistPattern, 'i').test(names[0])
+            ) {
+              task.title = `${task.title} - project name matched by blacklist pattern`;
+              ctx.control.skipEverySubsequentTask = true;
+            }
+            if (
+              projectsBlacklistExplicit &&
+              projectsBlacklistExplicit.some(
+                projectName => projectName === names[0]
+              )
+            ) {
+              task.title = `${task.title} - project name was explicitly blacklisted`;
+              ctx.control.skipEverySubsequentTask = true;
+            }
           }
         },
         {
           title: 'Get project repository',
+          skip: (ctx: Context) => ctx.control.skipEverySubsequentTask,
           task: async (ctx: Context, task) => {
             let repositories: string[] = [];
 

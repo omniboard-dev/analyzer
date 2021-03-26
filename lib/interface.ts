@@ -9,6 +9,16 @@ export interface Options {
 
 export interface Context {
   options: Options;
+  control: {
+    skipEverySubsequentTask: boolean;
+  };
+  settings: {
+    projectsMaxLimit?: number;
+    checkResultSizeLimit?: number;
+    totalCheckResultSizeLimit?: number;
+    projectsBlacklistPattern?: string;
+    projectsBlacklistExplicit?: string[];
+  };
   definitions: {
     checks?: (ContentCheckDefinition | XPathCheckDefinition)[];
   };
