@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/omniboard-dev/analyzer/compare/v2.2.0...v2.3.0) (2021-03-26)
+
+
+### Features
+
+* **process:** skip execution for projects with blacklisted names ([9da9fe5](https://github.com/omniboard-dev/analyzer/commit/9da9fe5b9221f87a5ef041ae383de719c31e0886))
+
 ## [2.2.0](https://github.com/omniboard-dev/analyzer/compare/v2.1.1...v2.2.0) (2021-03-19)
 
 
