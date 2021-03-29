@@ -3,24 +3,26 @@ import { Argv } from 'yargs';
 import { runner } from '../utils/process';
 import { createLogger } from '../services/logger.service';
 import { runChecksTask } from '../tasks/run-checks.task';
-import { projectInfoTask } from '../tasks/project-info.task';
-import { retrieveChecksTask } from '../tasks/retrieve-checks.task';
-import { saveProjectApiTask } from '../tasks/save-project-api.task';
 import { saveProjectJsonTask } from '../tasks/save-project-json.task';
-import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
 import { prepareProjectDataTask } from '../tasks/prepare-project-data.task';
+import { printProjectCliOutputTask } from '../tasks/print-project-cli-output.task';
 
-const logger = createLogger('ANALYZE');
+const logger = createLogger('TEST CHECK');
 
-export const command = 'analyze';
+export const command = 'test-check';
 
-export const aliases = ['$0', 'a'];
+export const aliases = ['tch'];
 
-export const describe =
-  'Analyze project and upload results to Omniboard.dev (and generate local json, optional)';
+export const describe = 'Test check definition provided as a CLI argument';
 
 export const builder = (yargs: Argv) =>
   yargs
+    .option('check-definition', {
+      alias: 'cd',
+      type: 'string',
+      description:
+        'Check definition as a JSON (click the "< >" (code) icon on a check item in Omniboard.dev)'
+    })
     .option('json', {
       type: 'boolean',
       default: false,
@@ -30,23 +32,15 @@ export const builder = (yargs: Argv) =>
       type: 'string',
       default: './dist/omniboard.json',
       description: 'Location of local json file'
-    })
-    .option('check-pattern', {
-      alias: 'cp',
-      type: 'string',
-      description: 'Only run checks matching provided pattern'
     });
 
 export const handler = async (argv: any) =>
   runner(
     [
-      retrieveSettingsTask,
-      projectInfoTask,
-      retrieveChecksTask,
       runChecksTask,
       prepareProjectDataTask,
       saveProjectJsonTask,
-      saveProjectApiTask
+      printProjectCliOutputTask
     ],
     argv,
     logger

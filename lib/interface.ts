@@ -4,6 +4,7 @@ export interface Options {
   jsonPath: string;
   errorsAsWarnings: boolean;
   checkPattern?: string;
+  checkDefinition?: string;
   apiKey?: string;
 }
 

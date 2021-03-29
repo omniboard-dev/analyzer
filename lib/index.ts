@@ -16,6 +16,7 @@ import 'global-agent/bootstrap';
 import yargs, { Argv } from 'yargs';
 
 import * as analyzeCommand from './commands/analyze';
+import * as testCheckCommand from './commands/test-check';
 import * as testConnectionCommand from './commands/test-connection';
 import { apiMiddleware } from './middlewares/api.middleware';
 import { loggerMiddleware } from './middlewares/logger.middleware';
@@ -26,6 +27,7 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
   .middleware(apiMiddleware)
   .demandCommand(1, 'Please provide at least one of the supported commands...')
   .command(analyzeCommand)
+  .command(testCheckCommand)
   .command(testConnectionCommand)
   .option('verbose', {
     type: 'boolean',

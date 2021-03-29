@@ -20,15 +20,25 @@ export const runChecksTask: ListrTask = {
     if (ctx.control.skipEverySubsequentTask) {
       return true;
     }
-    if (!ctx.definitions.checks || !ctx.definitions.checks?.length) {
+    if (
+      (!ctx.definitions.checks || !ctx.definitions.checks?.length) &&
+      !ctx.options.checkDefinition
+    ) {
       return `No checks found`;
     } else {
       return false;
     }
   },
   task: async (ctx: Context, task) => {
-    const checkTasks: any = ctx.definitions
-      .checks!.filter(definition => {
+    const checksDefinitionsFromApi = ctx.definitions?.checks ?? [];
+    const checksDefinitionsFromCli = ctx.options?.checkDefinition
+      ? [JSON.parse(ctx.options.checkDefinition)]
+      : [];
+    const checkTasks: any = (checksDefinitionsFromCli.length
+      ? checksDefinitionsFromCli
+      : checksDefinitionsFromApi
+    )
+      .filter(definition => {
         if (
           ctx.options.checkPattern &&
           !new RegExp(ctx.options.checkPattern, 'i').test(definition.name)
