@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/omniboard-dev/analyzer/compare/v2.3.0...v2.4.0) (2021-03-29)
+
+
+### Features
+
+* **test-check:** add test-check command to run check definition provided as CLI argument ([64339c9](https://github.com/omniboard-dev/analyzer/commit/64339c94b9fbb10ac2a184b669424ee1fa47e18a))
+
 ## [2.3.0](https://github.com/omniboard-dev/analyzer/compare/v2.2.0...v2.3.0) (2021-03-26)
 
 
