@@ -14,19 +14,20 @@ export const isNpmWorkspace = (): boolean => {
 
 export const findProjectNamesNpm = (): string[] => {
   return findPackageJsonFiles()
-    .map(f => readJson(f).name)
+    .map(f => readJson(f)?.name)
     .filter(Boolean);
 };
 
 export const findProjectNamesMaven = (): string[] => {
   return findPomXmlFiles()
     .map(f => readXmlAsDom(f))
+    .filter(Boolean)
     .map(
       document =>
         xpath
           .select(
             'string(//*[local-name()="project"]/*[local-name()="artifactId"])',
-            document,
+            document!,
             true
           )
           ?.toString() || ''
@@ -50,10 +51,11 @@ export const findProjectRepositoriesMaven = (): string[] => {
     new Set(
       findPomXmlFiles()
         .map(f => readXmlAsDom(f))
+        .filter(Boolean)
         .flatMap(document =>
           xpath.select(
             'string(//*[local-name()="project"]/*[local-name()="scm"]/*[local-name()="url"])',
-            document,
+            document!,
             true
           )
         )

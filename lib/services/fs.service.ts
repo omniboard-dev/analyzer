@@ -41,37 +41,45 @@ export function findFiles(
 }
 
 export function readJson(path: string) {
-  const buffer = fs.readFileSync(path);
-  return JSON.parse(buffer.toString());
+  try {
+    const buffer = fs.readFileSync(path);
+    return JSON.parse(buffer.toString());
+  } catch (err) {
+    return undefined;
+  }
 }
 
 export function readXmlAsDom(
   path: string,
   options: { xpathSanitizeAngularTemplate?: boolean; verbose?: boolean } = {}
 ) {
-  const buffer = fs.readFileSync(path);
-  const content =
-    (options.xpathSanitizeAngularTemplate
-      ? buffer?.toString()?.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
-      : buffer?.toString()) ?? '';
-  return new DOMParser({
-    locator: {},
-    errorHandler: {
-      warning(warning) {
-        if (options.verbose) {
-          console.warn(warning);
-        }
-      },
-      error(error) {
-        if (options.verbose) {
+  try {
+    const buffer = fs.readFileSync(path);
+    const content =
+      (options.xpathSanitizeAngularTemplate
+        ? buffer?.toString()?.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
+        : buffer?.toString()) ?? '';
+    return new DOMParser({
+      locator: {},
+      errorHandler: {
+        warning(warning) {
+          if (options.verbose) {
+            console.warn(warning);
+          }
+        },
+        error(error) {
+          if (options.verbose) {
+            console.error(error);
+          }
+        },
+        fatalError(error) {
           console.error(error);
         }
-      },
-      fatalError(error) {
-        console.error(error);
       }
-    }
-  }).parseFromString(content);
+    }).parseFromString(content);
+  } catch (err) {
+    return undefined;
+  }
 }
 
 export function writeJson(destinationPath: string, data: any) {

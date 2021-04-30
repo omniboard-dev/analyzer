@@ -37,7 +37,13 @@ export const projectInfoTask: ListrTask = {
                 names
               };
             }
-            task.title = `${task.title}: ${ctx.results.name}`;
+
+            if (!names.length) {
+              task.title = `${task.title}: no project found`;
+              ctx.control.skipEverySubsequentTask = true;
+            } else {
+              task.title = `${task.title}: ${ctx.results.name} [${ctx.results?.info?.type}]`;
+            }
 
             const {
               projectsBlacklistPattern,
