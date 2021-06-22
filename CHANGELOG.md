@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/omniboard-dev/analyzer/compare/v2.4.2...v2.5.0) (2021-06-22)
+
+
+### Features
+
+* **docs:** add getting started video and omniboard command options ([a7e2a9a](https://github.com/omniboard-dev/analyzer/commit/a7e2a9ae7e6d1df1fc003203950a95c65dce1396))
+
 ### [2.4.2](https://github.com/omniboard-dev/analyzer/compare/v2.4.1...v2.4.2) (2021-04-30)
 
 
