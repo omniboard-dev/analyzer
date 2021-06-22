@@ -2,7 +2,13 @@
 
 # @omniboard/analyzer
 
-## Getting started
+
+## Getting started with Omniboard in less than 5 minutes (video)
+
+<a href="https://app.omniboard.dev/assets/videos/omniboard-getting-started.mp4" target="_blank">
+    <img src="https://app.omniboard.dev/assets/videos/omniboard-getting-started.png" height="300" />
+</a>
+
 
 ### Create account, get API key and define checks
 
@@ -11,6 +17,7 @@
 3. Set API key as an `OMNIBOARD_API_KEY` environment variable (or pass it in using `--api-key` flag when running `omniboard` command, never commit your API key to the version control system)
 4. (optional) test your API key using `npx omniboard test-connection --api-key <your-api-key>` (same as `omniboard tc --ak <your-api-key>`)
 5. Define checks in the [Omniboard.dev](https://app.omniboard.dev/app/checks) app
+
 
 ### Run in projects
 
@@ -21,7 +28,11 @@ Make sure you have already set `OMNIBOARD_API_KEY` environment variable in the g
 
 or
 
-1. `npx @omniboard/analyzer` (in case it was not pre installed)
+* `npx @omniboard/analyzer` (in case it was not pre installed)
+
+or
+
+* `npm i -g @omniboard/analyzer` - install it globally to be able to run `omniboard` in any path without waiting for npx install
 
 ## Options
 
@@ -31,6 +42,10 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 - `--verbose` - print debug log statements
 - `--api-key` - pass in API key when not set as an environment variable
 - `--errors-as-warnings` - exit with success (0) even in case of errors and log them as warnings (useful for CI)
+- `--check-pattern` - only run checks matching provided pattern
+- `--json` - store data in local json file
+- `--json-path` - location of local json file
+
 
 ## How it works
 
