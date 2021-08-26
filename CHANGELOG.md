@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/omniboard-dev/analyzer/compare/v2.5.0...v2.6.0) (2021-08-26)
+
+
+### Features
+
+* **checks:** add files check type support ([f883c51](https://github.com/omniboard-dev/analyzer/commit/f883c51affd143a517fd1ffb1b7073b526d2000b))
+
 ## [2.5.0](https://github.com/omniboard-dev/analyzer/compare/v2.4.2...v2.5.0) (2021-06-22)
 
 
