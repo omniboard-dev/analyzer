@@ -61,18 +61,29 @@ export function xpathCheckTaskFactory(
         const xpathSelect = xpath.useNamespaces(namespaces);
 
         const result: any = xpathSelect(definition.xpathExpression, document);
+        const resultMatches: any[] = [];
 
         if (typeof result === 'object' && Array.from(result as any[])?.length) {
-          const resultMatches = Array.from(result as any[])
-            .filter(node => !!node?.nodeValue?.toString()?.trim())
-            .map(node => ({
-              match: node.nodeName,
-              lineNumber: node?.lineNumber,
-              columnNumber: node?.columnNumber,
-              groups: {
-                value: node?.nodeValue?.toString()?.trim()
-              }
-            }));
+          for (const node of Array.from(result as any[])) {
+            const value =
+              node?.nodeValue?.toString()?.trim() ||
+              node?.textContent?.toString()?.trim();
+            if (!!value) {
+              const property =
+                node.nodeName === '#text'
+                  ? node?.parentNode?.nodeName ?? node.nodeName
+                  : node.nodeName;
+              resultMatches.push({
+                match: property,
+                lineNumber: node?.lineNumber,
+                columnNumber: node?.columnNumber,
+                groups: {
+                  [property]: value
+                }
+              });
+            }
+          }
+
           if (resultMatches.length) {
             matches.push({
               file,
