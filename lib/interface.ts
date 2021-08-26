@@ -99,7 +99,8 @@ export enum CheckType {
   CONTENT = 'content',
   XPATH = 'xpath',
   SIZE = 'size',
-  META = 'meta'
+  META = 'meta',
+  FILE = 'file'
 }
 
 export enum ProjectType {

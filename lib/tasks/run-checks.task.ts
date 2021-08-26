@@ -11,6 +11,7 @@ import { xpathCheckTaskFactory } from '../checks/xpath.check';
 import { contentCheckTaskFactory } from '../checks/content.check';
 import { resolveActiveFlags } from '../utils/regexp';
 import { CheckResultSymbol } from '../checks/check.service';
+import { fileCheckTaskFactory } from '../checks/file.check';
 
 const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 
@@ -89,13 +90,15 @@ export const runChecksTask: ListrTask = {
             );
           } else if (definition.type === CheckType.SIZE) {
             return sizeCheckTaskFactory(definition);
+          } else if (definition.type === CheckType.FILE) {
+            return fileCheckTaskFactory(definition);
           } else {
             return function unknownCheckTask(
               ctx: Context,
               task: ListrTaskWrapper<Context, ListrDefaultRenderer>
             ) {
               task.skip(
-                `Implementation for a with type "${definition.type}" not found`
+                `Implementation for a check with type "${definition.type}" not found`
               );
             };
           }
