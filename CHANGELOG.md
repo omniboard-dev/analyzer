@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.1](https://github.com/omniboard-dev/analyzer/compare/v2.6.0...v2.6.1) (2021-08-26)
+
+
+### Bug Fixes
+
+* **checks:** xpath check robustness ([3ef8654](https://github.com/omniboard-dev/analyzer/commit/3ef8654bfceb018f6d9f9a36411c9496a4b6a393))
+
 ## [2.6.0](https://github.com/omniboard-dev/analyzer/compare/v2.5.0...v2.6.0) (2021-08-26)
 
 
