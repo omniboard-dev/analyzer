@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://github.com/omniboard-dev/analyzer/compare/v2.6.1...v2.7.0) (2021-08-27)
+
+
+### Features
+
+* **checks:** xpath match path resolution improvements ([6b736c9](https://github.com/omniboard-dev/analyzer/commit/6b736c9841caf8077d0e40613ea20fb152238ac9))
+* **workspace:** upgrade dependencies ([ddb6240](https://github.com/omniboard-dev/analyzer/commit/ddb6240261ba484b11a87c6d67349ccbe1719dce))
+
 ### [2.6.1](https://github.com/omniboard-dev/analyzer/compare/v2.6.0...v2.6.1) (2021-08-26)
 
 
