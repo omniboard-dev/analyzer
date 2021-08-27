@@ -44,7 +44,7 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
       return;
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       setTimeout(
         () => reject(`Check "${name}" timeout`),
         DEFAULT_CHECK_EXECUTION_TIMEOUT
