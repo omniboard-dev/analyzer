@@ -4,7 +4,7 @@ import {
   CheckType,
   ContentCheckDefinition,
   Context,
-  XPathCheckDefinition
+  XPathCheckDefinition,
 } from '../interface';
 import { sizeCheckTaskFactory } from '../checks/size.check';
 import { xpathCheckTaskFactory } from '../checks/xpath.check';
@@ -12,6 +12,7 @@ import { contentCheckTaskFactory } from '../checks/content.check';
 import { resolveActiveFlags } from '../utils/regexp';
 import { CheckResultSymbol } from '../checks/check.service';
 import { fileCheckTaskFactory } from '../checks/file.check';
+import { JSONCheckTaskFactory } from '../checks/json.check';
 
 const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 
@@ -35,11 +36,12 @@ export const runChecksTask: ListrTask = {
     const checksDefinitionsFromCli = ctx.options?.checkDefinition
       ? [JSON.parse(ctx.options.checkDefinition)]
       : [];
-    const checkTasks: any = (checksDefinitionsFromCli.length
-      ? checksDefinitionsFromCli
-      : checksDefinitionsFromApi
+    const checkTasks: any = (
+      checksDefinitionsFromCli.length
+        ? checksDefinitionsFromCli
+        : checksDefinitionsFromApi
     )
-      .filter(definition => {
+      .filter((definition) => {
         if (
           ctx.options.checkPattern &&
           !new RegExp(ctx.options.checkPattern, 'i').test(definition.name)
@@ -48,7 +50,7 @@ export const runChecksTask: ListrTask = {
         }
         return definition.type !== CheckType.META;
       })
-      .map(definition => ({
+      .map((definition) => ({
         title: `[${definition.type.padEnd(7, ' ')}] "${definition.name}"`,
         skip: async (ctx: Context): Promise<any> => {
           if (definition.disabled) {
@@ -92,6 +94,8 @@ export const runChecksTask: ListrTask = {
             return sizeCheckTaskFactory(definition);
           } else if (definition.type === CheckType.FILE) {
             return fileCheckTaskFactory(definition);
+          } else if (definition.type === CheckType.JSON) {
+            return JSONCheckTaskFactory(definition);
           } else {
             return function unknownCheckTask(
               ctx: Context,
@@ -102,11 +106,11 @@ export const runChecksTask: ListrTask = {
               );
             };
           }
-        })()
+        })(),
       }));
 
     return task.newListr(checkTasks, {
-      concurrent: true
+      concurrent: true,
     });
-  }
+  },
 };
