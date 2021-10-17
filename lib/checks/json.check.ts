@@ -9,7 +9,11 @@ import {
   ProjectCheckMatchDetails,
 } from '../interface';
 import * as fs from '../services/fs.service';
-import { CheckResultSymbol, getCheckFiles } from './check.service';
+import {
+  CheckResultSymbol,
+  getCheckFiles,
+  resolveCheckTaskFulfilledTitle,
+} from './check.service';
 
 export function JSONCheckTaskFactory(definition: JSONCheckDefinition) {
   async function JSONCheckTask(
@@ -54,17 +58,17 @@ export function JSONCheckTaskFactory(definition: JSONCheckDefinition) {
           }
         }
 
-        let matchDetails: ProjectCheckMatchDetails[];
+        let matches: ProjectCheckMatchDetails[];
 
         // We didn't found the leaf attribute
         if (depth !== propertyPathArr.length) {
-          matchDetails = [];
+          matches = [];
         } else {
           // Value is defined
           if (value || value === '') {
             // Content in the file is equal to the value defined
             if (content === value) {
-              matchDetails = [
+              matches = [
                 {
                   match: propertyPath,
                   groups: {
@@ -74,11 +78,11 @@ export function JSONCheckTaskFactory(definition: JSONCheckDefinition) {
               ];
             } else {
               // Content in the file is NOT equal to the value defined
-              matchDetails = [];
+              matches = [];
             }
           } else {
             // Value was not defined -> We retrieve the content
-            matchDetails = [
+            matches = [
               {
                 match: propertyPath,
                 groups: {
@@ -92,16 +96,16 @@ export function JSONCheckTaskFactory(definition: JSONCheckDefinition) {
         ctx.results.checks![file] = {
           name,
           type,
-          value: !!matchDetails.length,
+          value: !!matches.length,
           matches: [
             {
               file,
-              matches: matchDetails,
+              matches,
             },
           ],
         };
+        task.title = resolveCheckTaskFulfilledTitle(task, matches);
       }
-
       resolve();
     });
   }
