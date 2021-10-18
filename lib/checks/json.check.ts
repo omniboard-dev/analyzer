@@ -19,7 +19,7 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
-    const { name, type, propertyPath } = definition;
+    const { name, type, jsonPropertyPath } = definition;
 
     const files = getCheckFiles(
       definition,
@@ -46,8 +46,8 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
 
       const matches: ProjectCheckMatch[] = [];
       for (const file of files) {
-        const result: [] = JSONPath({
-          path: propertyPath,
+        const result: any[] = JSONPath({
+          path: jsonPropertyPath,
           json: JSON.parse(fs.readFile(file)),
         });
 
@@ -55,9 +55,9 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
           matches.push({
             file,
             matches: result.map((r) => ({
-              match: propertyPath,
+              match: jsonPropertyPath,
               groups: {
-                [propertyPath]: r,
+                [jsonPropertyPath]: r,
               },
             })),
           });

@@ -96,7 +96,7 @@ export interface XPathCheckDefinition extends BaseCheckDefinition {
 }
 
 export interface JSONCheckDefinition extends BaseCheckDefinition {
-  propertyPath: string;
+  jsonPropertyPath: string;
 }
 
 export enum CheckType {
