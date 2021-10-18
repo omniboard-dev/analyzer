@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.8.2](https://github.com/omniboard-dev/analyzer/compare/v2.8.1...v2.8.2) (2021-10-18)
+
+
+### Bug Fixes
+
+* **checks:** json check path property include default root identifier $ ([f8cd4fb](https://github.com/omniboard-dev/analyzer/commit/f8cd4fb78d0bb5ebfd54f345bdb01aaf40b799a9))
+
 ### [2.8.1](https://github.com/omniboard-dev/analyzer/compare/v2.8.0...v2.8.1) (2021-10-18)
 
 
