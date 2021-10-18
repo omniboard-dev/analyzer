@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.8.0](https://github.com/omniboard-dev/analyzer/compare/v2.7.0...v2.8.0) (2021-10-18)
+
+
+### Features
+
+* 🎸 json check ([1ce9774](https://github.com/omniboard-dev/analyzer/commit/1ce9774b1b70e475c5bdced1b54dc48232f61587))
+
+
+### Bug Fixes
+
+* 🐛 change task title at the end ([f95f818](https://github.com/omniboard-dev/analyzer/commit/f95f8182ef496a5e901ff0bbbfc38ecbdb721186))
+* 🐛 rename JSON to lowercase ([a4801e4](https://github.com/omniboard-dev/analyzer/commit/a4801e4960f77f823e47d379f08e69842f7b5c3a))
+* 🐛 use json path plus ([df3235d](https://github.com/omniboard-dev/analyzer/commit/df3235d736bad868f922e10e3b4f29e9a936a0ed))
+
 ## [2.7.0](https://github.com/omniboard-dev/analyzer/compare/v2.6.1...v2.7.0) (2021-08-27)
 
 
