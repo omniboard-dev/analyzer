@@ -47,7 +47,9 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
       const matches: ProjectCheckMatch[] = [];
       for (const file of files) {
         const result: any[] = JSONPath({
-          path: jsonPropertyPath,
+          path: jsonPropertyPath?.startsWith('$')
+            ? jsonPropertyPath
+            : `$${jsonPropertyPath}`,
           json: JSON.parse(fs.readFile(file)),
         });
 
