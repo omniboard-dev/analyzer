@@ -95,15 +95,20 @@ export interface XPathCheckDefinition extends BaseCheckDefinition {
   xpathSanitizeAngularTemplate?: boolean;
 }
 
+export interface JSONCheckDefinition extends BaseCheckDefinition {
+  propertyPath: string;
+}
+
 export enum CheckType {
   CONTENT = 'content',
   XPATH = 'xpath',
   SIZE = 'size',
   META = 'meta',
-  FILE = 'file'
+  FILE = 'file',
+  JSON = 'json',
 }
 
 export enum ProjectType {
   NPM = 'npm',
-  MAVEN = 'MAVEN'
+  MAVEN = 'MAVEN',
 }
