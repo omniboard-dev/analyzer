@@ -24,6 +24,7 @@
     "filesize": "^8.0.0",
     "global-agent": "^3.0.0",
     "got": "^11.8.2",
+    "jsonpath-plus": "^6.0.1",
     "listr2": "^3.11.0",
     "xml2js": "^0.4.23",
     "xmldom": "^0.6.0",
