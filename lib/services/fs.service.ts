@@ -23,13 +23,13 @@ export function findFiles(
     const currentPath = stack.pop() as string;
     const paths = fs
       .readdirSync(currentPath)
-      .map(nextPath => path.join(currentPath, nextPath));
+      .map((nextPath) => path.join(currentPath, nextPath));
     const dirs = paths.filter(
-      nextPath =>
+      (nextPath) =>
         !excludeRegexp.test(nextPath) && fs.lstatSync(nextPath).isDirectory()
     );
     const files = paths.filter(
-      nextPath =>
+      (nextPath) =>
         !excludeRegexp.test(nextPath) &&
         fs.lstatSync(nextPath).isFile() &&
         includeRegexp.test(nextPath.replace(/\\/g, '/'))
@@ -74,8 +74,8 @@ export function readXmlAsDom(
         },
         fatalError(error) {
           console.error(error);
-        }
-      }
+        },
+      },
     }).parseFromString(content);
   } catch (err) {
     return undefined;

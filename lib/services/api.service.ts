@@ -22,11 +22,11 @@ export const createApiService = (argv: any) => {
     resolveBodyOnly: true,
     prefixUrl: dev ? 'http://localhost:8080' : 'https://api.omniboard.dev',
     headers: {
-      'omniboard-api-key': key
+      'omniboard-api-key': key,
     },
     hooks: {
-      beforeRequest: debug ? [options => logger.info(options)] : []
-    }
+      beforeRequest: debug ? [(options) => logger.info(options)] : [],
+    },
   });
 };
 

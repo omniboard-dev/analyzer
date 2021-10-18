@@ -1,6 +1,6 @@
 import {
   DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS,
-  DEFAULT_INCLUDE_FILES_FLAG
+  DEFAULT_INCLUDE_FILES_FLAG,
 } from '../consts';
 import { BaseCheckDefinition } from '../interface';
 import { resolveActiveFlags } from '../utils/regexp';
@@ -10,7 +10,7 @@ export enum CheckResultSymbol {
   FULFILLED = '✔️',
   UNFULFILLED = '✖️',
   UNCHECKED = '➖',
-  SKIPPED = '➖'
+  SKIPPED = '➖',
 }
 
 export function resolveCheckTaskFulfilledTitle(
@@ -32,7 +32,7 @@ export function getCheckFiles(
     filesPattern,
     filesPatternFlags,
     filesExcludePattern,
-    filesExcludePatternFlags
+    filesExcludePatternFlags,
   } = definition;
   return fs.findFiles(
     filesPattern,

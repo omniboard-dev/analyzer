@@ -3,7 +3,7 @@ import { ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 import {
   BaseCheckDefinition,
   Context,
-  ProjectCheckSizeDetails
+  ProjectCheckSizeDetails,
 } from '../interface';
 import * as fs from '../services/fs.service';
 import { DEFAULT_EXCLUDE_FILES_PATTERN_SIZE } from '../consts';
@@ -27,7 +27,7 @@ export function sizeCheckTaskFactory(definition: BaseCheckDefinition) {
       sizeDetails.push({
         file,
         size,
-        sizeHumanReadable: fs.getHumanReadableFileSize(size)
+        sizeHumanReadable: fs.getHumanReadableFileSize(size),
       });
     }
     sizeDetails.sort((s1, s2) => s2.size - s1.size);
@@ -40,8 +40,8 @@ export function sizeCheckTaskFactory(definition: BaseCheckDefinition) {
       size: {
         total,
         totalHumanReadable,
-        details: sizeDetails
-      }
+        details: sizeDetails,
+      },
     };
     task.title = task.title = resolveCheckTaskFulfilledTitle(task, files);
   }

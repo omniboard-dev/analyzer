@@ -32,17 +32,17 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
   .option('verbose', {
     type: 'boolean',
     default: false,
-    description: 'Display debug level logs'
+    description: 'Display debug level logs',
   })
   .option('api-key', {
     alias: 'ak',
-    describe: 'API key generated in the Omniboard.dev app'
+    describe: 'API key generated in the Omniboard.dev app',
   })
   .option('errors-as-warnings', {
     type: 'boolean',
     default: false,
     description:
-      'Exit with success (0) even in case of errors and log them as warnings'
+      'Exit with success (0) even in case of errors and log them as warnings',
   })
   .alias('v', 'version')
   .alias('h', 'help')

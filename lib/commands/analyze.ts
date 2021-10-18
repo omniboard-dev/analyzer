@@ -24,17 +24,17 @@ export const builder = (yargs: Argv) =>
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store data in local json file'
+      description: 'Store data in local json file',
     })
     .option('json-path', {
       type: 'string',
       default: './dist/omniboard.json',
-      description: 'Location of local json file'
+      description: 'Location of local json file',
     })
     .option('check-pattern', {
       alias: 'cp',
       type: 'string',
-      description: 'Only run checks matching provided pattern'
+      description: 'Only run checks matching provided pattern',
     });
 
 export const handler = async (argv: any) =>
@@ -46,7 +46,7 @@ export const handler = async (argv: any) =>
       runChecksTask,
       prepareProjectDataTask,
       saveProjectJsonTask,
-      saveProjectApiTask
+      saveProjectApiTask,
     ],
     argv,
     logger

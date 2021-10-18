@@ -15,5 +15,5 @@ export const saveProjectApiTask: ListrTask = {
       return false;
     }
   },
-  task: (ctx, task) => api.uploadProject(ctx.processedResults)
+  task: (ctx, task) => api.uploadProject(ctx.processedResults),
 };

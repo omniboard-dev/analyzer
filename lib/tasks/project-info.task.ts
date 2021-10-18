@@ -7,7 +7,7 @@ import {
   findProjectRepositoriesMaven,
   findProjectRepositoriesNpm,
   isMavenWorkspace,
-  isNpmWorkspace
+  isNpmWorkspace,
 } from '../services/project.service';
 
 export const projectInfoTask: ListrTask = {
@@ -25,7 +25,7 @@ export const projectInfoTask: ListrTask = {
               ctx.results.info = {
                 type: ProjectType.NPM,
                 name: names[0],
-                names
+                names,
               };
             }
             if (isMavenWorkspace()) {
@@ -34,7 +34,7 @@ export const projectInfoTask: ListrTask = {
               ctx.results.info = {
                 type: ProjectType.MAVEN,
                 name: names[0],
-                names
+                names,
               };
             }
 
@@ -45,10 +45,8 @@ export const projectInfoTask: ListrTask = {
               task.title = `${task.title}: ${ctx.results.name} [${ctx.results?.info?.type}]`;
             }
 
-            const {
-              projectsBlacklistPattern,
-              projectsBlacklistExplicit
-            } = ctx.settings;
+            const { projectsBlacklistPattern, projectsBlacklistExplicit } =
+              ctx.settings;
             if (
               projectsBlacklistPattern &&
               new RegExp(projectsBlacklistPattern, 'i').test(names[0])
@@ -59,13 +57,13 @@ export const projectInfoTask: ListrTask = {
             if (
               projectsBlacklistExplicit &&
               projectsBlacklistExplicit.some(
-                projectName => projectName === names[0]
+                (projectName) => projectName === names[0]
               )
             ) {
               task.title = `${task.title} - project name was explicitly blacklisted`;
               ctx.control.skipEverySubsequentTask = true;
             }
-          }
+          },
         },
         {
           title: 'Get project repository',
@@ -83,15 +81,15 @@ export const projectInfoTask: ListrTask = {
             ctx.results.info = {
               ...ctx.results.info,
               repository: repositories[0],
-              repositories
+              repositories,
             } as any;
 
             if (ctx.results.info?.repository) {
               task.title = `${task.title}: ${ctx.results.info?.repository}`;
             }
-          }
-        }
+          },
+        },
       ],
       { rendererOptions: {} }
-    )
+    ),
 };

@@ -22,17 +22,17 @@ export const builder = (yargs: Argv) =>
       alias: 'cd',
       type: 'string',
       description:
-        'Check definition as a JSON (click the "< >" (code) icon on a check item in Omniboard.dev)'
+        'Check definition as a JSON (click the "< >" (code) icon on a check item in Omniboard.dev)',
     })
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store data in local json file'
+      description: 'Store data in local json file',
     })
     .option('json-path', {
       type: 'string',
       default: './dist/omniboard.json',
-      description: 'Location of local json file'
+      description: 'Location of local json file',
     });
 
 export const handler = async (argv: any) =>
@@ -42,7 +42,7 @@ export const handler = async (argv: any) =>
       runChecksTask,
       prepareProjectDataTask,
       saveProjectJsonTask,
-      printProjectCliOutputTask
+      printProjectCliOutputTask,
     ],
     argv,
     logger

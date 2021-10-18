@@ -4,11 +4,11 @@ import {
   ContentCheckDefinition,
   Context,
   ProjectCheckMatch,
-  ProjectCheckMatchDetails
+  ProjectCheckMatchDetails,
 } from '../interface';
 import {
   DEFAULT_CHECK_EXECUTION_TIMEOUT,
-  DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
+  DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT,
 } from '../consts';
 import { resolveActiveFlags } from '../utils/regexp';
 import * as fs from '../services/fs.service';
@@ -16,7 +16,7 @@ import * as fs from '../services/fs.service';
 import {
   CheckResultSymbol,
   getCheckFiles,
-  resolveCheckTaskFulfilledTitle
+  resolveCheckTaskFulfilledTitle,
 } from './check.service';
 
 const DEFAULT_CONTENT_PATTERN_FLAGS = 'ig';
@@ -38,7 +38,7 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
       ctx.results.checks![name] = {
         name,
         type,
-        value: false
+        value: false,
       };
       task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
       return;
@@ -80,12 +80,12 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
           matches.push({
             file,
             matches: matchesForFile.map(
-              m =>
+              (m) =>
                 ({
                   match: m[0],
-                  groups: m.groups
+                  groups: m.groups,
                 } as ProjectCheckMatchDetails)
-            )
+            ),
           });
         }
         finishedCounter++;
@@ -94,7 +94,7 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
             name,
             type,
             value: matches.length > 0,
-            matches
+            matches,
           };
           task.title = resolveCheckTaskFulfilledTitle(task, matches);
           resolve();

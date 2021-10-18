@@ -18,7 +18,8 @@ export const retrieveChecksTask: ListrTask = {
   task: async (ctx: Context, task) => {
     const checks = await api.getChecks();
     ctx.definitions.checks = checks;
-    task.title = `${task.title} successful, retrieved ${checks?.length ??
-      0} checks`;
-  }
+    task.title = `${task.title} successful, retrieved ${
+      checks?.length ?? 0
+    } checks`;
+  },
 };

@@ -14,16 +14,16 @@ export const isNpmWorkspace = (): boolean => {
 
 export const findProjectNamesNpm = (): string[] => {
   return findPackageJsonFiles()
-    .map(f => readJson(f)?.name)
+    .map((f) => readJson(f)?.name)
     .filter(Boolean);
 };
 
 export const findProjectNamesMaven = (): string[] => {
   return findPomXmlFiles()
-    .map(f => readXmlAsDom(f))
+    .map((f) => readXmlAsDom(f))
     .filter(Boolean)
     .map(
-      document =>
+      (document) =>
         xpath
           .select(
             'string(//*[local-name()="project"]/*[local-name()="artifactId"])',
@@ -39,9 +39,9 @@ export const findProjectRepositoriesNpm = () => {
   return Array.from(
     new Set(
       findPackageJsonFiles()
-        .map(f => readJson(f)?.repository?.url)
+        .map((f) => readJson(f)?.repository?.url)
         .filter(Boolean)
-        .map(url => sanitizeRepositoryUrl(url))
+        .map((url) => sanitizeRepositoryUrl(url))
     )
   );
 };
@@ -50,9 +50,9 @@ export const findProjectRepositoriesMaven = (): string[] => {
   return Array.from(
     new Set(
       findPomXmlFiles()
-        .map(f => readXmlAsDom(f))
+        .map((f) => readXmlAsDom(f))
         .filter(Boolean)
-        .flatMap(document =>
+        .flatMap((document) =>
           xpath.select(
             'string(//*[local-name()="project"]/*[local-name()="scm"]/*[local-name()="url"])',
             document!,
@@ -60,7 +60,7 @@ export const findProjectRepositoriesMaven = (): string[] => {
           )
         )
         .filter(Boolean)
-        .map(url => sanitizeRepositoryUrl(url!.toString()))
+        .map((url) => sanitizeRepositoryUrl(url!.toString()))
     )
   );
 };

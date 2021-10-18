@@ -10,5 +10,5 @@ export const saveProjectJsonTask: ListrTask = {
   task: (ctx: Context, task) => {
     fs.writeJson(`${ctx.options.jsonPath}`, ctx.processedResults);
     task.title = `${task.title}, saved to: ${ctx.options.jsonPath}`;
-  }
+  },
 };

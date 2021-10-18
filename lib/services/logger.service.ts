@@ -16,7 +16,7 @@ export const createLogger = (context: string): Logger => {
     info: (...args: any) => console.log(prefix, ...args),
     success: (...args: any) => console.log(chalk.green.bold(prefix, ...args)),
     warning: (...args: any) => console.log(chalk.yellow.bold(prefix, ...args)),
-    error: (...args: any) => console.log(chalk.red.bold(prefix, ...args))
+    error: (...args: any) => console.log(chalk.red.bold(prefix, ...args)),
   };
 };
 

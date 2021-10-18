@@ -14,5 +14,5 @@ export const retrieveSettingsTask: ListrTask = {
   },
   task: async (ctx: Context, task) => {
     ctx.settings = await api.getOrganizationSettings();
-  }
+  },
 };

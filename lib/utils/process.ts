@@ -17,18 +17,18 @@ export const runner = async (
     control: { skipEverySubsequentTask: false },
     settings: {},
     results: { checks: {} },
-    definitions: {}
+    definitions: {},
   };
   await new Listr(tasks, {
-    rendererOptions: { collapse: false, showTimer: true }
+    rendererOptions: { collapse: false, showTimer: true },
   })
     .run(context)
-    .then(res => {
+    .then((res) => {
       const duration = new Date().getTime() - start;
       logger.info(`Finished (${formatTime(duration)})`);
       process.exit(0);
     })
-    .catch(err => {
+    .catch((err) => {
       const duration = new Date().getTime() - start;
 
       if (options.errorsAsWarnings) {

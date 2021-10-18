@@ -9,13 +9,13 @@ export const printProjectCliOutputTask: ListrTask = {
     JSON.stringify(ctx.processedResults ?? {}, null, 2)
       .split(/(\r)?\n/)
       .filter(Boolean)
-      .forEach(line => {
+      .forEach((line) => {
         // preserve white-space using non-printable utf character
         task.output = `\u200b ${line}`;
       });
   },
   options: {
     bottomBar: Infinity,
-    persistentOutput: true
-  }
+    persistentOutput: true,
+  },
 };

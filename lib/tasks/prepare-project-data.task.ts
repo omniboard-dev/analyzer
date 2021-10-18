@@ -7,5 +7,5 @@ export const prepareProjectDataTask: ListrTask = {
   skip: (ctx: Context) => ctx.control.skipEverySubsequentTask,
   task: (ctx: Context, task) => {
     ctx.processedResults = { ...ctx.results };
-  }
+  },
 };

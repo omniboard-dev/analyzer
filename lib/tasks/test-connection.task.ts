@@ -19,5 +19,5 @@ export const testConnectionTask: ListrTask = {
     } else {
       throw new Error('Organization not found');
     }
-  }
+  },
 };

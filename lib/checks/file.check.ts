@@ -22,7 +22,7 @@ export function fileCheckTaskFactory(definition: ContentCheckDefinition) {
       ctx.results.checks![name] = {
         name,
         type,
-        value: false
+        value: false,
       };
       task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
       return;
@@ -31,10 +31,10 @@ export function fileCheckTaskFactory(definition: ContentCheckDefinition) {
         name,
         type,
         value: true,
-        matches: files.map(file => ({
+        matches: files.map((file) => ({
           file,
-          matches: []
-        }))
+          matches: [],
+        })),
       };
       task.title = `${CheckResultSymbol.FULFILLED} ${task.title}`;
     }
