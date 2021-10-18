@@ -105,7 +105,7 @@ export enum CheckType {
   SIZE = 'size',
   META = 'meta',
   FILE = 'file',
-  JSON = 'JSON',
+  JSON = 'json',
 }
 
 export enum ProjectType {

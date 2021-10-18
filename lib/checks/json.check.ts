@@ -12,8 +12,8 @@ import {
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
 
-export function JSONCheckTaskFactory(definition: JSONCheckDefinition) {
-  async function JSONCheckTask(
+export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
+  async function jsonCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
@@ -74,5 +74,5 @@ export function JSONCheckTaskFactory(definition: JSONCheckDefinition) {
       resolve();
     });
   }
-  return JSONCheckTask;
+  return jsonCheckTask;
 }

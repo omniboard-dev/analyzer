@@ -12,7 +12,7 @@ import { contentCheckTaskFactory } from '../checks/content.check';
 import { resolveActiveFlags } from '../utils/regexp';
 import { CheckResultSymbol } from '../checks/check.service';
 import { fileCheckTaskFactory } from '../checks/file.check';
-import { JSONCheckTaskFactory } from '../checks/json.check';
+import { jsonCheckTaskFactory } from '../checks/json.check';
 
 const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 
@@ -95,7 +95,7 @@ export const runChecksTask: ListrTask = {
           } else if (definition.type === CheckType.FILE) {
             return fileCheckTaskFactory(definition);
           } else if (definition.type === CheckType.JSON) {
-            return JSONCheckTaskFactory(definition);
+            return jsonCheckTaskFactory(definition);
           } else {
             return function unknownCheckTask(
               ctx: Context,
