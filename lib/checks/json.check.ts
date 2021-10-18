@@ -1,11 +1,13 @@
 import { JSONPath } from 'jsonpath-plus';
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
+
 import {
   DEFAULT_CHECK_EXECUTION_TIMEOUT,
   DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT,
 } from '../consts';
 import { Context, JSONCheckDefinition, ProjectCheckMatch } from '../interface';
 import * as fs from '../services/fs.service';
+
 import {
   CheckResultSymbol,
   getCheckFiles,
