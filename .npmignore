@@ -3,3 +3,4 @@ lib
 .prettierrc
 .prettierignore
 tsconfig.json
+dist/omniboard*

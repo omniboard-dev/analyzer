@@ -1,6 +1,9 @@
 name: Release
 
-on: push
+on:
+  create:
+    tags:
+      - v*
 
 jobs:
   build:
@@ -18,7 +21,6 @@ jobs:
       - run: nexe dist/index.js -t linux-x64 -o dist/omniboard-linux-x64
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ${{ github.workspace }}CHANGELOG.md
           token: ${{ secrets.OMNIBOARD_RELEASES_TOKEN }}
