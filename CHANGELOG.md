@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.8.5](https://github.com/omniboard-dev/analyzer/compare/v2.8.4...v2.8.5) (2021-10-19)
+
+
+### Bug Fixes
+
+* **ci:** adjust release github action configuration ([d83880b](https://github.com/omniboard-dev/analyzer/commit/d83880bab72ff0c34af876819bfc785b88fdfe47))
+* **ci:** adjust release github action configuration ([ede84a0](https://github.com/omniboard-dev/analyzer/commit/ede84a027a5bb1163569c748e36a6e23022b1d49))
+
 ### [2.8.4](https://github.com/omniboard-dev/analyzer/compare/v2.8.3...v2.8.4) (2021-10-19)
 
 ### [2.8.3](https://github.com/omniboard-dev/analyzer/compare/v2.8.2...v2.8.3) (2021-10-19)
