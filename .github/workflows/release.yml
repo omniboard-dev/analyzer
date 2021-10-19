@@ -1,0 +1,28 @@
+name: Release
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Env
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.15.3'
+      - run: npm ci
+      - run: npm run build
+      - run: npm i -g nexe
+      - run: nexe dist/index.js -t linux-x64 -o dist/omniboard-linux-x64
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: ${{ github.workspace }}CHANGELOG.md
+          token: ${{ secrets.OMNIBOARD_RELEASES_TOKEN }}
+          files: |
+            dist/omniboard*
+        env:
+          GITHUB_REPOSITORY: omniboard-dev/analyzer
