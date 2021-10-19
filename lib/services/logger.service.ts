@@ -1,14 +1,14 @@
-import path from 'path';
 import chalk from 'chalk';
 
-import { readJson } from './fs.service';
+const packageJson = require('../../package.json');
 
 let verbose = false;
 
 export const setVerbose = () => (verbose = true);
 
 export const createLogger = (context: string): Logger => {
-  const version = readJson(path.join(__dirname, '../../package.json')).version;
+  console.log(packageJson.version)
+  const version = packageJson.version;
   const prefix = `@omniboard/analyzer v${version} [${context}]`;
   return {
     debug: (...args: any) =>
