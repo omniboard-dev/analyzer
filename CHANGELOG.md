@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.10.0](https://github.com/omniboard-dev/analyzer/compare/v2.9.0...v2.10.0) (2021-10-19)
+
+
+### Features
+
+* **release:** linux binaries support ([d711204](https://github.com/omniboard-dev/analyzer/commit/d7112045ae6fea5de3eb591cbbd6dceee195c9ce))
+
 ## [2.9.0](https://github.com/omniboard-dev/analyzer/compare/v2.8.5...v2.9.0) (2021-10-19)
 
 
