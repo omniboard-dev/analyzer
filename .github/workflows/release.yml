@@ -6,23 +6,29 @@ on:
       - v*
 
 jobs:
-  build:
+  Release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Env
+      - name: Setup Node
         uses: actions/setup-node@v2
         with:
           node-version: '14.15.3'
-      - run: npm ci
-      - run: npm run build
-      - run: npm i -g nexe
-      - run: nexe dist/index.js -t linux-x64 -o dist/omniboard-linux-x64
+      - name: Setup Env
+        run: |
+          npm ci
+          npm i -g nexe
+      - name: Build
+        run: |
+          npm run build
+          nexe dist/index.js -t linux-x64 -o dist/omniboard-linux-x64
+      - name: Prepare Changelog
+        run: npx ts-node ./tooling/release-changelog-extractor.ts
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: ${{ github.workspace }}/CHANGELOG.md
+          body_path: ${{ github.workspace }}/CHANGELOG-latest.md
           token: ${{ secrets.OMNIBOARD_RELEASES_TOKEN }}
           files: |
             dist/omniboard*
