@@ -7,7 +7,6 @@ let verbose = false;
 export const setVerbose = () => (verbose = true);
 
 export const createLogger = (context: string): Logger => {
-  console.log(packageJson.version)
   const version = packageJson.version;
   const prefix = `@omniboard/analyzer v${version} [${context}]`;
   return {
