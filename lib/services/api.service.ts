@@ -38,5 +38,4 @@ export const uploadProject = (project: any) =>
 
 export const getChecks = (): Promise<any[]> => api('check/cli') as any;
 
-export const getOrganizationSettings = (): Promise<any> =>
-  api('organization/cli') as any;
+export const getSettings = (): Promise<any> => api('settings/cli') as any;
