@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/omniboard-dev/analyzer/compare/v2.11.0...v2.12.0) (2021-10-20)
+
+
+### Features
+
+* **api:** use dedicated settings endpoint ([259a055](https://github.com/omniboard-dev/analyzer/commit/259a0555064186979f715a0204049296daad4b6e))
+
 ## [2.11.0](https://github.com/omniboard-dev/analyzer/compare/v2.10.0...v2.11.0) (2021-10-19)
 
 
