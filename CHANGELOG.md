@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.13.0](https://github.com/omniboard-dev/analyzer/compare/v2.12.0...v2.13.0) (2021-11-15)
+
+
+### Features
+
+* **checks:** json check robustness ([84348f8](https://github.com/omniboard-dev/analyzer/commit/84348f8ed86f4b4a7b8bd7f599a5a4010b141da2))
+* **process:** enable verbose logging when flag is set ([d823e78](https://github.com/omniboard-dev/analyzer/commit/d823e78bdb0006c0a089ac4b3b370eda2506bc23))
+
 ## [2.12.0](https://github.com/omniboard-dev/analyzer/compare/v2.11.0...v2.12.0) (2021-10-20)
 
 
