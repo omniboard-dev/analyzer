@@ -11,6 +11,7 @@ export enum CheckResultSymbol {
   UNFULFILLED = '✖️',
   UNCHECKED = '➖',
   SKIPPED = '➖',
+  ERROR = '⚠️',
 }
 
 export function resolveCheckTaskFulfilledTitle(

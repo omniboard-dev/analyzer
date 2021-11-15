@@ -44,38 +44,70 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
         DEFAULT_CHECK_EXECUTION_TIMEOUT
       );
 
+      let finishedCounter = 0;
+
+      const errors: Error[] = [];
       const matches: ProjectCheckMatch[] = [];
+
       for (const file of files) {
-        const result: any[] = JSONPath({
-          path: jsonPropertyPath?.startsWith('$')
-            ? jsonPropertyPath
-            : `$${jsonPropertyPath}`,
-          json: JSON.parse(fs.readFile(file)),
-        });
+        setTimeout(() => {
+          let json;
+          try {
+            json = JSON.parse(fs.readFile(file));
+          } catch (err: any) {
+            errors.push(
+              new Error(`[json] "${name}" - ${file} - ${err.message}`)
+            );
+            finishedCounter++;
+            if (finishedCounter === files.length) {
+              if (errors.length) {
+                reject(errors);
+              }
+            }
+            task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
+            return;
+          }
 
-        if (result.length) {
-          matches.push({
-            file,
-            matches: result.map((r) => ({
-              match: jsonPropertyPath,
-              groups: {
-                [jsonPropertyPath]: r,
-              },
-            })),
+          const result: any[] = JSONPath({
+            path: jsonPropertyPath?.startsWith('$')
+              ? jsonPropertyPath
+              : `$${jsonPropertyPath}`,
+            json,
           });
-        }
+
+          if (result.length) {
+            matches.push({
+              file,
+              matches: result.map((r) => ({
+                match: jsonPropertyPath,
+                groups: {
+                  [jsonPropertyPath]: r,
+                },
+              })),
+            });
+          }
+
+          finishedCounter++;
+
+          console.log(name, finishedCounter, files.length);
+          if (finishedCounter === files.length) {
+            if (errors.length) {
+              reject(errors);
+            }
+
+            ctx.results.checks![name] = {
+              name,
+              type,
+              value: matches.length > 0,
+              matches,
+            };
+
+            task.title = resolveCheckTaskFulfilledTitle(task, matches);
+
+            resolve();
+          }
+        });
       }
-
-      ctx.results.checks![name] = {
-        name,
-        type,
-        value: matches.length > 0,
-        matches,
-      };
-
-      task.title = resolveCheckTaskFulfilledTitle(task, matches);
-
-      resolve();
     });
   }
   return jsonCheckTask;
