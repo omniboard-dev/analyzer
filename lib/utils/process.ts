@@ -20,6 +20,7 @@ export const runner = async (
     definitions: {},
   };
   await new Listr(tasks, {
+    rendererFallback: () => options?.verbose,
     rendererOptions: { collapse: false, showTimer: true },
   })
     .run(context)
