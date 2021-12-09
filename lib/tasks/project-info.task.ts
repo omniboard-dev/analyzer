@@ -4,8 +4,10 @@ import { Context, ProjectType } from '../interface';
 import {
   findProjectNamesMaven,
   findProjectNamesNpm,
+  findProjectNamesRepo,
   findProjectRepositoriesMaven,
   findProjectRepositoriesNpm,
+  findProjectRepositoriesRepo,
   isMavenWorkspace,
   isNpmWorkspace,
 } from '../services/project.service';
@@ -27,12 +29,19 @@ export const projectInfoTask: ListrTask = {
                 name: names[0],
                 names,
               };
-            }
-            if (isMavenWorkspace()) {
+            } else if (isMavenWorkspace()) {
               names = findProjectNamesMaven();
               ctx.results.name = names[0];
               ctx.results.info = {
                 type: ProjectType.MAVEN,
+                name: names[0],
+                names,
+              };
+            } else {
+              names = findProjectNamesRepo();
+              ctx.results.name = names[0];
+              ctx.results.info = {
+                type: ProjectType.REPO,
                 name: names[0],
                 names,
               };
@@ -73,9 +82,10 @@ export const projectInfoTask: ListrTask = {
 
             if (ctx.results.info?.type === ProjectType.NPM) {
               repositories = findProjectRepositoriesNpm();
-            }
-            if (ctx.results.info?.type === ProjectType.MAVEN) {
+            } else if (ctx.results.info?.type === ProjectType.MAVEN) {
               repositories = findProjectRepositoriesMaven();
+            } else {
+              repositories = findProjectRepositoriesRepo();
             }
 
             ctx.results.info = {

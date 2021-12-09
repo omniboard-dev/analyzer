@@ -5,6 +5,10 @@ import { DOMParser } from 'xmldom';
 
 const REGEXP_MATCH_NOTHING = /a^/;
 
+export function currentFolderName(): string {
+  return path.basename(path.resolve(process.cwd()));
+}
+
 export function findFiles(
   includePattern: string,
   includeFlags?: string,

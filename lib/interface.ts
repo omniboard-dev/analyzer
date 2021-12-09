@@ -111,4 +111,5 @@ export enum CheckType {
 export enum ProjectType {
   NPM = 'npm',
   MAVEN = 'MAVEN',
+  REPO = 'repo',
 }

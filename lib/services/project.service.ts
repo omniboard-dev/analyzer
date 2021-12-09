@@ -1,5 +1,11 @@
 import xpath from 'xpath';
-import { findFiles, readJson, readXmlAsDom } from './fs.service';
+import {
+  findFiles,
+  readJson,
+  readXmlAsDom,
+  readFile,
+  currentFolderName,
+} from './fs.service';
 
 const PROJECT_INFO_TASK_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
 const PROJECT_INFO_TASK_PATTERN_FLAGS = 'i';
@@ -65,6 +71,17 @@ export const findProjectRepositoriesMaven = (): string[] => {
   );
 };
 
+export const findProjectRepositoriesRepo = (): string[] => {
+  const gitConfigPath = findFiles('.git/config')[0];
+  const gitConfig = readFile(gitConfigPath);
+  const repoUrl = /url\s?=\s?(?<url>.*)/.exec(gitConfig)?.groups?.url;
+  if (repoUrl && repoUrl.length) {
+    return [repoUrl];
+  } else {
+    return [];
+  }
+};
+
 function findPackageJsonFiles() {
   return findFiles(
     'package.json',
@@ -88,3 +105,7 @@ function sanitizeRepositoryUrl(rawUrl: string) {
     .replace('git@', 'https://')
     .replace(/(?<!https?):/gi, '/');
 }
+
+export const findProjectNamesRepo = (): string[] => {
+  return [currentFolderName()];
+};
