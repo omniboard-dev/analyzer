@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0](https://github.com/omniboard-dev/analyzer/compare/v2.13.0...v2.14.0) (2021-12-09)
+
+
+### Features
+
+* **project-info:** generic "repo" project support ([a8d2763](https://github.com/omniboard-dev/analyzer/commit/a8d2763190863be2d810895b92908f87013e56e1))
+
 ## [2.13.0](https://github.com/omniboard-dev/analyzer/compare/v2.12.0...v2.13.0) (2021-11-15)
 
 
