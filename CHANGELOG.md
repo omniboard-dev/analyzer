@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.15.0](https://github.com/omniboard-dev/analyzer/compare/v2.14.0...v2.15.0) (2021-12-10)
+
+
+### Features
+
+* **project-info:** pip (python) project support ([442430b](https://github.com/omniboard-dev/analyzer/commit/442430bc44c26565026d060b3f19fdf85ed7c3c8))
+
 ## [2.14.0](https://github.com/omniboard-dev/analyzer/compare/v2.13.0...v2.14.0) (2021-12-09)
 
 
