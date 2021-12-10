@@ -4,12 +4,14 @@ import { Context, ProjectType } from '../interface';
 import {
   findProjectNamesMaven,
   findProjectNamesNpm,
+  findProjectNamesPip,
   findProjectNamesRepo,
   findProjectRepositoriesMaven,
   findProjectRepositoriesNpm,
   findProjectRepositoriesRepo,
   isMavenWorkspace,
   isNpmWorkspace,
+  isPipWorkspace,
 } from '../services/project.service';
 
 export const projectInfoTask: ListrTask = {
@@ -34,6 +36,14 @@ export const projectInfoTask: ListrTask = {
               ctx.results.name = names[0];
               ctx.results.info = {
                 type: ProjectType.MAVEN,
+                name: names[0],
+                names,
+              };
+            } else if (isPipWorkspace()) {
+              names = findProjectNamesPip();
+              ctx.results.name = names[0];
+              ctx.results.info = {
+                type: ProjectType.PIP,
                 name: names[0],
                 names,
               };

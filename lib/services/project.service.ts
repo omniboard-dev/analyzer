@@ -18,6 +18,10 @@ export const isNpmWorkspace = (): boolean => {
   return !!findPackageJsonFiles()?.length;
 };
 
+export const isPipWorkspace = (): boolean => {
+  return !!findSetupPyFiles()?.length;
+};
+
 export const findProjectNamesNpm = (): string[] => {
   return findPackageJsonFiles()
     .map((f) => readJson(f)?.name)
@@ -39,6 +43,21 @@ export const findProjectNamesMaven = (): string[] => {
           ?.toString() || ''
     )
     .filter(Boolean);
+};
+
+export const findProjectNamesPip = (): string[] => {
+  return Array.from(
+    new Set(
+      findSetupPyFiles()
+        .map((f) => readFile(f))
+        .map((content) => /name=\s?"(?<name>.*)"/.exec(content)?.groups?.name!)
+        .filter(Boolean)
+    )
+  );
+};
+
+export const findProjectNamesRepo = (): string[] => {
+  return [currentFolderName()];
 };
 
 export const findProjectRepositoriesNpm = () => {
@@ -76,7 +95,7 @@ export const findProjectRepositoriesRepo = (): string[] => {
   const gitConfig = readFile(gitConfigPath);
   const repoUrl = /url\s?=\s?(?<url>.*)/.exec(gitConfig)?.groups?.url;
   if (repoUrl && repoUrl.length) {
-    return [repoUrl];
+    return [sanitizeRepositoryUrl(repoUrl)];
   } else {
     return [];
   }
@@ -99,13 +118,18 @@ function findPomXmlFiles() {
   );
 }
 
+function findSetupPyFiles() {
+  return findFiles(
+    'setup.py',
+    'i',
+    PROJECT_INFO_TASK_EXCLUDE_PATTERN,
+    PROJECT_INFO_TASK_PATTERN_FLAGS
+  );
+}
+
 function sanitizeRepositoryUrl(rawUrl: string) {
   return rawUrl
     .replace('git+', '')
     .replace('git@', 'https://')
     .replace(/(?<!https?):/gi, '/');
 }
-
-export const findProjectNamesRepo = (): string[] => {
-  return [currentFolderName()];
-};

@@ -14,7 +14,8 @@
     "start": "node -r ts-node/register lib/index.ts",
     "build": "tsc",
     "watch": "tsc --watch",
-    "format": "prettier lib/**/*.{ts,json} --write",
+    "format:test": "prettier lib/**/*.{ts,json}",
+    "format:write": "prettier lib/**/*.{ts,json} --write",
     "release": "npm run format && npm run build && standard-version -a && git push --follow-tags origin master && npm publish --access public"
   },
   "dependencies": {
