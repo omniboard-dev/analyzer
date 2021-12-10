@@ -16,7 +16,7 @@
     "watch": "tsc --watch",
     "format:test": "prettier lib/**/*.{ts,json}",
     "format:write": "prettier lib/**/*.{ts,json} --write",
-    "release": "npm run format && npm run build && standard-version -a && git push --follow-tags origin master && npm publish --access public"
+    "release": "npm run format:write && npm run build && standard-version -a && git push --follow-tags origin master && npm publish --access public"
   },
   "dependencies": {
     "@types/listr": "^0.14.4",
