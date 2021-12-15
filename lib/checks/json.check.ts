@@ -89,7 +89,6 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
 
           finishedCounter++;
 
-          console.log(name, finishedCounter, files.length);
           if (finishedCounter === files.length) {
             if (errors.length) {
               reject(errors);
