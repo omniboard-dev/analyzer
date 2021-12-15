@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.15.1](https://github.com/omniboard-dev/analyzer/compare/v2.15.0...v2.15.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* **lib:** remove debug log statement ([dfbbf71](https://github.com/omniboard-dev/analyzer/commit/dfbbf7129845ab31ffe19efa0657d6b974c1f64e))
+
 ## [2.15.0](https://github.com/omniboard-dev/analyzer/compare/v2.14.0...v2.15.0) (2021-12-10)
 
 
