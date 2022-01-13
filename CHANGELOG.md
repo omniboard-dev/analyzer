@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.15.2](https://github.com/omniboard-dev/analyzer/compare/v2.15.1...v2.15.2) (2022-01-13)
+
+
+### Bug Fixes
+
+* **lib:** use connection or developerConnection for maven project repo url instead of url ([784de6a](https://github.com/omniboard-dev/analyzer/commit/784de6ac35bbdd2d5590c3826c3c0aabb17976cd))
+
 ### [2.15.1](https://github.com/omniboard-dev/analyzer/compare/v2.15.0...v2.15.1) (2021-12-15)
 
 
