@@ -79,7 +79,7 @@ export const findProjectRepositoriesMaven = (): string[] => {
         .filter(Boolean)
         .flatMap((document) =>
           xpath.select(
-            'string(//*[local-name()="project"]/*[local-name()="scm"]/*[local-name()="url"])',
+            'string(//*[local-name()="project"]/*[local-name()="scm"]/*[local-name()="connection" or local-name()="developerConnection"][last()])',
             document!,
             true
           )
@@ -129,6 +129,7 @@ function findSetupPyFiles() {
 
 function sanitizeRepositoryUrl(rawUrl: string) {
   return rawUrl
+    .replace(/^scm:.*?:/gi, '') // remove maven scm prefix
     .replace('git+', '')
     .replace('git@', 'https://')
     .replace(/(?<!https?):/gi, '/');
