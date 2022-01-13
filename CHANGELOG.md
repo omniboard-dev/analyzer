@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.16.0](https://github.com/omniboard-dev/analyzer/compare/v2.15.2...v2.16.0) (2022-01-13)
+
+
+### Features
+
+* **lib:** json check robustness (use strip-json-comment before json data parsing) ([b35d8a2](https://github.com/omniboard-dev/analyzer/commit/b35d8a2bc14ea057686911dd658b92620cf6e1c8))
+
 ### [2.15.2](https://github.com/omniboard-dev/analyzer/compare/v2.15.1...v2.15.2) (2022-01-13)
 
 
