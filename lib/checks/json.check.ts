@@ -1,3 +1,4 @@
+import stripJsonComments from 'strip-json-comments';
 import { JSONPath } from 'jsonpath-plus';
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
@@ -53,7 +54,7 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
         setTimeout(() => {
           let json;
           try {
-            json = JSON.parse(fs.readFile(file));
+            json = JSON.parse(stripJsonComments(fs.readFile(file)));
           } catch (err: any) {
             errors.push(
               new Error(`[json] "${name}" - ${file} - ${err.message}`)
