@@ -53,8 +53,15 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
       for (const file of files) {
         setTimeout(() => {
           let json;
+          let result: any[];
           try {
             json = JSON.parse(stripJsonComments(fs.readFile(file)));
+            result = JSONPath({
+              path: jsonPropertyPath?.startsWith('$')
+                ? jsonPropertyPath
+                : `$${jsonPropertyPath}`,
+              json,
+            });
           } catch (err: any) {
             errors.push(
               new Error(`[json] "${name}" - ${file} - ${err.message}`)
@@ -68,13 +75,6 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
             task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
             return;
           }
-
-          const result: any[] = JSONPath({
-            path: jsonPropertyPath?.startsWith('$')
-              ? jsonPropertyPath
-              : `$${jsonPropertyPath}`,
-            json,
-          });
 
           if (result.length) {
             matches.push({
