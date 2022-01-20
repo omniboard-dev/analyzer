@@ -22,6 +22,7 @@ export const runner = async (
   await new Listr(tasks, {
     rendererFallback: () => options?.verbose,
     rendererOptions: { collapse: false, showTimer: true },
+    renderer: options.silent ? 'silent' : 'default',
   })
     .run(context)
     .then((res) => {

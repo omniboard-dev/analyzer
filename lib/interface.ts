@@ -6,6 +6,7 @@ export interface Options {
   checkPattern?: string;
   checkDefinition?: string;
   apiKey?: string;
+  silent: boolean;
 }
 
 export interface Context {

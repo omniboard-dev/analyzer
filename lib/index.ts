@@ -44,6 +44,11 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
     description:
       'Exit with success (0) even in case of errors and log them as warnings',
   })
+  .option('silent', {
+    type: 'boolean',
+    default: false,
+    description: 'Silences the renderer.',
+  })
   .alias('v', 'version')
   .alias('h', 'help')
   .epilogue(
