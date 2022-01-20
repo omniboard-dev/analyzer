@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.16.1](https://github.com/omniboard-dev/analyzer/compare/v2.16.0...v2.16.1) (2022-01-20)
+
+
+### Bug Fixes
+
+* **checks:** prevent OOM, disable concurrent with more than 100 checks ([6fd67c6](https://github.com/omniboard-dev/analyzer/commit/6fd67c67901c95e90fbb78cb00e6aeb281b43381))
+* **lib:** json check robustness ([ddd8fb0](https://github.com/omniboard-dev/analyzer/commit/ddd8fb049917fdf1f876f8d4fb0553bdbe2d6439))
+
 ## [2.16.0](https://github.com/omniboard-dev/analyzer/compare/v2.15.2...v2.16.0) (2022-01-13)
 
 
