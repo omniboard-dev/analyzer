@@ -2,13 +2,11 @@
 
 # @omniboard/analyzer
 
-
 ## Getting started with Omniboard in less than 5 minutes (video)
 
 <a href="https://app.omniboard.dev/assets/videos/omniboard-getting-started.mp4" target="_blank">
     <img src="https://app.omniboard.dev/assets/videos/omniboard-getting-started.png" height="300" />
 </a>
-
 
 ### Create account, get API key and define checks
 
@@ -17,7 +15,6 @@
 3. Set API key as an `OMNIBOARD_API_KEY` environment variable (or pass it in using `--api-key` flag when running `omniboard` command, never commit your API key to the version control system)
 4. (optional) test your API key using `npx omniboard test-connection --api-key <your-api-key>` (same as `omniboard tc --ak <your-api-key>`)
 5. Define checks in the [Omniboard.dev](https://app.omniboard.dev/app/checks) app
-
 
 ### Run in projects
 
@@ -28,11 +25,11 @@ Make sure you have already set `OMNIBOARD_API_KEY` environment variable in the g
 
 or
 
-* `npx @omniboard/analyzer` (in case it was not pre installed)
+- `npx @omniboard/analyzer` (in case it was not pre installed)
 
 or
 
-* `npm i -g @omniboard/analyzer` - install it globally to be able to run `omniboard` in any path without waiting for npx install
+- `npm i -g @omniboard/analyzer` - install it globally to be able to run `omniboard` in any path without waiting for npx install
 
 ## Options
 
@@ -45,7 +42,7 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 - `--check-pattern` - only run checks matching provided pattern
 - `--json` - store data in local json file
 - `--json-path` - location of local json file
-
+- `--silent` - silcences the renderer
 
 ## How it works
 
@@ -58,6 +55,7 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 ## FAQ
 
 #### Is it possible to run @omniboard/analyzer behind organization proxy?
+
 **Yes**
 
 The `@omniboard/analyzer` uses [global-agent](https://github.com/gajus/global-agent) library which will uses
@@ -65,14 +63,13 @@ The `@omniboard/analyzer` uses [global-agent](https://github.com/gajus/global-ag
 to `https://api.omniboard.dev`
 
 #### Is this uploading my source code to the cloud?
+
 **No**
 
-The `@omniboard/analyzer` runs checks against your source code (or even generated artifacts) 
-and uploads results of these checks to the cloud service for further processing. 
+The `@omniboard/analyzer` runs checks against your source code (or even generated artifacts)
+and uploads results of these checks to the cloud service for further processing.
 The uploaded content is then just metadata describing the projects and results but NOT the projects themselves.
 
-In theory, a check which matches everything could be constructed but such result will 
-be rejected as the payload would be too large. The limits of how much data can be stored 
+In theory, a check which matches everything could be constructed but such result will
+be rejected as the payload would be too large. The limits of how much data can be stored
 per check and per all checks for a project can be customized in organization settings in the Omniboard.dev app.
-
-
