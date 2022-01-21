@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.17.0](https://github.com/omniboard-dev/analyzer/compare/v2.16.1...v2.17.0) (2022-01-21)
+
+
+### Features
+
+* 🎸 add flag to silent the renderer ([789c5ce](https://github.com/omniboard-dev/analyzer/commit/789c5ceda2122eb5e77412b0d2c9838aee5a3c30))
+
 ### [2.16.1](https://github.com/omniboard-dev/analyzer/compare/v2.16.0...v2.16.1) (2022-01-20)
 
 
