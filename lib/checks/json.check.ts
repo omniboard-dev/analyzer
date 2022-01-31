@@ -1,4 +1,5 @@
 import stripJsonComments from 'strip-json-comments';
+import stripJsonTrailingCommas from 'strip-json-trailing-commas';
 import { JSONPath } from 'jsonpath-plus';
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
@@ -55,7 +56,9 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
           let json;
           let result: any[];
           try {
-            json = JSON.parse(stripJsonComments(fs.readFile(file)));
+            json = JSON.parse(
+              stripJsonTrailingCommas(stripJsonComments(fs.readFile(file)))
+            );
             result = JSONPath({
               path: jsonPropertyPath?.startsWith('$')
                 ? jsonPropertyPath
