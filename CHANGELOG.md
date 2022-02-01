@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.18.0](https://github.com/omniboard-dev/analyzer/compare/v2.17.1...v2.18.0) (2022-02-01)
+
+
+### Features
+
+* **options:** add --api-url (--api) option for on-prem Omniboard instance for custom enterprise plans ([b6f45c7](https://github.com/omniboard-dev/analyzer/commit/b6f45c7cd16d319ee784149aad6993bcc77a65bb))
+
 ### [2.17.1](https://github.com/omniboard-dev/analyzer/compare/v2.17.0...v2.17.1) (2022-01-31)
 
 
