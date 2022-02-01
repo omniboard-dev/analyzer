@@ -6,7 +6,7 @@ let api: Got;
 const logger = createLogger('API SERVICE');
 
 export const createApiService = (argv: any) => {
-  const { dev, apiKey, debug } = argv;
+  const { dev, apiKey, apiUrl, debug } = argv;
   const key = apiKey || process.env.OMNIBOARD_API_KEY;
   if (!key) {
     logger.debug(`No API key provided, API related tasks will be skipped`);
@@ -20,7 +20,9 @@ export const createApiService = (argv: any) => {
     retry: 0,
     responseType: 'json',
     resolveBodyOnly: true,
-    prefixUrl: dev ? 'http://localhost:8080' : 'https://api.omniboard.dev',
+    prefixUrl: dev
+      ? 'http://localhost:8080'
+      : apiUrl ?? 'https://api.omniboard.dev',
     headers: {
       'omniboard-api-key': key,
     },

@@ -38,11 +38,12 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 - `--help` - print help
 - `--verbose` - print debug log statements
 - `--api-key` - pass in API key when not set as an environment variable
+- `--api-url` - pass in URL of the on-prem Omniboard instance (for custom enterprise plans only)
 - `--errors-as-warnings` - exit with success (0) even in case of errors and log them as warnings (useful for CI)
 - `--check-pattern` - only run checks matching provided pattern
 - `--json` - store data in local json file
 - `--json-path` - location of local json file
-- `--silent` - silcences the renderer
+- `--silent` - silences the renderer
 
 ## How it works
 

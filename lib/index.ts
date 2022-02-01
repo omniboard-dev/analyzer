@@ -38,6 +38,11 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
     alias: 'ak',
     describe: 'API key generated in the Omniboard.dev app',
   })
+  .option('api-url', {
+    alias: 'api',
+    type: 'string',
+    description: 'URL of the on-prem Omniboard instance (for custom enterprise plans only)',
+  })
   .option('errors-as-warnings', {
     type: 'boolean',
     default: false,

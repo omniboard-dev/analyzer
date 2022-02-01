@@ -5,6 +5,7 @@ export interface Options {
   errorsAsWarnings: boolean;
   checkPattern?: string;
   checkDefinition?: string;
+  apiUrl?: string;
   apiKey?: string;
   silent: boolean;
 }
