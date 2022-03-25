@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.18.1](https://github.com/omniboard-dev/analyzer/compare/v2.18.0...v2.18.1) (2022-03-25)
+
+
+### Bug Fixes
+
+* **test-check:** print full result in the cli output ([3f74310](https://github.com/omniboard-dev/analyzer/commit/3f74310d5a65115d542c313ceb75f6c2883f1b4d))
+
 ## [2.18.0](https://github.com/omniboard-dev/analyzer/compare/v2.17.1...v2.18.0) (2022-02-01)
 
 
