@@ -41,7 +41,8 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
   .option('api-url', {
     alias: 'api',
     type: 'string',
-    description: 'URL of the on-prem Omniboard instance (for custom enterprise plans only)',
+    description:
+      'URL of the on-prem Omniboard instance (for custom enterprise plans only)',
   })
   .option('errors-as-warnings', {
     type: 'boolean',
