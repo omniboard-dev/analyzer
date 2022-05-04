@@ -53,7 +53,7 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
 
       for (const file of files) {
         setTimeout(() => {
-          let json;
+          let json: any;
           let result: any[];
           try {
             json = JSON.parse(
@@ -66,14 +66,14 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
               json,
             });
           } catch (err: any) {
-            errors.push(
-              new Error(`[json] "${name}" - ${file} - ${err.message}`)
+            const error = new Error(
+              `[json] "${name}" - ${file} - ${err.message}`
             );
+            errors.push(error);
+            ctx.handledCheckFailures.push(error);
             finishedCounter++;
             if (finishedCounter === files.length) {
-              if (errors.length) {
-                reject(errors);
-              }
+              resolve();
             }
             task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
             return;
@@ -94,10 +94,6 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
           finishedCounter++;
 
           if (finishedCounter === files.length) {
-            if (errors.length) {
-              reject(errors);
-            }
-
             ctx.results.checks![name] = {
               name,
               type,
@@ -105,7 +101,9 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
               matches,
             };
 
-            task.title = resolveCheckTaskFulfilledTitle(task, matches);
+            task.title = errors.length
+              ? errors.map((e) => e.message).join(',')
+              : resolveCheckTaskFulfilledTitle(task, matches);
 
             resolve();
           }

@@ -32,6 +32,7 @@ export interface Context {
       [key: string]: ProjectCheck;
     };
   };
+  handledCheckFailures: Error[],
   processedResults?: any;
 }
 

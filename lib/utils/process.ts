@@ -18,6 +18,7 @@ export const runner = async (
     settings: {},
     results: { checks: {} },
     definitions: {},
+    handledCheckFailures: [],
   };
   await new Listr(tasks, {
     rendererFallback: () => options?.verbose,
@@ -25,7 +26,17 @@ export const runner = async (
     renderer: options.silent ? 'silent' : 'default',
   })
     .run(context)
-    .then((res) => {
+    .then(() => {
+      if (context.handledCheckFailures.length) {
+        logger.warning(
+          `${context.handledCheckFailures.length} handled check failure${
+            context.handledCheckFailures.length > 1 ? 's' : ''
+          } occurred`
+        );
+        context.handledCheckFailures.forEach((error) => {
+          logger.warning(error.message);
+        });
+      }
       const duration = new Date().getTime() - start;
       logger.info(`Finished (${formatTime(duration)})`);
       process.exit(0);
