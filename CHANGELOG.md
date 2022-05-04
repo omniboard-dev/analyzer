@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.18.2](https://github.com/omniboard-dev/analyzer/compare/v2.18.1...v2.18.2) (2022-05-04)
+
+
+### Bug Fixes
+
+* **json-check:** handle json path failures in more robust way ([04d08c4](https://github.com/omniboard-dev/analyzer/commit/04d08c48ab9db995bec9c8643afc7fa812243d19))
+
 ### [2.18.1](https://github.com/omniboard-dev/analyzer/compare/v2.18.0...v2.18.1) (2022-03-25)
 
 
