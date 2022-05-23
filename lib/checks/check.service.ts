@@ -7,8 +7,8 @@ import { resolveActiveFlags } from '../utils/regexp';
 import * as fs from '../services/fs.service';
 
 export enum CheckResultSymbol {
-  FULFILLED = '✔️',
-  UNFULFILLED = '✖️',
+  FULFILLED = '✅',
+  UNFULFILLED = '❌',
   UNCHECKED = '➖',
   SKIPPED = '➖',
   ERROR = '⚠️',
