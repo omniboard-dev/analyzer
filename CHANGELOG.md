@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.19.0](https://github.com/omniboard-dev/analyzer/compare/v2.18.2...v2.19.0) (2022-05-23)
+
+
+### Features
+
+* **cli:** better contrast for analyzer feedback icons ([5adee1c](https://github.com/omniboard-dev/analyzer/commit/5adee1cbb26d3826a24303219535b07212c3ca25))
+
 ### [2.18.2](https://github.com/omniboard-dev/analyzer/compare/v2.18.1...v2.18.2) (2022-05-04)
 
 
