@@ -15,5 +15,9 @@ export const saveProjectApiTask: ListrTask = {
       return false;
     }
   },
-  task: (ctx, task) => api.uploadProject(ctx.processedResults),
+  task: async (ctx, task) => {
+    // try to prevent OOM in case of large result
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
+    return api.uploadProject(ctx.processedResults);
+  },
 };
