@@ -88,15 +88,12 @@ export const projectInfoTask: ListrTask = {
           title: 'Get project repository',
           skip: (ctx: Context) => ctx.control.skipEverySubsequentTask,
           task: async (ctx: Context, task) => {
-            let repositories: string[] = [];
-
-            if (ctx.results.info?.type === ProjectType.NPM) {
-              repositories = findProjectRepositoriesNpm();
-            } else if (ctx.results.info?.type === ProjectType.MAVEN) {
-              repositories = findProjectRepositoriesMaven();
-            } else {
-              repositories = findProjectRepositoriesRepo();
-            }
+            const repos = findProjectRepositoriesRepo();
+            const reposNpm = findProjectRepositoriesNpm();
+            const reposMaven = findProjectRepositoriesMaven();
+            const repositories = Array.from(
+              new Set([...repos, ...reposNpm, ...reposMaven])
+            );
 
             ctx.results.info = {
               ...ctx.results.info,
