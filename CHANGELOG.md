@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.21.0](https://github.com/omniboard-dev/analyzer/compare/v2.20.2...v2.21.0) (2023-01-03)
+
+
+### Features
+
+* **project-info:** sanitize tokens from repo url ([19864b0](https://github.com/omniboard-dev/analyzer/commit/19864b05b133852fda1387634de481f8ae715eb8))
+
 ### [2.20.2](https://github.com/omniboard-dev/analyzer/compare/v2.20.1...v2.20.2) (2023-01-03)
 
 
