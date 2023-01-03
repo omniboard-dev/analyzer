@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.20.2](https://github.com/omniboard-dev/analyzer/compare/v2.20.1...v2.20.2) (2023-01-03)
+
+
+### Bug Fixes
+
+* **project-info:** more explicit origin repo url matching ([e2f08dc](https://github.com/omniboard-dev/analyzer/commit/e2f08dc1e4fa8968e1889b971d504abceef391d3))
+
 ### [2.20.1](https://github.com/omniboard-dev/analyzer/compare/v2.20.0...v2.20.1) (2023-01-02)
 
 ## [2.20.0](https://github.com/omniboard-dev/analyzer/compare/v2.19.1...v2.20.0) (2023-01-02)
