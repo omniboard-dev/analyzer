@@ -8,6 +8,7 @@ export interface Options {
   apiUrl?: string;
   apiKey?: string;
   silent: boolean;
+  sanitizeRepoUrl: boolean;
 }
 
 export interface Context {

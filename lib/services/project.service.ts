@@ -60,18 +60,20 @@ export const findProjectNamesRepo = (): string[] => {
   return [currentFolderName()];
 };
 
-export const findProjectRepositoriesNpm = () => {
+export const findProjectRepositoriesNpm = (sanitizeRepoUrl: boolean) => {
   return Array.from(
     new Set(
       findPackageJsonFiles()
         .map((f) => readJson(f)?.repository?.url)
         .filter(Boolean)
-        .map((url) => sanitizeRepositoryUrl(url))
+        .map((url) => sanitizeRepositoryUrl(url, sanitizeRepoUrl))
     )
   );
 };
 
-export const findProjectRepositoriesMaven = (): string[] => {
+export const findProjectRepositoriesMaven = (
+  sanitizeRepoUrl: boolean
+): string[] => {
   return Array.from(
     new Set(
       findPomXmlFiles()
@@ -85,19 +87,21 @@ export const findProjectRepositoriesMaven = (): string[] => {
           )
         )
         .filter(Boolean)
-        .map((url) => sanitizeRepositoryUrl(url!.toString()))
+        .map((url) => sanitizeRepositoryUrl(url!.toString(), sanitizeRepoUrl))
     )
   );
 };
 
-export const findProjectRepositoriesRepo = (): string[] => {
+export const findProjectRepositoriesRepo = (
+  sanitizeRepoUrl: boolean
+): string[] => {
   const gitConfigPath = findFiles('.git/config')[0];
   const gitConfig = readFile(gitConfigPath);
   const repoUrl = /\[remote.?["']origin["']\]\n\s*url\s?=\s?(?<url>.*)/.exec(
     gitConfig
   )?.groups?.url;
   if (repoUrl && repoUrl.length) {
-    return [sanitizeRepositoryUrl(repoUrl)];
+    return [sanitizeRepositoryUrl(repoUrl, sanitizeRepoUrl)];
   } else {
     return [];
   }
@@ -129,10 +133,24 @@ function findSetupPyFiles() {
   );
 }
 
-function sanitizeRepositoryUrl(rawUrl: string) {
-  return rawUrl
+function sanitizeRepositoryUrl(rawUrl: string, sanitizeRepoUrl: boolean) {
+  let sanitizedUrl = rawUrl
     .replace(/^scm:.*?:/gi, '') // remove maven scm prefix
     .replace('git+', '')
     .replace('git@', 'https://')
     .replace(/(?<!https?):/gi, '/');
+
+  if (sanitizeRepoUrl && sanitizedUrl.includes('@')) {
+    const [, url] = sanitizedUrl.split('@');
+    let [domainName, ...path] = url.split('/');
+    if (domainName.includes('gitlab')) {
+      domainName = 'gitlab.com';
+    }
+    if (domainName.includes('github')) {
+      domainName = 'github.com';
+    }
+    return `https://${domainName}/${path.join('/')}`;
+  }
+
+  return sanitizedUrl;
 }

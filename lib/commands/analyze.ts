@@ -35,6 +35,12 @@ export const builder = (yargs: Argv) =>
       alias: 'cp',
       type: 'string',
       description: 'Only run checks matching provided pattern',
+    })
+    .option('sanitize-repo-url', {
+      alias: 'sru',
+      type: 'boolean',
+      default: true,
+      description: 'Try to sanitize auth tokens from repo urls',
     });
 
 export const handler = async (argv: any) =>
