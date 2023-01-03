@@ -93,7 +93,9 @@ export const findProjectRepositoriesMaven = (): string[] => {
 export const findProjectRepositoriesRepo = (): string[] => {
   const gitConfigPath = findFiles('.git/config')[0];
   const gitConfig = readFile(gitConfigPath);
-  const repoUrl = /\[remote.?["']origin["']\]\n\s*url\s?=\s?(?<url>.*)/.exec(gitConfig)?.groups?.url;
+  const repoUrl = /\[remote.?["']origin["']\]\n\s*url\s?=\s?(?<url>.*)/.exec(
+    gitConfig
+  )?.groups?.url;
   if (repoUrl && repoUrl.length) {
     return [sanitizeRepositoryUrl(repoUrl)];
   } else {
