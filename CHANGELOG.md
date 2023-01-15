@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.22.0](https://github.com/omniboard-dev/analyzer/compare/v2.21.0...v2.22.0) (2023-01-15)
+
+
+### Features
+
+* **project-info:** add custom project resolvers support ([adbeccd](https://github.com/omniboard-dev/analyzer/commit/adbeccd4a4450f0986ede52c50931b0923bd3552))
+
 ## [2.21.0](https://github.com/omniboard-dev/analyzer/compare/v2.20.2...v2.21.0) (2023-01-03)
 
 
