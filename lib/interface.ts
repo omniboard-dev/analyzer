@@ -17,6 +17,7 @@ export interface Context {
     skipEverySubsequentTask: boolean;
   };
   settings: {
+    customProjectResolvers?: CustomProjectResolver[];
     projectsMaxLimit?: number;
     checkResultSizeLimit?: number;
     totalCheckResultSizeLimit?: number;
@@ -37,10 +38,16 @@ export interface Context {
   processedResults?: any;
 }
 
+export interface CustomProjectResolver {
+  type: string;
+  filePattern: string;
+  projectNamePattern: string;
+}
+
 export interface ProjectInfo {
   name: string;
   names: string[];
-  type?: ProjectType;
+  type?: ProjectType | string;
   repository?: string;
   repositories?: string[];
   [key: string]: any;

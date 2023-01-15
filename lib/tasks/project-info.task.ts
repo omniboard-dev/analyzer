@@ -2,6 +2,7 @@ import { ListrTask } from 'listr2';
 
 import { Context, ProjectType } from '../interface';
 import {
+  findProjectNameCustomProjectResolver,
   findProjectNamesMaven,
   findProjectNamesNpm,
   findProjectNamesPip,
@@ -22,39 +23,57 @@ export const projectInfoTask: ListrTask = {
         {
           title: 'Get project name',
           task: (ctx: Context, task) => {
+            const { customProjectResolvers } = ctx.settings;
             let names: string[] = [];
-            if (isNpmWorkspace()) {
-              names = findProjectNamesNpm();
-              ctx.results.name = names[0];
-              ctx.results.info = {
-                type: ProjectType.NPM,
-                name: names[0],
-                names,
-              };
-            } else if (isMavenWorkspace()) {
-              names = findProjectNamesMaven();
-              ctx.results.name = names[0];
-              ctx.results.info = {
-                type: ProjectType.MAVEN,
-                name: names[0],
-                names,
-              };
-            } else if (isPipWorkspace()) {
-              names = findProjectNamesPip();
-              ctx.results.name = names[0];
-              ctx.results.info = {
-                type: ProjectType.PIP,
-                name: names[0],
-                names,
-              };
-            } else {
-              names = findProjectNamesRepo();
-              ctx.results.name = names[0];
-              ctx.results.info = {
-                type: ProjectType.REPO,
-                name: names[0],
-                names,
-              };
+            if (customProjectResolvers?.length) {
+              for (let resolver of customProjectResolvers) {
+                names = findProjectNameCustomProjectResolver(resolver);
+                if (names.length) {
+                  ctx.results.name = names[0];
+                  ctx.results.info = {
+                    type: resolver.type,
+                    name: names[0],
+                    names,
+                  };
+                  break;
+                }
+              }
+            }
+
+            if (!names.length) {
+              if (isNpmWorkspace()) {
+                names = findProjectNamesNpm();
+                ctx.results.name = names[0];
+                ctx.results.info = {
+                  type: ProjectType.NPM,
+                  name: names[0],
+                  names,
+                };
+              } else if (isMavenWorkspace()) {
+                names = findProjectNamesMaven();
+                ctx.results.name = names[0];
+                ctx.results.info = {
+                  type: ProjectType.MAVEN,
+                  name: names[0],
+                  names,
+                };
+              } else if (isPipWorkspace()) {
+                names = findProjectNamesPip();
+                ctx.results.name = names[0];
+                ctx.results.info = {
+                  type: ProjectType.PIP,
+                  name: names[0],
+                  names,
+                };
+              } else {
+                names = findProjectNamesRepo();
+                ctx.results.name = names[0];
+                ctx.results.info = {
+                  type: ProjectType.REPO,
+                  name: names[0],
+                  names,
+                };
+              }
             }
 
             if (!names.length) {

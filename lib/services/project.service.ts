@@ -1,4 +1,6 @@
 import xpath from 'xpath';
+
+import { CustomProjectResolver } from '../interface';
 import {
   findFiles,
   readJson,
@@ -132,6 +134,28 @@ function findSetupPyFiles() {
     PROJECT_INFO_TASK_PATTERN_FLAGS
   );
 }
+
+export const findProjectNameCustomProjectResolver = (
+  customProjectResolver: CustomProjectResolver
+): string[] => {
+  return Array.from(
+    new Set(
+      findFiles(
+        customProjectResolver.filePattern,
+        PROJECT_INFO_TASK_PATTERN_FLAGS,
+        PROJECT_INFO_TASK_EXCLUDE_PATTERN,
+        PROJECT_INFO_TASK_PATTERN_FLAGS
+      )
+    )
+  )
+    .map((f) => readFile(f))
+    .map(
+      (content) =>
+        new RegExp(customProjectResolver.projectNamePattern, 'i').exec(content)
+          ?.groups?.projectName!
+    )
+    .filter(Boolean);
+};
 
 function sanitizeRepositoryUrl(rawUrl: string, sanitizeRepoUrl: boolean) {
   let sanitizedUrl = rawUrl
