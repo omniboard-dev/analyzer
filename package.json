@@ -24,7 +24,7 @@
     "enquirer": "^2.3.6",
     "filesize": "^8.0.0",
     "global-agent": "^3.0.0",
-    "got": "^11.8.2",
+    "got": "^12.5.3",
     "jsonpath-plus": "^6.0.1",
     "listr2": "^3.14.0",
     "strip-json-comments": "^3.1.1",
