@@ -7,6 +7,7 @@ import { projectInfoTask } from '../tasks/project-info.task';
 import { saveProjectJsonTask } from '../tasks/save-project-json.task';
 import { prepareProjectDataTask } from '../tasks/prepare-project-data.task';
 import { printProjectCliOutputTask } from '../tasks/print-project-cli-output.task';
+import { handledCheckFailureInfoTask } from '../tasks/handled-check-failure-info.tast';
 
 const logger = createLogger('TEST CHECK');
 
@@ -43,6 +44,7 @@ export const handler = async (argv: any) =>
       prepareProjectDataTask,
       saveProjectJsonTask,
       printProjectCliOutputTask,
+      handledCheckFailureInfoTask,
     ],
     argv,
     logger

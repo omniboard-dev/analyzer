@@ -22,21 +22,11 @@ export const runner = async (
   };
   await new Listr(tasks, {
     rendererFallback: () => options?.verbose,
-    rendererOptions: { collapse: false, showTimer: true },
+    rendererOptions: { collapse: false, showTimer: true, formatOutput: 'wrap' },
     renderer: options.silent ? 'silent' : 'default',
   })
     .run(context)
     .then(() => {
-      if (context.handledCheckFailures.length) {
-        logger.warning(
-          `${context.handledCheckFailures.length} handled check failure${
-            context.handledCheckFailures.length > 1 ? 's' : ''
-          } occurred`
-        );
-        context.handledCheckFailures.forEach((error) => {
-          logger.warning(error.message);
-        });
-      }
       const duration = new Date().getTime() - start;
       logger.info(`Finished (${formatTime(duration)})`);
       process.exit(0);

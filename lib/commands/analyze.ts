@@ -9,6 +9,7 @@ import { saveProjectApiTask } from '../tasks/save-project-api.task';
 import { saveProjectJsonTask } from '../tasks/save-project-json.task';
 import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
 import { prepareProjectDataTask } from '../tasks/prepare-project-data.task';
+import { handledCheckFailureInfoTask } from '../tasks/handled-check-failure-info.tast';
 
 const logger = createLogger('ANALYZE');
 
@@ -53,6 +54,7 @@ export const handler = async (argv: any) =>
       prepareProjectDataTask,
       saveProjectJsonTask,
       saveProjectApiTask,
+      handledCheckFailureInfoTask,
     ],
     argv,
     logger
