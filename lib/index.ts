@@ -18,6 +18,7 @@ import yargs, { Argv } from 'yargs';
 import * as analyzeCommand from './commands/analyze';
 import * as testCheckCommand from './commands/test-check';
 import * as testConnectionCommand from './commands/test-connection';
+import * as batchCommand from './batch/batch';
 import { apiMiddleware } from './middlewares/api.middleware';
 import { loggerMiddleware } from './middlewares/logger.middleware';
 
@@ -29,6 +30,7 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
   .command(analyzeCommand)
   .command(testCheckCommand)
   .command(testConnectionCommand)
+  .command(batchCommand)
   .option('verbose', {
     type: 'boolean',
     default: false,

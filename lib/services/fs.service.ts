@@ -88,9 +88,9 @@ export function readXmlAsDom(
 
 export function writeJson(destinationPath: string, data: any) {
   const { base, dir } = path.parse(destinationPath);
-  const stringifiedData = JSON.stringify(data, null, 2);
+  const dataAsString = JSON.stringify(data, null, 2);
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(destinationPath, stringifiedData);
+  fs.writeFileSync(destinationPath, dataAsString);
 }
 
 export function readFile(path: string) {
@@ -104,4 +104,18 @@ export function getFileSize(path: string) {
 
 export function getHumanReadableFileSize(size: number) {
   return filesize(size);
+}
+
+export function ensureDirectoryExists(path: string) {
+  if (!fs.existsSync(path)) {
+    fs.mkdirSync(path, { recursive: true });
+  }
+}
+
+export function directoryExists(path: string) {
+  return fs.existsSync(path);
+}
+
+export function pathJoin(...parts: string[]) {
+  return path.join(...parts);
 }

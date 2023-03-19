@@ -9,6 +9,9 @@ export interface Options {
   apiKey?: string;
   silent: boolean;
   sanitizeRepoUrl: boolean;
+  // batch
+  jobPath: string;
+  workspacePath: string;
 }
 
 export interface Context {
@@ -36,6 +39,14 @@ export interface Context {
   };
   handledCheckFailures: Error[];
   processedResults?: any;
+  batchJob: BatchJob;
+}
+
+export interface BatchJob {
+  running: string;
+  queue: string[];
+  completed: string[];
+  failed: string[];
 }
 
 export interface CustomProjectResolver {

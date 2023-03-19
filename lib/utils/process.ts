@@ -19,6 +19,7 @@ export const runner = async (
     results: { checks: {} },
     definitions: {},
     handledCheckFailures: [],
+    batchJob: { running: '', queue: [], completed: [], failed: [] },
   };
   await new Listr(tasks, {
     rendererFallback: () => options?.verbose,
