@@ -12,9 +12,6 @@ export function initJobRepo(job: string): ListrTask {
   return {
     title: 'Init job repo',
     task: async (ctx: Context, task) => {
-      if (job.includes('b2c')) {
-        throw new Error('B2C not supported');
-      }
       const { workspacePath, verbose } = ctx.options;
       const repoName = getRepoNameFromUrl(job);
       const repoPath = pathJoin(workspacePath, repoName);
