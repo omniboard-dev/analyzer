@@ -1,12 +1,12 @@
 import * as fs from 'fs';
-import * as path from 'path';
+import * as p from 'path';
 import filesize from 'filesize';
 import { DOMParser } from 'xmldom';
 
 const REGEXP_MATCH_NOTHING = /a^/;
 
 export function currentFolderName(): string {
-  return path.basename(path.resolve(process.cwd()));
+  return p.basename(p.resolve(process.cwd()));
 }
 
 export function findFiles(
@@ -27,7 +27,7 @@ export function findFiles(
     const currentPath = stack.pop() as string;
     const paths = fs
       .readdirSync(currentPath)
-      .map((nextPath) => path.join(currentPath, nextPath));
+      .map((nextPath) => p.join(currentPath, nextPath));
     const dirs = paths.filter(
       (nextPath) =>
         !excludeRegexp.test(nextPath) && fs.lstatSync(nextPath).isDirectory()
@@ -87,7 +87,7 @@ export function readXmlAsDom(
 }
 
 export function writeJson(destinationPath: string, data: any) {
-  const { base, dir } = path.parse(destinationPath);
+  const { base, dir } = p.parse(destinationPath);
   const dataAsString = JSON.stringify(data, null, 2);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(destinationPath, dataAsString);
@@ -117,5 +117,19 @@ export function directoryExists(path: string) {
 }
 
 export function pathJoin(...parts: string[]) {
-  return path.join(...parts);
+  return p.join(...parts);
+}
+
+export function removeDirectoryRecursive(path: string) {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach((file) => {
+      const filePath = p.join(path, file);
+      if (fs.lstatSync(filePath).isDirectory()) {
+        removeDirectoryRecursive(filePath);
+      } else {
+        fs.unlinkSync(filePath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
 }

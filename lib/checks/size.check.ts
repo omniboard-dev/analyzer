@@ -3,14 +3,22 @@ import { ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
 import {
   BaseCheckDefinition,
   Context,
+  ParentTask,
   ProjectCheckSizeDetails,
 } from '../interface';
 import * as fs from '../services/fs.service';
 import { DEFAULT_EXCLUDE_FILES_PATTERN_SIZE } from '../consts';
 
-import { getCheckFiles, resolveCheckTaskFulfilledTitle } from './check.service';
+import {
+  getCheckFiles,
+  resolveCheckParentTaskProgress,
+  resolveCheckTaskFulfilledTitle,
+} from './check.service';
 
-export function sizeCheckTaskFactory(definition: BaseCheckDefinition) {
+export function sizeCheckTaskFactory(
+  definition: BaseCheckDefinition,
+  parentTask: ParentTask
+) {
   async function contentCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
@@ -44,6 +52,7 @@ export function sizeCheckTaskFactory(definition: BaseCheckDefinition) {
       },
     };
     task.title = task.title = resolveCheckTaskFulfilledTitle(task, files);
+    resolveCheckParentTaskProgress(parentTask);
   }
   return contentCheckTask;
 }

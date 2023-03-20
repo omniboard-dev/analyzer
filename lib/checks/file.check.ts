@@ -1,11 +1,18 @@
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
-import { ContentCheckDefinition, Context } from '../interface';
+import { ContentCheckDefinition, Context, ParentTask } from '../interface';
 import { DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT } from '../consts';
 
-import { CheckResultSymbol, getCheckFiles } from './check.service';
+import {
+  CheckResultSymbol,
+  getCheckFiles,
+  resolveCheckParentTaskProgress,
+} from './check.service';
 
-export function fileCheckTaskFactory(definition: ContentCheckDefinition) {
+export function fileCheckTaskFactory(
+  definition: ContentCheckDefinition,
+  parentTask: ParentTask
+) {
   async function fileCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
@@ -25,6 +32,7 @@ export function fileCheckTaskFactory(definition: ContentCheckDefinition) {
         value: false,
       };
       task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+      resolveCheckParentTaskProgress(parentTask);
       return;
     } else {
       ctx.results.checks![name] = {
@@ -37,6 +45,7 @@ export function fileCheckTaskFactory(definition: ContentCheckDefinition) {
         })),
       };
       task.title = `${CheckResultSymbol.FULFILLED} ${task.title}`;
+      resolveCheckParentTaskProgress(parentTask);
     }
   }
   return fileCheckTask;

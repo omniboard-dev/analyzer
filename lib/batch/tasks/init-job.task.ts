@@ -1,10 +1,9 @@
 import { ListrTask } from 'listr2';
 
-import { BatchJob, Context } from '../../interface';
+import { Batch, Context } from '../../interface';
 import { readJson, writeJson } from '../../services/fs.service';
 
-const DEFAULT_JOB: BatchJob = {
-  running: '',
+const DEFAULT_JOB: Batch = {
   queue: [],
   completed: [],
   failed: [],
@@ -18,10 +17,13 @@ export const initJobTask: ListrTask = {
     if (!job) {
       job = DEFAULT_JOB;
       writeJson(jobPath, job);
-      task.title = `${task.title} - created new job file at ${jobPath}`;
+      task.title = `${task.title} successful, created new job file at ${jobPath}`;
     } else {
-      task.title = `${task.title} successful, found ${job.queue?.length} jobs`;
+      task.title = `${task.title} successful, found ${jobPath} with ${job.queue?.length} jobs`;
     }
-    ctx.batchJob = job;
+    ctx.batch = job;
+    if (!ctx.batch.queue?.length) {
+      ctx.control.skipEverySubsequentTask = true;
+    }
   },
 };

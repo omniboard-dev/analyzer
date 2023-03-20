@@ -3,6 +3,7 @@ import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 import {
   ContentCheckDefinition,
   Context,
+  ParentTask,
   ProjectCheckMatch,
   ProjectCheckMatchDetails,
 } from '../interface';
@@ -16,12 +17,16 @@ import * as fs from '../services/fs.service';
 import {
   CheckResultSymbol,
   getCheckFiles,
+  resolveCheckParentTaskProgress,
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
 
 const DEFAULT_CONTENT_PATTERN_FLAGS = 'ig';
 
-export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
+export function contentCheckTaskFactory(
+  definition: ContentCheckDefinition,
+  parentTask: ParentTask
+) {
   async function contentCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
@@ -41,6 +46,7 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
         value: false,
       };
       task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+      resolveCheckParentTaskProgress(parentTask);
       return;
     }
 
@@ -97,6 +103,7 @@ export function contentCheckTaskFactory(definition: ContentCheckDefinition) {
             matches,
           };
           task.title = resolveCheckTaskFulfilledTitle(task, matches);
+          resolveCheckParentTaskProgress(parentTask);
           resolve();
         }
       }

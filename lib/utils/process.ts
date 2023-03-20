@@ -14,16 +14,20 @@ export const runner = async (
   logger.info('Start');
   const context: Context = {
     options,
-    control: { skipEverySubsequentTask: false },
     settings: {},
-    results: { checks: {} },
     definitions: {},
+    control: { skipEverySubsequentTask: false },
+    results: { checks: {} },
     handledCheckFailures: [],
-    batchJob: { running: '', queue: [], completed: [], failed: [] },
+    batch: { queue: [], completed: [], failed: [] },
   };
   await new Listr(tasks, {
-    rendererFallback: () => options?.verbose,
-    rendererOptions: { collapse: false, showTimer: true, formatOutput: 'wrap' },
+    rendererFallback: () => options.verbose,
+    rendererOptions: {
+      collapse: false,
+      showTimer: true,
+      formatOutput: 'wrap',
+    },
     renderer: options.silent ? 'silent' : 'default',
   })
     .run(context)

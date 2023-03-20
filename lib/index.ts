@@ -36,6 +36,16 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
     default: false,
     description: 'Display debug level logs',
   })
+  .option('silent', {
+    type: 'boolean',
+    default: false,
+    description: 'Silences the renderer.',
+  })
+  .option('show-check-subtasks', {
+    type: 'boolean',
+    default: false,
+    description: 'Show checks subtasks in log output',
+  })
   .option('api-key', {
     alias: 'ak',
     describe: 'API key generated in the Omniboard.dev app',
@@ -52,11 +62,7 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
     description:
       'Exit with success (0) even in case of errors and log them as warnings',
   })
-  .option('silent', {
-    type: 'boolean',
-    default: false,
-    description: 'Silences the renderer.',
-  })
+
   .alias('v', 'version')
   .alias('h', 'help')
   .epilogue(

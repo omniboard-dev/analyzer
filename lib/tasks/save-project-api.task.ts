@@ -4,7 +4,7 @@ import { Context } from '../interface';
 import * as api from '../services/api.service';
 
 export const saveProjectApiTask: ListrTask = {
-  title: 'Save project (Omniboard.dev)',
+  title: 'Save project results (Omniboard.dev)',
   skip: (ctx: Context) => {
     if (ctx.control.skipEverySubsequentTask) {
       return true;
@@ -18,6 +18,6 @@ export const saveProjectApiTask: ListrTask = {
   task: async (ctx, task) => {
     // try to prevent OOM in case of large result
     await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
-    return api.uploadProject(ctx.processedResults);
+    return api.uploadProject(ctx.results);
   },
 };

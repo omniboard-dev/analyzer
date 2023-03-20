@@ -1,17 +1,31 @@
 export interface Options {
+  //process
+  errorsAsWarnings: boolean;
+
+  // logging
+  silent: boolean;
   verbose: boolean;
+  showCheckSubtasks: boolean;
+
+  // results as local json
   json: boolean;
   jsonPath: string;
-  errorsAsWarnings: boolean;
-  checkPattern?: string;
-  checkDefinition?: string;
+
+  // api
   apiUrl?: string;
   apiKey?: string;
-  silent: boolean;
+
+  // analysis and checks
+  checkPattern?: string;
+  checkDefinition?: string;
+
+  // security
   sanitizeRepoUrl: boolean;
+
   // batch
   jobPath: string;
   workspacePath: string;
+  preserveQueue: boolean;
 }
 
 export interface Context {
@@ -39,11 +53,10 @@ export interface Context {
   };
   handledCheckFailures: Error[];
   processedResults?: any;
-  batchJob: BatchJob;
+  batch: Batch;
 }
 
-export interface BatchJob {
-  running: string;
+export interface Batch {
   queue: string[];
   completed: string[];
   failed: string[];
@@ -135,4 +148,8 @@ export enum ProjectType {
   MAVEN = 'MAVEN',
   PIP = 'pip',
   REPO = 'repo',
+}
+
+export interface ParentTask {
+  title: string;
 }

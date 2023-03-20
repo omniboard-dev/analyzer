@@ -2,7 +2,7 @@ import {
   DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS,
   DEFAULT_INCLUDE_FILES_FLAG,
 } from '../consts';
-import { BaseCheckDefinition } from '../interface';
+import { BaseCheckDefinition, ParentTask } from '../interface';
 import { resolveActiveFlags } from '../utils/regexp';
 import * as fs from '../services/fs.service';
 
@@ -23,6 +23,12 @@ export function resolveCheckTaskFulfilledTitle(
       ? CheckResultSymbol.FULFILLED
       : CheckResultSymbol.UNFULFILLED
   } ${title}${matches.length > 0 ? `, found matches: ${matches.length}` : ''}`;
+}
+
+export function resolveCheckParentTaskProgress(parentTask: ParentTask) {
+  const regexp = /(?<current>\d*)\//;
+  const current = regexp.exec(parentTask.title)?.groups?.current ?? 0;
+  parentTask.title = parentTask.title.replace(regexp, `${+current + 1}/`);
 }
 
 export function getCheckFiles(

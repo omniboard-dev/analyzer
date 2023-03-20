@@ -6,8 +6,13 @@ import { runJobTaskFactory } from './run-job.task';
 
 export const runJobsTask: ListrTask = {
   title: 'Run jobs',
+  skip: (ctx: Context) => ctx.control.skipEverySubsequentTask,
   task: async (ctx: Context, task) =>
     task.newListr(
-      ctx.batchJob.queue.map((queuedJob) => runJobTaskFactory(queuedJob))
+      ctx.batch.queue.map((queuedJob) => runJobTaskFactory(queuedJob)),
+      {
+        exitOnError: false,
+        exitAfterRollback: false,
+      }
     ),
 };

@@ -6,17 +6,23 @@ import {
   DEFAULT_CHECK_EXECUTION_TIMEOUT,
   DEFAULT_EXCLUDE_FILES_PATTERN_XPATH,
 } from '../consts';
-import { XPathCheckDefinition, Context, ProjectCheckMatch } from '../interface';
+import {
+  XPathCheckDefinition,
+  Context,
+  ProjectCheckMatch,
+  ParentTask,
+} from '../interface';
 
 import {
   CheckResultSymbol,
   getCheckFiles,
+  resolveCheckParentTaskProgress,
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
 
 export function xpathCheckTaskFactory(
   definition: XPathCheckDefinition,
-  ctx: Context
+  parentTask: ParentTask
 ) {
   async function xpathCheckTask(
     ctx: Context,
@@ -37,6 +43,7 @@ export function xpathCheckTaskFactory(
         value: false,
       };
       task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+      resolveCheckParentTaskProgress(parentTask);
       return;
     }
 
@@ -100,6 +107,7 @@ export function xpathCheckTaskFactory(
             matches,
           };
           task.title = resolveCheckTaskFulfilledTitle(task, matches);
+          resolveCheckParentTaskProgress(parentTask);
           resolve();
         }
       }

@@ -7,16 +7,25 @@ import {
   DEFAULT_CHECK_EXECUTION_TIMEOUT,
   DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT,
 } from '../consts';
-import { Context, JSONCheckDefinition, ProjectCheckMatch } from '../interface';
+import {
+  Context,
+  JSONCheckDefinition,
+  ParentTask,
+  ProjectCheckMatch,
+} from '../interface';
 import * as fs from '../services/fs.service';
 
 import {
   CheckResultSymbol,
   getCheckFiles,
+  resolveCheckParentTaskProgress,
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
 
-export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
+export function jsonCheckTaskFactory(
+  definition: JSONCheckDefinition,
+  parentTask: ParentTask
+) {
   async function jsonCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
@@ -37,6 +46,7 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
         value: false,
       };
       task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+      resolveCheckParentTaskProgress(parentTask);
       return;
     }
 
@@ -76,6 +86,7 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
               resolve();
             }
             task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
+            resolveCheckParentTaskProgress(parentTask);
             return;
           }
 
@@ -104,6 +115,7 @@ export function jsonCheckTaskFactory(definition: JSONCheckDefinition) {
             task.title = errors.length
               ? errors.map((e) => e.message).join(',')
               : resolveCheckTaskFulfilledTitle(task, matches);
+            resolveCheckParentTaskProgress(parentTask);
 
             resolve();
           }

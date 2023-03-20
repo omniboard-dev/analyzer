@@ -2,14 +2,13 @@ import { Argv } from 'yargs';
 
 import { runner } from '../utils/process';
 import { createLogger } from '../services/logger.service';
-import { runChecksTask } from '../tasks/run-checks.task';
 import { projectInfoTask } from '../tasks/project-info.task';
 import { retrieveChecksTask } from '../tasks/retrieve-checks.task';
 import { saveProjectApiTask } from '../tasks/save-project-api.task';
 import { saveProjectJsonTask } from '../tasks/save-project-json.task';
 import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
-import { prepareProjectDataTask } from '../tasks/prepare-project-data.task';
 import { handledCheckFailureInfoTask } from '../tasks/handled-check-failure-info.tast';
+import { runChecksWrapperTask } from '../tasks/run-checks-wrapper.task';
 
 const logger = createLogger('ANALYZE');
 
@@ -25,12 +24,12 @@ export const builder = (yargs: Argv) =>
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store data in local json file',
+      description: 'Store results data in local json file',
     })
     .option('json-path', {
       type: 'string',
       default: './dist/omniboard.json',
-      description: 'Location of local json file',
+      description: 'Location of results data local json file',
     })
     .option('check-pattern', {
       alias: 'cp',
@@ -50,8 +49,7 @@ export const handler = async (argv: any) =>
       retrieveSettingsTask,
       projectInfoTask,
       retrieveChecksTask,
-      runChecksTask,
-      prepareProjectDataTask,
+      runChecksWrapperTask,
       saveProjectJsonTask,
       saveProjectApiTask,
       handledCheckFailureInfoTask,

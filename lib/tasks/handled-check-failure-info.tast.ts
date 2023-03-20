@@ -4,7 +4,7 @@ import { ListrTask } from 'listr2';
 import { Context } from '../interface';
 
 export const handledCheckFailureInfoTask: ListrTask = {
-  title: 'Handled check failure info',
+  title: 'Print handled check failure info',
   skip: (ctx: Context) => ctx.control.skipEverySubsequentTask,
   task: (ctx: Context, task) => {
     if (ctx.handledCheckFailures.length) {

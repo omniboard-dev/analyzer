@@ -5,7 +5,6 @@ import { createLogger } from '../services/logger.service';
 import { runChecksTask } from '../tasks/run-checks.task';
 import { projectInfoTask } from '../tasks/project-info.task';
 import { saveProjectJsonTask } from '../tasks/save-project-json.task';
-import { prepareProjectDataTask } from '../tasks/prepare-project-data.task';
 import { printProjectCliOutputTask } from '../tasks/print-project-cli-output.task';
 import { handledCheckFailureInfoTask } from '../tasks/handled-check-failure-info.tast';
 
@@ -41,7 +40,6 @@ export const handler = async (argv: any) =>
     [
       projectInfoTask,
       runChecksTask,
-      prepareProjectDataTask,
       saveProjectJsonTask,
       printProjectCliOutputTask,
       handledCheckFailureInfoTask,
