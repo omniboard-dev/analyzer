@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.23.2](https://github.com/omniboard-dev/analyzer/compare/v2.23.1...v2.23.2) (2023-03-20)
+
+
+### Bug Fixes
+
+* **batch:** cleanup redundant results property ([7d0648b](https://github.com/omniboard-dev/analyzer/commit/7d0648b072e1e03467d7dd619cbfde39a96317d2))
+
 ### [2.23.1](https://github.com/omniboard-dev/analyzer/compare/v2.23.0...v2.23.1) (2023-03-20)
 
 
