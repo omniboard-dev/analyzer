@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.23.0](https://github.com/omniboard-dev/analyzer/compare/v2.22.0...v2.23.0) (2023-03-20)
+
+
+### Features
+
+* **batch:** add batch capability ([a57068d](https://github.com/omniboard-dev/analyzer/commit/a57068d2754dcb048d33b41cb93d2aa4eea16397))
+* **batch:** batch feature skeleton ([237fa06](https://github.com/omniboard-dev/analyzer/commit/237fa06c9fb297da0b875d17758cce676062ddbd))
+* **handle-check-failure:** extract as separate task (from process) ([1d1aa91](https://github.com/omniboard-dev/analyzer/commit/1d1aa915f6f3583654c002c6cf5399126cb5a8a9))
+
 ## [2.22.0](https://github.com/omniboard-dev/analyzer/compare/v2.21.0...v2.22.0) (2023-01-15)
 
 
