@@ -11,7 +11,7 @@ export function batchSaveProjectJsonTaskFactory(job: string): ListrTask {
     enabled: (ctx: Context) => ctx.options.json,
     task: async (ctx: Context, task) => {
       const path = `../_dist/${getRepoNameFromUrl(job)}.json`;
-      fs.writeJson(path, ctx.processedResults);
+      fs.writeJson(path, ctx.results);
       task.title = `${task.title}, saved to: ${path}`;
     },
   };

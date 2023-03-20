@@ -52,7 +52,6 @@ export interface Context {
     };
   };
   handledCheckFailures: Error[];
-  processedResults?: any;
   batch: Batch;
 }
 

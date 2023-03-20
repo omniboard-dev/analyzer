@@ -14,7 +14,6 @@ export function finalizeJobTaskFactory(
       ctx.control = { skipEverySubsequentTask: false };
       ctx.results = { checks: {} };
       ctx.handledCheckFailures = [];
-      ctx.processedResults = undefined;
 
       // reset cwd
       process.chdir('../../');
