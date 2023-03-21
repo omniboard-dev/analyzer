@@ -7,6 +7,7 @@ export const testConnectionTask: ListrTask = {
   title: 'Test connection',
   skip: (ctx: Context) => {
     if (!process.env.OMNIBOARD_API_KEY && !ctx.options.apiKey) {
+      ctx.control.skipEverySubsequentTask = true;
       return `Please provide --api-key argument or OMNIBOARD_API_KEY env variable`;
     } else {
       return false;

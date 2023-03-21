@@ -10,6 +10,7 @@ export const retrieveSettingsTask: ListrTask = {
       return true;
     }
     if (!process.env.OMNIBOARD_API_KEY && !ctx.options.apiKey) {
+      ctx.control.skipEverySubsequentTask = true;
       return `Please provide --api-key argument or OMNIBOARD_API_KEY env variable`;
     } else {
       return false;
