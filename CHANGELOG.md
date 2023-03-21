@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.23.3](https://github.com/omniboard-dev/analyzer/compare/v2.23.2...v2.23.3) (2023-03-21)
+
+
+### Bug Fixes
+
+* skip all tasks if no API key was found, shallow git pull ([26bac60](https://github.com/omniboard-dev/analyzer/commit/26bac601482afddd37bcf030cb752474e98c2b4e))
+
 ### [2.23.2](https://github.com/omniboard-dev/analyzer/compare/v2.23.1...v2.23.2) (2023-03-20)
 
 
