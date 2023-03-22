@@ -9,6 +9,7 @@ import { saveProjectApiTask } from '../../tasks/save-project-api.task';
 import { runChecksWrapperTask } from '../../tasks/run-checks-wrapper.task';
 
 import { initJobRepo } from './init-job-repo.task';
+import { initJobStateTask } from './init-job-state.task';
 import { finalizeJobTaskFactory } from './finalize-job.task';
 import { batchSaveProjectJsonTaskFactory } from './batch-save-project-json.task';
 
@@ -29,6 +30,7 @@ export function runJobTaskFactory(job: string): ListrTask {
     task: async (ctx: Context, task) => {
       return task.newListr(
         [
+          initJobStateTask,
           initJobRepo(job),
           projectInfoTask,
           runChecksWrapperTask,
