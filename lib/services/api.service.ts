@@ -1,6 +1,7 @@
 import got, { Got } from 'got';
 
 import { createLogger } from './logger.service';
+import * as process from 'process';
 
 let api: Got;
 const logger = createLogger('API SERVICE');
@@ -24,10 +25,24 @@ export const createApiService = (argv: any) => {
       ? 'http://localhost:8080'
       : apiUrl ?? 'https://api.omniboard.dev',
     headers: {
+      'Content-Type': 'application/json',
       'omniboard-api-key': key,
     },
     hooks: {
       beforeRequest: debug ? [(options) => logger.info(options)] : [],
+      beforeError: [
+        error => {
+          const {response} = error;
+          if (response) {
+            let body: any = response.body;
+            if (body) {
+              error.name = `${body.error} ${body.statusCode}`;
+              error.message = `${body.message}`;
+            }
+          }
+          return error;
+        }
+      ]
     },
   });
 };
