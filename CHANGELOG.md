@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.24.0](https://github.com/omniboard-dev/analyzer/compare/v2.23.3...v2.24.0) (2023-03-22)
+
+
+### Features
+
+* **api:** properly forward API errors to the terminal ([912a9ca](https://github.com/omniboard-dev/analyzer/commit/912a9ca2203f6bbf89029f99b30f0713e1153209))
+* **batch:** context at the start of each job (to handle jobs that follow after failed jobs) ([529f2bd](https://github.com/omniboard-dev/analyzer/commit/529f2bdf0625fd5753118a1aea67b5fe54b29a22))
+* **batch:** try to re-clone repo if pull failed ([83fd23f](https://github.com/omniboard-dev/analyzer/commit/83fd23f9aefdb3286125d9b60c8f2c93b73fa741))
+* **save-project-api:** print uploaded payload size ([93678b9](https://github.com/omniboard-dev/analyzer/commit/93678b9d3b0eb14c3304461fd8d5957b0006c048))
+
 ### [2.23.3](https://github.com/omniboard-dev/analyzer/compare/v2.23.2...v2.23.3) (2023-03-21)
 
 
