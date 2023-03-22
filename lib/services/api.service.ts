@@ -31,8 +31,8 @@ export const createApiService = (argv: any) => {
     hooks: {
       beforeRequest: debug ? [(options) => logger.info(options)] : [],
       beforeError: [
-        error => {
-          const {response} = error;
+        (error) => {
+          const { response } = error;
           if (response) {
             let body: any = response.body;
             if (body) {
@@ -41,8 +41,8 @@ export const createApiService = (argv: any) => {
             }
           }
           return error;
-        }
-      ]
+        },
+      ],
     },
   });
 };
