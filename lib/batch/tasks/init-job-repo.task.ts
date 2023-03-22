@@ -6,7 +6,11 @@ import {
   pullLatest,
 } from '../../services/git.service';
 import { Context } from '../../interface';
-import { directoryExists, pathJoin } from '../../services/fs.service';
+import {
+  directoryExists,
+  pathJoin,
+  removeDirectoryRecursive,
+} from '../../services/fs.service';
 
 export function initJobRepo(job: string): ListrTask {
   return {
@@ -19,8 +23,15 @@ export function initJobRepo(job: string): ListrTask {
         await cloneRepo(job, workspacePath);
         task.title = `${task.title}, cloned`;
       } else {
-        await pullLatest(repoPath);
-        task.title = `${task.title}, updated`;
+        try {
+          await pullLatest(repoPath);
+          task.title = `${task.title}, updated`;
+        } catch (error) {
+          task.title = `${task.title}, git pull failed, remove and retry to clone`;
+          removeDirectoryRecursive(repoPath);
+          await cloneRepo(job, workspacePath);
+          task.title = `${task.title}, cloned`;
+        }
       }
       process.chdir(repoPath);
     },
