@@ -18,7 +18,7 @@
 
 ### Run in projects
 
-Make sure you have already set `OMNIBOARD_API_KEY` environment variable in the given environment
+Make sure you have already set `OMNIBOARD_API_KEY` environment variable in the given environment (CI) or pass it in using `--api-key` flag when running `omniboard` command locally
 
 1. install it using `npm i -D @omniboard/analyzer` in the project we want to analyze (dev dependency)
 2. run it using `npx omniboard` (or run `omniboard` as a npm script, eg `"postbuild": "omniboard""`)
@@ -31,21 +31,6 @@ or
 
 - `npm i -g @omniboard/analyzer` - install it globally to be able to run `omniboard` in any path without waiting for npx install
 
-## Global options
-
-Run `omniboard --help` for list of all supported commands and options (`omniboard <command> --help`, provides even more details)
-
-- `--help` - print help
-- `--verbose` - print debug log statements
-- `--silent` - silences the renderer
-- `--show-check-subtasks` - Show checks subtasks in log output (collapsed by default)
-- `--errors-as-warnings` - exit with success (0) even in case of errors and log them as warnings (useful for CI)
-- `--api-key` - pass in API key when not set as an environment variable
-- `--api-url` - pass in URL of the on-prem Omniboard instance (for custom enterprise plans only)
-- `--json` - store data in local json file
-- `--json-path` - location of local json file
-- `--check-pattern` - only run checks matching provided pattern
-- `--sanitize-repo-url` - try to sanitize auth tokens from repo urls
 
 ## Commands
 
@@ -75,6 +60,22 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 2. batch will run `omniboard analyze` in the cloned repository
 3. batch will remove repository from the queue into `done` array (or `failed` array in case of error), you can use `--preserve-queue` flag to enable multiple runs of the same job file
 4. batch will repeat steps 1-3 until every repository from the queue is processed
+
+## Global options
+
+Run `omniboard --help` for list of all supported commands and options (`omniboard <command> --help`, provides even more details)
+
+- `--help` - print help
+- `--verbose` - print debug log statements
+- `--silent` - silences the renderer
+- `--show-check-subtasks` - Show checks subtasks in log output (collapsed by default)
+- `--errors-as-warnings` - exit with success (0) even in case of errors and log them as warnings (useful for CI)
+- `--api-key` - pass in API key when not set as an environment variable
+- `--api-url` - pass in URL of the on-prem Omniboard instance (for custom enterprise plans only)
+- `--json` - store data in local json file
+- `--json-path` - location of local json file
+- `--check-pattern` - only run checks matching provided pattern
+- `--sanitize-repo-url` - try to sanitize auth tokens from repo urls
 
 ## FAQ
 
