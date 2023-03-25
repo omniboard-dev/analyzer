@@ -16,7 +16,7 @@ export const command = 'batch';
 export const aliases = ['b'];
 
 export const describe =
-  'Check out and analyze multiple project repositories and upload results to Omniboard.dev';
+  'Clone (or update) and analyze multiple project repositories and upload results to Omniboard.dev';
 
 export const builder = (yargs: Argv) =>
   yargs
