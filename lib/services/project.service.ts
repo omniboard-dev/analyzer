@@ -98,6 +98,9 @@ export const findProjectRepositoriesRepo = (
   sanitizeRepoUrl: boolean
 ): string[] => {
   const gitConfigPath = findFiles('.git/config')[0];
+  if (!gitConfigPath) {
+    return [];
+  }
   const gitConfig = readFile(gitConfigPath);
   const repoUrl = /\[remote.?["']origin["']\]\n\s*url\s?=\s?(?<url>.*)/.exec(
     gitConfig
@@ -107,6 +110,7 @@ export const findProjectRepositoriesRepo = (
   } else {
     return [];
   }
+  return [];
 };
 
 function findPackageJsonFiles() {
