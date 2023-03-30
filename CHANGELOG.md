@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.24.1](https://github.com/omniboard-dev/analyzer/compare/v2.24.0...v2.24.1) (2023-03-30)
+
+
+### Bug Fixes
+
+* resolve project repos from .git robustness, npm audit fixes ([dd162f5](https://github.com/omniboard-dev/analyzer/commit/dd162f56531a6be4646b8695ddc2bdf162760f46))
+
 ## [2.24.0](https://github.com/omniboard-dev/analyzer/compare/v2.23.3...v2.24.0) (2023-03-22)
 
 
