@@ -21,7 +21,7 @@ import { jsonCheckTaskFactory } from '../checks/json.check';
 const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 
 export const runChecksTask: ListrTask = {
-  title: '',
+  title: 'Run checks',
   skip: (ctx: Context) => {
     if (ctx.control.skipEverySubsequentTask) {
       return true;
@@ -37,7 +37,7 @@ export const runChecksTask: ListrTask = {
   },
   task: async (ctx: Context, task) => {
     const checkTasks = buildTasks(ctx, task);
-    task.title += `${checkTasks.length} applicable checks found, 0/${checkTasks.length}`;
+    task.title += `, ${checkTasks.length} applicable checks found, 0/${checkTasks.length}`;
     return task.newListr(checkTasks, {
       concurrent: checkTasks?.length < 100,
     });
