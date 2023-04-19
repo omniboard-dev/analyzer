@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.24.8](https://github.com/omniboard-dev/analyzer/compare/v2.24.7...v2.24.8) (2023-04-19)
+
+
+### Bug Fixes
+
+* improve batch run checks task description ([5b1d4b4](https://github.com/omniboard-dev/analyzer/commit/5b1d4b4a8109bbb3463674395f8e90a9417f0ff8))
+
 ### [2.24.7](https://github.com/omniboard-dev/analyzer/compare/v2.24.6...v2.24.7) (2023-04-19)
 
 
