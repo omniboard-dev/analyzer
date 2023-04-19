@@ -19,7 +19,7 @@ export const saveProjectApiTask: ListrTask = {
   },
   task: async (ctx, task) => {
     // try to prevent OOM in case of large result
-    await new Promise<void>((resolve) => setTimeout(() => resolve(), 500 ));
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
     return api.uploadProject(ctx.results).then(() => {
       task.title = `${task.title} successful, ${getHumanReadableFileSize(
         Buffer.byteLength(JSON.stringify(ctx.results), 'utf8')
