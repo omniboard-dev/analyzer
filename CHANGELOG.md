@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.24.7](https://github.com/omniboard-dev/analyzer/compare/v2.24.6...v2.24.7) (2023-04-19)
+
+
+### Bug Fixes
+
+* batch job failure handling (and rollback), batch job end stats ([dcf08a5](https://github.com/omniboard-dev/analyzer/commit/dcf08a524c9577b202f162ab39685dd9e45c56a7))
+
 ### [2.24.6](https://github.com/omniboard-dev/analyzer/compare/v2.24.5...v2.24.6) (2023-04-19)
 
 

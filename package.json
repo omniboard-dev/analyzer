@@ -1,6 +1,6 @@
 {
   "name": "@omniboard/analyzer",
-  "version": "2.24.6",
+  "version": "2.24.7",
   "description": "",
   "main": "dist/index.js",
   "private": false,
