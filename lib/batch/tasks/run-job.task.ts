@@ -1,5 +1,6 @@
 import { ListrTask } from 'listr2';
 
+import { wait } from '../../utils/wait';
 import { Context } from '../../interface';
 import { writeJson } from '../../services/fs.service';
 import { getRepoNameFromUrl } from '../../services/git.service';
@@ -16,7 +17,8 @@ import { batchSaveProjectJsonTaskFactory } from './batch-save-project-json.task'
 export function runJobTaskFactory(job: string): ListrTask {
   return {
     title: `${getRepoNameFromUrl(job)}`,
-    rollback: (ctx: Context, task) => {
+    rollback: async (ctx: Context, task) => {
+      await wait();
       // update batch state
       if (!ctx.options.preserveQueue) {
         ctx.batch.failed.push(job);

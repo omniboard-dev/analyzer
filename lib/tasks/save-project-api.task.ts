@@ -3,6 +3,7 @@ import { ListrTask } from 'listr2';
 import * as api from '../services/api.service';
 import { Context } from '../interface';
 import { getHumanReadableFileSize } from '../services/fs.service';
+import { wait } from "../utils/wait";
 
 export const saveProjectApiTask: ListrTask = {
   title: 'Save project results (Omniboard.dev)',
@@ -18,8 +19,7 @@ export const saveProjectApiTask: ListrTask = {
     }
   },
   task: async (ctx, task) => {
-    // try to prevent OOM in case of large result
-    await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
+    await wait();
     return api.uploadProject(ctx.results).then(() => {
       task.title = `${task.title} successful, ${getHumanReadableFileSize(
         Buffer.byteLength(JSON.stringify(ctx.results), 'utf8')
