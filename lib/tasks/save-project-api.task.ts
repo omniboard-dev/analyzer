@@ -3,7 +3,7 @@ import { ListrTask } from 'listr2';
 import * as api from '../services/api.service';
 import { Context } from '../interface';
 import { getHumanReadableFileSize } from '../services/fs.service';
-import { wait } from "../utils/wait";
+import { wait } from '../utils/wait';
 
 export const saveProjectApiTask: ListrTask = {
   title: 'Save project results (Omniboard.dev)',
