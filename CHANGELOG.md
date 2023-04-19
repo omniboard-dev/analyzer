@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.24.3](https://github.com/omniboard-dev/analyzer/compare/v2.24.2...v2.24.3) (2023-04-19)
+
+
+### Bug Fixes
+
+* try ho handle failure OOM ([cb187e7](https://github.com/omniboard-dev/analyzer/commit/cb187e7a4a00c102b9455e24b6c451951d2807ff))
+
 ### [2.24.2](https://github.com/omniboard-dev/analyzer/compare/v2.24.1...v2.24.2) (2023-04-19)
 
 ### [2.24.1](https://github.com/omniboard-dev/analyzer/compare/v2.24.0...v2.24.1) (2023-03-30)
