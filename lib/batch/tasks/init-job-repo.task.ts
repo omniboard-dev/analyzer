@@ -38,7 +38,7 @@ export function initJobRepo(job: string): ListrTask {
         process.chdir(repoPath);
       } catch (error: any) {
         await wait();
-        throw new error();
+        throw error;
       }
     },
   };
