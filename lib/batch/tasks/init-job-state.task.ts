@@ -16,6 +16,9 @@ export const initJobStateTask: ListrTask = {
       process.chdir('../../');
     }
 
+    // try to prevent OOM
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     task.title = `${task.title} successful`;
   },
 };
