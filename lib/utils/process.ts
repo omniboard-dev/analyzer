@@ -20,15 +20,20 @@ export const runner = async (
     results: { checks: {} },
     handledCheckFailures: [],
     batch: { queue: [], completed: [], failed: [] },
+    debug: {},
   };
   await new Listr(tasks, {
-    rendererFallback: () => options.verbose,
+    fallbackRenderer: 'verbose',
     rendererOptions: {
       collapse: false,
       showTimer: true,
       formatOutput: 'wrap',
     },
-    renderer: options.silent ? 'silent' : 'default',
+    renderer: options.silent
+      ? 'silent'
+      : options.verbose
+      ? 'verbose'
+      : 'default',
   })
     .run(context)
     .then(() => {

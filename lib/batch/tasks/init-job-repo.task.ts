@@ -5,7 +5,6 @@ import {
   cloneRepo,
   pullLatest,
 } from '../../services/git.service';
-import { wait } from '../../utils/wait';
 import { Context } from '../../interface';
 import {
   directoryExists,
@@ -37,7 +36,6 @@ export function initJobRepo(job: string): ListrTask {
         }
         process.chdir(repoPath);
       } catch (error: any) {
-        await wait();
         throw error;
       }
     },

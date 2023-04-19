@@ -1,6 +1,5 @@
 import { ListrTask } from 'listr2';
 
-import { wait } from '../../utils/wait';
 import { Context } from '../../interface';
 import { writeJson } from '../../services/fs.service';
 import { getRepoNameFromUrl } from '../../services/git.service';
@@ -14,11 +13,14 @@ import { initJobStateTask } from './init-job-state.task';
 import { finalizeJobTaskFactory } from './finalize-job.task';
 import { batchSaveProjectJsonTaskFactory } from './batch-save-project-json.task';
 
-export function runJobTaskFactory(job: string): ListrTask {
+export function runJobTaskFactory(
+  job: string,
+  index: number,
+  total: number
+): ListrTask {
   return {
-    title: `${getRepoNameFromUrl(job)}`,
+    title: `${index} / ${total} - ${getRepoNameFromUrl(job)}`,
     rollback: async (ctx: Context, task) => {
-      await wait();
       // update batch state
       if (!ctx.options.preserveQueue) {
         ctx.batch.failed.push(job);

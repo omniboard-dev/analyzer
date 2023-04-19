@@ -9,7 +9,9 @@ export const runJobsTask: ListrTask = {
   skip: (ctx: Context) => ctx.control.skipEverySubsequentTask,
   task: async (ctx: Context, task) =>
     task.newListr(
-      ctx.batch.queue.map((queuedJob) => runJobTaskFactory(queuedJob)),
+      ctx.batch.queue.map((queuedJob, index) =>
+        runJobTaskFactory(queuedJob, index + 1, ctx.batch.queue.length)
+      ),
       {
         exitOnError: false,
         exitAfterRollback: false,

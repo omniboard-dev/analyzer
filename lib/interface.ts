@@ -53,6 +53,9 @@ export interface Context {
   };
   handledCheckFailures: Error[];
   batch: Batch;
+  debug: {
+    [key: string]: any;
+  };
 }
 
 export interface Batch {
