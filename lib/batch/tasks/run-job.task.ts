@@ -22,13 +22,13 @@ export function runJobTaskFactory(
     title: `${index} / ${total} - ${getRepoNameFromUrl(job)}`,
     rollback: async (ctx: Context, task) => {
       // update batch state
+      task.title = `${task.title} failed`;
+      ctx.batch.failed.push(job);
+      ctx.batch.queue = ctx.batch.queue.filter((j) => j !== job);
+
       if (!ctx.options.preserveQueue) {
-        ctx.batch.failed.push(job);
-        ctx.batch.queue = ctx.batch.queue.filter((j) => j !== job);
         writeJson(ctx.options.jobPath, ctx.batch);
         task.title = `${task.title} failed, added to failed jobs`;
-      } else {
-        task.title = `${task.title} failed`;
       }
     },
     task: async (ctx: Context, task) => {
@@ -43,6 +43,7 @@ export function runJobTaskFactory(
           finalizeJobTaskFactory(job, task),
         ],
         {
+          exitOnError: true,
           rendererOptions: {
             collapse: true,
           },

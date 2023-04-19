@@ -36,9 +36,18 @@ export const runner = async (
       : 'default',
   })
     .run(context)
-    .then(() => {
+    .then((ctx: Context) => {
       const duration = new Date().getTime() - start;
       logger.info(`Finished (${formatTime(duration)})`);
+      const { batch } = ctx;
+      if (batch.completed.length || batch.failed.length) {
+        logger.info(
+          `Batch results, queue: ${batch.queue.length}, completed: ${batch.completed.length}, failed: ${batch.failed.length}`
+        );
+        batch.failed.forEach((project, index) => {
+          logger.error(`[FAILED] ${project}`);
+        });
+      }
       process.exit(0);
     })
     .catch((err) => {

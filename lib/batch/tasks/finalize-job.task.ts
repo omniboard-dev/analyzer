@@ -19,9 +19,10 @@ export function finalizeJobTaskFactory(
       process.chdir('../../');
 
       // update batch state
+      ctx.batch.completed.push(job);
+      ctx.batch.queue = ctx.batch.queue.filter((j) => j !== job);
+
       if (!ctx.options.preserveQueue) {
-        ctx.batch.completed.push(job);
-        ctx.batch.queue = ctx.batch.queue.filter((j) => j !== job);
         writeJson(ctx.options.jobPath, ctx.batch);
       }
 
