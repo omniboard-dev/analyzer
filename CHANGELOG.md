@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.24.6](https://github.com/omniboard-dev/analyzer/compare/v2.24.5...v2.24.6) (2023-04-19)
+
+
+### Bug Fixes
+
+* upgrade listr2 prevent OOM errors ([fb5836f](https://github.com/omniboard-dev/analyzer/commit/fb5836f83970df17d8e711a950f00b230daea734))
+
 ### [2.24.5](https://github.com/omniboard-dev/analyzer/compare/v2.24.4...v2.24.5) (2023-04-19)
 
 
