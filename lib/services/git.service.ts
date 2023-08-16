@@ -12,3 +12,10 @@ export async function cloneRepo(url: string, targetDir: string) {
 export async function pullLatest(targetDir: string) {
   return await run(`git checkout --force && git pull --depth 1`, targetDir);
 }
+
+export async function getCurrentBranch(
+  targetDir: string = '.'
+): Promise<string> {
+  const { stdout } = await run(`git branch --show-current`, targetDir);
+  return stdout.trim();
+}
