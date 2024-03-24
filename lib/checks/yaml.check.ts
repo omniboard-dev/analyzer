@@ -1,6 +1,5 @@
-import stripJsonComments from 'strip-json-comments';
-import stripJsonTrailingCommas from 'strip-json-trailing-commas';
-import { JSONPath } from 'jsonpath-plus';
+import YAML from 'yaml';
+import ObjectPath from 'object-path';
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
 import {
@@ -9,9 +8,9 @@ import {
 } from '../consts';
 import {
   Context,
-  JSONCheckDefinition,
   ParentTask,
   ProjectCheckMatch,
+  YAMLCheckDefinition,
 } from '../interface';
 import * as fs from '../services/fs.service';
 
@@ -22,15 +21,15 @@ import {
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
 
-export function jsonCheckTaskFactory(
-  definition: JSONCheckDefinition,
+export function yamlCheckTaskFactory(
+  definition: YAMLCheckDefinition,
   parentTask: ParentTask
 ) {
-  async function jsonCheckTask(
+  async function yamlCheckTask(
     ctx: Context,
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
-    const { name, type, jsonPropertyPath } = definition;
+    const { name, type, yamlPropertyPath } = definition;
 
     const files = getCheckFiles(
       definition,
@@ -63,21 +62,14 @@ export function jsonCheckTaskFactory(
 
       for (const file of files) {
         setTimeout(() => {
-          let json: any;
+          let data: any;
           let result: any[];
           try {
-            json = JSON.parse(
-              stripJsonTrailingCommas(stripJsonComments(fs.readFile(file)))
-            );
-            result = JSONPath({
-              path: jsonPropertyPath?.startsWith('$')
-                ? jsonPropertyPath
-                : `$${jsonPropertyPath}`,
-              json,
-            });
+            data = YAML.parse(fs.readFile(file), { strict: false });
+            result = ObjectPath.get(data, yamlPropertyPath);
           } catch (err: any) {
             const error = new Error(
-              `[json] "${name}" - ${file} - ${err.message}`
+              `[yaml] "${name}" - ${file} - ${err.message}`
             );
             errors.push(error);
             ctx.handledCheckFailures.push(error);
@@ -93,12 +85,14 @@ export function jsonCheckTaskFactory(
           if (result?.length) {
             matches.push({
               file,
-              matches: result.map((r) => ({
-                match: jsonPropertyPath,
-                groups: {
-                  [jsonPropertyPath]: r,
+              matches: [
+                {
+                  match: yamlPropertyPath,
+                  groups: {
+                    [yamlPropertyPath]: result,
+                  },
                 },
-              })),
+              ],
             });
           }
 
@@ -123,5 +117,5 @@ export function jsonCheckTaskFactory(
       }
     });
   }
-  return jsonCheckTask;
+  return yamlCheckTask;
 }

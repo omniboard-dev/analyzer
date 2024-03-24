@@ -136,6 +136,10 @@ export interface JSONCheckDefinition extends BaseCheckDefinition {
   jsonPropertyPath: string;
 }
 
+export interface YAMLCheckDefinition extends BaseCheckDefinition {
+  yamlPropertyPath: string;
+}
+
 export enum CheckType {
   CONTENT = 'content',
   XPATH = 'xpath',
@@ -143,6 +147,7 @@ export enum CheckType {
   META = 'meta',
   FILE = 'file',
   JSON = 'json',
+  YAML = 'yaml',
 }
 
 export enum ProjectType {

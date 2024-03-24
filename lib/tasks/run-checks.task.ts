@@ -17,6 +17,7 @@ import {
 } from '../checks/check.service';
 import { fileCheckTaskFactory } from '../checks/file.check';
 import { jsonCheckTaskFactory } from '../checks/json.check';
+import { yamlCheckTaskFactory } from '../checks/yaml.check';
 
 const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
 
@@ -111,6 +112,8 @@ function buildTasks(ctx: Context, parentTask: ParentTask): ListrTask[] {
         return fileCheckTaskFactory(definition, parentTask);
       } else if (definition.type === CheckType.JSON) {
         return jsonCheckTaskFactory(definition, parentTask);
+      } else if (definition.type === CheckType.YAML) {
+        return yamlCheckTaskFactory(definition, parentTask);
       } else {
         return function unknownCheckTask(
           ctx: Context,
