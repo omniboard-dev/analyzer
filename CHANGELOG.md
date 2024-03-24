@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.25.0](https://github.com/omniboard-dev/analyzer/compare/v2.24.8...v2.25.0) (2024-03-24)
+
+
+### Features
+
+* add yaml check support ([0bf42e5](https://github.com/omniboard-dev/analyzer/commit/0bf42e51e77a51ac61664ff7591666b00253a5be))
+* resolve and store current repo branch ([51adf91](https://github.com/omniboard-dev/analyzer/commit/51adf91744525105c968991e1de0ce828c093bcb))
+
 ### [2.24.8](https://github.com/omniboard-dev/analyzer/compare/v2.24.7...v2.24.8) (2023-04-19)
 
 
