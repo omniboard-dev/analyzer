@@ -66,7 +66,15 @@ export function yamlCheckTaskFactory(
           let result: any;
           try {
             data = YAML.parse(fs.readFile(file), { strict: false });
-            result = await jq.run(yamlPropertyPath, data, { input: 'json', output: 'json' })
+            result = await jq
+              .run(yamlPropertyPath, data, { input: 'json', output: 'json' })
+              .then((result) => {
+                if (typeof result === 'string') {
+                  return result.split(/\n/g);
+                } else {
+                  return result;
+                }
+              });
           } catch (err: any) {
             const error = new Error(
               `[yaml] "${name}" - ${file} - ${err.message}`
