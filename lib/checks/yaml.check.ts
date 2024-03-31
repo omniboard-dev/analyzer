@@ -1,5 +1,5 @@
 import YAML from 'yaml';
-import ObjectPath from 'object-path';
+import * as jq from 'node-jq';
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
 import {
@@ -49,7 +49,7 @@ export function yamlCheckTaskFactory(
       return;
     }
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       setTimeout(
         () => reject(`Check "${name}" timeout`),
         DEFAULT_CHECK_EXECUTION_TIMEOUT
@@ -61,12 +61,12 @@ export function yamlCheckTaskFactory(
       const matches: ProjectCheckMatch[] = [];
 
       for (const file of files) {
-        setTimeout(() => {
+        setTimeout(async () => {
           let data: any;
-          let result: any[];
+          let result: any;
           try {
             data = YAML.parse(fs.readFile(file), { strict: false });
-            result = ObjectPath.get(data, yamlPropertyPath);
+            result = await jq.run(yamlPropertyPath, data, { input: 'json', output: 'json' })
           } catch (err: any) {
             const error = new Error(
               `[yaml] "${name}" - ${file} - ${err.message}`

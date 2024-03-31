@@ -14,7 +14,7 @@ import {
   isNpmWorkspace,
   isPipWorkspace,
 } from '../services/project.service';
-import { getCurrentBranch } from "../services/git.service";
+import { getCurrentBranch } from '../services/git.service';
 
 export const projectInfoTask: ListrTask = {
   title: 'Resolve basic project info',
