@@ -77,7 +77,7 @@ export function jsonCheckTaskFactory(
             });
           } catch (err: any) {
             const error = new Error(
-              `[json] "${name}" - ${file} - ${err.message}`
+              `[json] "${name}"\n   File: ${file}\n   Error: ${err.message}`
             );
             errors.push(error);
             ctx.handledCheckFailures.push(error);

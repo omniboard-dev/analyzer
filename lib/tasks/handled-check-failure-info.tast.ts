@@ -14,7 +14,7 @@ export const handledCheckFailureInfoTask: ListrTask = {
       } occurred`;
       ctx.handledCheckFailures.forEach((error) => {
         task.title = `${task.title}\n${chalk.yellow.bold(
-          `⚠️ ${error.message}`
+          `\n ⚠️ ${error.message}`
         )}`;
       });
     }
