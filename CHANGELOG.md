@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.27.0](https://github.com/omniboard-dev/analyzer/compare/v2.26.0...v2.27.0) (2024-11-04)
+
+
+### Features
+
+* bump node version ([0d2bc30](https://github.com/omniboard-dev/analyzer/commit/0d2bc309421c973150fe89d99c60423e00cd68c3))
+
 ## [2.26.0](https://github.com/omniboard-dev/analyzer/compare/v2.25.0...v2.26.0) (2024-11-04)
 
 
