@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.26.0](https://github.com/omniboard-dev/analyzer/compare/v2.25.0...v2.26.0) (2024-11-04)
+
+
+### Features
+
+* improve node-jq results ([1e0ac7a](https://github.com/omniboard-dev/analyzer/commit/1e0ac7a8181db25f1b27756c94daa4969ce3bb4d))
+* use node-jq instead of object-path for yaml check ([2a24ff1](https://github.com/omniboard-dev/analyzer/commit/2a24ff1f5a0667bb61f60c35b264faae293f92dd))
+
+
+### Bug Fixes
+
+* jsonpath-plus security vulnerability ([3575fb7](https://github.com/omniboard-dev/analyzer/commit/3575fb753afb2b839ae73dad1adb5f1b3b70a3e8))
+
 ## [2.25.0](https://github.com/omniboard-dev/analyzer/compare/v2.24.8...v2.25.0) (2024-03-24)
 
 
