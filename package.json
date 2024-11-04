@@ -27,7 +27,6 @@
     "got": "^11.8.2",
     "jsonpath-plus": "^10.1.0",
     "listr2": "^6.3.1",
-    "node-fetch": "^3.3.2",
     "node-jq": "^6.0.1",
     "object-path": "^0.11.8",
     "rxjs": "^7.8.0",
