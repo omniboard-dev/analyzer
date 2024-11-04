@@ -11,10 +11,7 @@ on:
 jobs:
   Release:
     runs-on: ubuntu-latest
-    resources:
-      limits:
-        memory: 7GB
-        cpu: 2
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -25,7 +22,7 @@ jobs:
       - name: Setup Env
         run: |
           npm ci
-          npm i -g nexe
+          npm i -g nexe@latest
       - name: Build
         run: |
           npm run build
