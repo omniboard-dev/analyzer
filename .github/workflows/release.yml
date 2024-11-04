@@ -11,6 +11,10 @@ on:
 jobs:
   Release:
     runs-on: ubuntu-latest
+    resources:
+      limits:
+        memory: 7GB
+        cpu: 2
     steps:
       - name: Checkout
         uses: actions/checkout@v3
