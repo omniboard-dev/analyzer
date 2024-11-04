@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: |
           npm run build
-          nexe dist/index.js --build -t linux-x64 -o dist/omniboard-linux-x64
+          nexe dist/index.js -t linux-x64 -o dist/omniboard-linux-x64
           cd dist
           tar cvzf omniboard-linux-x64.tar.gz omniboard-linux-x64
       - name: Prepare Changelog
