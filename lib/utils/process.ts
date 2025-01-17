@@ -22,7 +22,7 @@ export const runner = async (
     batch: { queue: [], completed: [], failed: [] },
     debug: {},
   };
-  await new Listr(tasks, {
+  const rootTasks = new Listr(tasks, {
     fallbackRenderer: 'verbose',
     rendererOptions: {
       collapse: false,
@@ -34,7 +34,8 @@ export const runner = async (
       : options.verbose
       ? 'verbose'
       : 'default',
-  })
+  });
+  await rootTasks
     .run(context)
     .then((ctx: Context) => {
       const duration = new Date().getTime() - start;
@@ -46,6 +47,9 @@ export const runner = async (
         );
         batch.failed.forEach((project, index) => {
           logger.error(`[FAILED] ${project}`);
+        });
+        rootTasks?.errors.forEach((error) => {
+          logger.error(`[FAILED] ${error}`);
         });
       }
       process.exit(0);
@@ -59,6 +63,9 @@ export const runner = async (
         if (err?.response?.body?.message) {
           logger.warning(err.response.body.message);
         }
+        rootTasks?.errors.forEach((error) => {
+          logger.warning(error);
+        });
         process.exit(0);
       } else {
         logger.error(`Finished (${formatTime(duration)}) with error`);
@@ -66,6 +73,9 @@ export const runner = async (
         if (err?.response?.body?.message) {
           logger.error(err.response.body.message);
         }
+        rootTasks?.errors.forEach((error) => {
+          logger.error(error);
+        });
         process.exit(1);
       }
     });
