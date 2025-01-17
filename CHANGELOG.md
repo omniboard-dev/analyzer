@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.28.0](https://github.com/omniboard-dev/analyzer/compare/v2.27.2...v2.28.0) (2025-01-17)
+
+
+### Features
+
+* collect more task errors and output them at the end of process ([c416cf7](https://github.com/omniboard-dev/analyzer/commit/c416cf7e54e68134ebb387b6270367f153610d40))
+
 ### [2.27.2](https://github.com/omniboard-dev/analyzer/compare/v2.27.1...v2.27.2) (2024-11-04)
 
 ### [2.27.1](https://github.com/omniboard-dev/analyzer/compare/v2.27.0...v2.27.1) (2024-11-04)
