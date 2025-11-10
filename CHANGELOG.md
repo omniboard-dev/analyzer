@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.29.0](https://github.com/omniboard-dev/analyzer/compare/v2.28.0...v2.29.0) (2025-11-10)
+
+
+### Features
+
+* add per check approx size for results ([09672bd](https://github.com/omniboard-dev/analyzer/commit/09672bd7c3e7ed4b8d5dc355f0bc1c0daa76e535))
+
 ## [2.28.0](https://github.com/omniboard-dev/analyzer/compare/v2.27.2...v2.28.0) (2025-01-17)
 
 
