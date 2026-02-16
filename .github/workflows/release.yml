@@ -29,15 +29,28 @@ jobs:
       - name: Build JS
         run: npm run build
 
-      - name: Package binary (pkg)
+      - name: Bundle for pkg (CJS)
+        run: |
+          npx --yes esbuild@latest dist/index.js \
+            --bundle \
+            --platform=node \
+            --format=cjs \
+            --target=node20 \
+            --outfile=dist/bundle.cjs
+
+      - name: Package (pkg)
         run: |
           npx --yes @yao-pkg/pkg@latest \
             -t node20-linux-x64 \
             --output dist/omniboard-linux-x64 \
-            dist/index.js
-
+            dist/bundle.cjs
+          
           cd dist
           tar -cvzf omniboard-linux-x64.tar.gz omniboard-linux-x64
+
+      - name: Smoke test
+        run: |
+          ./dist/omniboard-linux-x64 --help
 
       - name: Prepare changelog
         run: npx ts-node ./tooling/release-changelog-extractor.ts
