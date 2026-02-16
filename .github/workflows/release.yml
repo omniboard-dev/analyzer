@@ -11,7 +11,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -29,11 +29,15 @@ jobs:
       - name: Build JS
         run: npm run build
 
-      - name: Package binary (nexe)
+      - name: Package binary (pkg)
         run: |
-          npx nexe@latest dist/index.js -t linux-x64-20.18.1 -o dist/omniboard-linux-x64
+          npx --yes @yao-pkg/pkg@latest \
+            -t node20-linux-x64 \
+            --output dist/omniboard-linux-x64 \
+            dist/index.js
+
           cd dist
-          tar cvzf omniboard-linux-x64.tar.gz omniboard-linux-x64
+          tar -cvzf omniboard-linux-x64.tar.gz omniboard-linux-x64
 
       - name: Prepare changelog
         run: npx ts-node ./tooling/release-changelog-extractor.ts
