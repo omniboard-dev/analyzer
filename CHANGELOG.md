@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.29.3](https://github.com/omniboard-dev/analyzer/compare/v2.29.2...v2.29.3) (2026-02-16)
+
+
+### Bug Fixes
+
+* github actions release pipeline for binary releases ([55dbfaf](https://github.com/omniboard-dev/analyzer/commit/55dbfaf7ead606b9b8e1c6913a3e1e2e52f8f7ff))
+
 ### [2.29.2](https://github.com/omniboard-dev/analyzer/compare/v2.29.1...v2.29.2) (2026-02-16)
 
 
