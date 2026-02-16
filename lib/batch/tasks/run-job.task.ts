@@ -1,4 +1,4 @@
-import { ListrTask } from "listr2";
+import { ListrTask } from 'listr2';
 
 import { Context } from '../../interface';
 import { writeJson } from '../../services/fs.service';
@@ -43,7 +43,7 @@ export function runJobTaskFactory(
           finalizeJobTaskFactory(job, task),
         ],
         {
-          collectErrors: "minimal",
+          collectErrors: 'minimal',
           exitOnError: true,
           rendererOptions: {
             collapse: true,

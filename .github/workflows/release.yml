@@ -1,39 +1,47 @@
 name: Release
 
 on:
-  create:
+  push:
     tags:
-      - v*
+      - "v*"
+
+permissions:
+  contents: write
 
 jobs:
-  Release:
+  release:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '22.11.0'
-      - name: Setup Env
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: Build JS
+        run: npm run build
+
+      - name: Package binary (nexe)
         run: |
-          npm ci --ignore-scripts
-          npm i -g nexe@latest
-      - name: Build
-        run: |
-          npm run build
-          nexe dist/index.js -t linux-x64 -o dist/omniboard-linux-x64
+          npx nexe@latest dist/index.js -t linux-x64-20.18.1 -o dist/omniboard-linux-x64
           cd dist
           tar cvzf omniboard-linux-x64.tar.gz omniboard-linux-x64
-      - name: Prepare Changelog
+
+      - name: Prepare changelog
         run: npx ts-node ./tooling/release-changelog-extractor.ts
-      - name: Release
-        uses: softprops/action-gh-release@v1
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          body_path: ${{ github.workspace }}/CHANGELOG-latest.md
-          token: ${{ secrets.OMNIBOARD_RELEASES_TOKEN }}
-          files: |
-            dist/omniboard*gz
+          body_path: CHANGELOG-latest.md
+          files: dist/omniboard*.tar.gz
         env:
           GITHUB_REPOSITORY: omniboard-dev/analyzer
