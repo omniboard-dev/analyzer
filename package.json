@@ -32,7 +32,7 @@
     "rxjs": "^7.8.0",
     "strip-json-comments": "^3.1.1",
     "strip-json-trailing-commas": "^1.1.0",
-    "xml2js": "^0.4.23",
+    "xml2js": "^0.6.2",
     "xmldom": "^0.6.0",
     "xpath": "0.0.32",
     "yaml": "^2.4.1",
