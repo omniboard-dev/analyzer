@@ -72,7 +72,10 @@ export function xpathCheckTaskFactory(
               ) ?? {};
             const xpathSelect = xpath.useNamespaces(namespaces);
 
-            const result: any = xpathSelect(definition.xpathExpression, document);
+            const result: any = xpathSelect(
+              definition.xpathExpression,
+              document
+            );
             const resultMatches: any[] = [];
 
             if (

@@ -69,7 +69,10 @@ export function contentCheckTaskFactory(
               contentPatternFlags,
               DEFAULT_CONTENT_PATTERN_FLAGS
             );
-            const regexp = new RegExp(contentPattern, activeContentPatternFlags);
+            const regexp = new RegExp(
+              contentPattern,
+              activeContentPatternFlags
+            );
 
             const matchesForFile = [];
 
