@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.32.0](https://github.com/omniboard-dev/analyzer/compare/v2.31.0...v2.32.0) (2026-04-13)
+
+
+### Features
+
+* check defaults from organization settings ([4aed656](https://github.com/omniboard-dev/analyzer/commit/4aed656b08acd8336dc8994a25f8126e438545fa))
+
 ## [2.31.0](https://github.com/omniboard-dev/analyzer/compare/v2.30.0...v2.31.0) (2026-04-13)
 
 
