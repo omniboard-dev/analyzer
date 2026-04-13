@@ -1,6 +1,7 @@
 import got, { Got } from 'got';
 
 import { createLogger } from './logger.service';
+import { Settings } from '../interface';
 import * as process from 'process';
 
 let api: Got;
@@ -13,7 +14,7 @@ export const createApiService = (argv: any) => {
     logger.debug(`No API key provided, API related tasks will be skipped`);
   } else {
     logger.debug(
-      `Upload results to to Omniboard ${argv.dev ? '(DEV localhost:8080)' : ''}`
+      `Upload results to to Omniboard ${dev ? '(DEV localhost:8080)' : ''}`
     );
   }
 
@@ -55,4 +56,5 @@ export const uploadProject = (project: any) =>
 
 export const getChecks = (): Promise<any[]> => api('check/cli') as any;
 
-export const getSettings = (): Promise<any> => api('settings/cli') as any;
+export const getSettings = (): Promise<Settings> =>
+  api<Settings>('settings/cli') as any;

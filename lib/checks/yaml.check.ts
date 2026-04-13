@@ -3,10 +3,6 @@ import * as jq from 'node-jq';
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
 import {
-  DEFAULT_CHECK_EXECUTION_TIMEOUT,
-  DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT,
-} from '../consts';
-import {
   Context,
   ParentTask,
   ProjectCheckMatch,
@@ -16,7 +12,9 @@ import * as fs from '../services/fs.service';
 
 import {
   CheckResultSymbol,
+  getCheckExecutionTimeout,
   getCheckFiles,
+  getDefaultExcludeFilesPatternContent,
   resolveCheckParentTaskProgress,
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
@@ -33,8 +31,9 @@ export function yamlCheckTaskFactory(
 
     try {
       const files = getCheckFiles(
+        ctx,
         definition,
-        DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
+        getDefaultExcludeFilesPatternContent(ctx)
       );
 
       task.title = `${task.title}, found ${files.length} files`;
@@ -53,7 +52,7 @@ export function yamlCheckTaskFactory(
       return new Promise<void>(async (resolve, reject) => {
         setTimeout(
           () => reject(`Check "${name}" timeout`),
-          DEFAULT_CHECK_EXECUTION_TIMEOUT
+          getCheckExecutionTimeout(ctx)
         );
 
         let finishedCounter = 0;

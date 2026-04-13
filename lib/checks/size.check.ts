@@ -7,11 +7,11 @@ import {
   ProjectCheckSizeDetails,
 } from '../interface';
 import * as fs from '../services/fs.service';
-import { DEFAULT_EXCLUDE_FILES_PATTERN_SIZE } from '../consts';
 
 import {
   CheckResultSymbol,
   getCheckFiles,
+  getDefaultExcludeFilesPatternSize,
   resolveCheckParentTaskProgress,
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
@@ -28,8 +28,9 @@ export function sizeCheckTaskFactory(
 
     try {
       const files = getCheckFiles(
+        ctx,
         definition,
-        DEFAULT_EXCLUDE_FILES_PATTERN_SIZE
+        getDefaultExcludeFilesPatternSize(ctx)
       );
 
       task.title = `${task.title}, found ${files.length} files`;

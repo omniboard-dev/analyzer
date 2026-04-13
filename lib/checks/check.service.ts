@@ -1,10 +1,13 @@
-import {
-  DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS,
-  DEFAULT_INCLUDE_FILES_FLAG,
-} from '../consts';
-import { BaseCheckDefinition, ParentTask } from '../interface';
+import { BaseCheckDefinition, Context, ParentTask } from '../interface';
 import { resolveActiveFlags } from '../utils/regexp';
 import * as fs from '../services/fs.service';
+
+const FALLBACK_INCLUDE_FILES_FLAG = 'i';
+const FALLBACK_EXCLUDE_FILES_PATTERN_FLAGS = 'i';
+const FALLBACK_EXCLUDE_FILES_PATTERN_XPATH = `((^|\\/)\\.|node_modules|coverage|dist|.teamcity)`;
+const FALLBACK_EXCLUDE_FILES_PATTERN_CONTENT = `((^|\\/)\\.|node_modules|coverage|dist)`;
+const FALLBACK_EXCLUDE_FILES_PATTERN_SIZE = `node_modules`;
+const FALLBACK_CHECK_EXECUTION_TIMEOUT = 10_000;
 
 export enum CheckResultSymbol {
   FULFILLED = '✅',
@@ -47,6 +50,7 @@ export function resolveCheckParentTaskProgress(parentTask: ParentTask) {
 }
 
 export function getCheckFiles(
+  ctx: Context,
   definition: BaseCheckDefinition,
   defaultExcludeFilesPattern: string
 ) {
@@ -58,11 +62,43 @@ export function getCheckFiles(
   } = definition;
   return fs.findFiles(
     filesPattern,
-    resolveActiveFlags(filesPatternFlags, DEFAULT_INCLUDE_FILES_FLAG),
+    resolveActiveFlags(
+      filesPatternFlags,
+      ctx.settings.analyzerIncludeFilesFlag || FALLBACK_INCLUDE_FILES_FLAG
+    ),
     filesExcludePattern || defaultExcludeFilesPattern,
     resolveActiveFlags(
       filesExcludePatternFlags,
-      DEFAULT_EXCLUDE_FILES_PATTERN_FLAGS
+      ctx.settings.analyzerExcludeFilesPatternFlags ||
+        FALLBACK_EXCLUDE_FILES_PATTERN_FLAGS
     )
+  );
+}
+
+export function getDefaultExcludeFilesPatternContent(ctx: Context) {
+  return (
+    ctx.settings.analyzerExcludeFilesPatternContent ||
+    FALLBACK_EXCLUDE_FILES_PATTERN_CONTENT
+  );
+}
+
+export function getDefaultExcludeFilesPatternXPath(ctx: Context) {
+  return (
+    ctx.settings.analyzerExcludeFilesPatternXpath ||
+    FALLBACK_EXCLUDE_FILES_PATTERN_XPATH
+  );
+}
+
+export function getDefaultExcludeFilesPatternSize(ctx: Context) {
+  return (
+    ctx.settings.analyzerExcludeFilesPatternSize ||
+    FALLBACK_EXCLUDE_FILES_PATTERN_SIZE
+  );
+}
+
+export function getCheckExecutionTimeout(ctx: Context) {
+  return (
+    ctx.settings.analyzerCheckExecutionTimeout ||
+    FALLBACK_CHECK_EXECUTION_TIMEOUT
   );
 }

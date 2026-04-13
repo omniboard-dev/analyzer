@@ -33,14 +33,7 @@ export interface Context {
   control: {
     skipEverySubsequentTask: boolean;
   };
-  settings: {
-    customProjectResolvers?: CustomProjectResolver[];
-    projectsMaxLimit?: number;
-    checkResultSizeLimit?: number;
-    totalCheckResultSizeLimit?: number;
-    projectsBlacklistPattern?: string;
-    projectsBlacklistExplicit?: string[];
-  };
+  settings: Settings;
   definitions: {
     checks?: (ContentCheckDefinition | XPathCheckDefinition)[];
   };
@@ -68,6 +61,21 @@ export interface CustomProjectResolver {
   type: string;
   filePattern: string;
   projectNamePattern: string;
+}
+
+export interface Settings {
+  customProjectResolvers?: CustomProjectResolver[];
+  projectsMaxLimit?: number;
+  checkResultSizeLimit?: number;
+  totalCheckResultSizeLimit?: number;
+  projectsBlacklistPattern?: string;
+  projectsBlacklistExplicit?: string[];
+  analyzerIncludeFilesFlag?: string;
+  analyzerExcludeFilesPatternXpath?: string;
+  analyzerExcludeFilesPatternContent?: string;
+  analyzerExcludeFilesPatternSize?: string;
+  analyzerExcludeFilesPatternFlags?: string;
+  analyzerCheckExecutionTimeout?: number;
 }
 
 export interface ProjectInfo {

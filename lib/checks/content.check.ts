@@ -8,18 +8,15 @@ import {
   ProjectCheckMatchDetails,
 } from '../interface';
 import {
-  DEFAULT_CHECK_EXECUTION_TIMEOUT,
-  DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT,
-} from '../consts';
-import { resolveActiveFlags } from '../utils/regexp';
-import * as fs from '../services/fs.service';
-
-import {
   CheckResultSymbol,
+  getCheckExecutionTimeout,
   getCheckFiles,
+  getDefaultExcludeFilesPatternContent,
   resolveCheckParentTaskProgress,
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
+import { resolveActiveFlags } from '../utils/regexp';
+import * as fs from '../services/fs.service';
 
 const DEFAULT_CONTENT_PATTERN_FLAGS = 'ig';
 
@@ -35,8 +32,9 @@ export function contentCheckTaskFactory(
 
     try {
       const files = getCheckFiles(
+        ctx,
         definition,
-        DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
+        getDefaultExcludeFilesPatternContent(ctx)
       );
 
       task.title = `${task.title}, found ${files.length} files`;
@@ -55,7 +53,7 @@ export function contentCheckTaskFactory(
       return new Promise<void>((resolve, reject) => {
         setTimeout(
           () => reject(`Check "${name}" timeout`),
-          DEFAULT_CHECK_EXECUTION_TIMEOUT
+          getCheckExecutionTimeout(ctx)
         );
 
         let finishedCounter = 0;

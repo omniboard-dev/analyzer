@@ -1,11 +1,11 @@
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
 import { ContentCheckDefinition, Context, ParentTask } from '../interface';
-import { DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT } from '../consts';
 
 import {
   CheckResultSymbol,
   getCheckFiles,
+  getDefaultExcludeFilesPatternContent,
   resolveCheckParentTaskProgress,
 } from './check.service';
 
@@ -20,8 +20,9 @@ export function fileCheckTaskFactory(
     const { name, type } = definition;
     try {
       const files = getCheckFiles(
+        ctx,
         definition,
-        DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
+        getDefaultExcludeFilesPatternContent(ctx)
       );
 
       task.title = `${task.title}, found ${files.length} files`;
