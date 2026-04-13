@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.30.0](https://github.com/omniboard-dev/analyzer/compare/v2.29.4...v2.30.0) (2026-04-13)
+
+
+### Features
+
+* fs access robustness ([ab22859](https://github.com/omniboard-dev/analyzer/commit/ab228597a95d0ab790cd5ad5ec193edb0fb45e5b))
+
 ### [2.29.4](https://github.com/omniboard-dev/analyzer/compare/v2.29.3...v2.29.4) (2026-02-16)
 
 
