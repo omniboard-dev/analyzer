@@ -18,33 +18,40 @@ export function fileCheckTaskFactory(
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
     const { name, type } = definition;
-    const files = getCheckFiles(
-      definition,
-      DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
-    );
+    try {
+      const files = getCheckFiles(
+        definition,
+        DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
+      );
 
-    task.title = `${task.title}, found ${files.length} files`;
+      task.title = `${task.title}, found ${files.length} files`;
 
-    if (!files.length) {
-      ctx.results.checks![name] = {
-        name,
-        type,
-        value: false,
-      };
-      task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
-      resolveCheckParentTaskProgress(parentTask);
-      return;
-    } else {
-      ctx.results.checks![name] = {
-        name,
-        type,
-        value: true,
-        matches: files.map((file) => ({
-          file,
-          matches: [],
-        })),
-      };
-      task.title = `${CheckResultSymbol.FULFILLED} ${task.title}`;
+      if (!files.length) {
+        ctx.results.checks![name] = {
+          name,
+          type,
+          value: false,
+        };
+        task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+        resolveCheckParentTaskProgress(parentTask);
+        return;
+      } else {
+        ctx.results.checks![name] = {
+          name,
+          type,
+          value: true,
+          matches: files.map((file) => ({
+            file,
+            matches: [],
+          })),
+        };
+        task.title = `${CheckResultSymbol.FULFILLED} ${task.title}`;
+        resolveCheckParentTaskProgress(parentTask);
+      }
+    } catch (err: any) {
+      const error = new Error(`[file] "${name}"\n   Error: ${err.message}`);
+      ctx.handledCheckFailures.push(error);
+      task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${err.message}`;
       resolveCheckParentTaskProgress(parentTask);
     }
   }

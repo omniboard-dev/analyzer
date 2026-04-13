@@ -32,82 +32,102 @@ export function contentCheckTaskFactory(
     task: ListrTaskWrapper<Context, ListrDefaultRenderer>
   ) {
     const { name, type, contentPattern, contentPatternFlags } = definition;
-    const files = getCheckFiles(
-      definition,
-      DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
-    );
 
-    task.title = `${task.title}, found ${files.length} files`;
-
-    if (!files.length) {
-      ctx.results.checks![name] = {
-        name,
-        type,
-        value: false,
-      };
-      task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
-      resolveCheckParentTaskProgress(parentTask);
-      return;
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(
-        () => reject(`Check "${name}" timeout`),
-        DEFAULT_CHECK_EXECUTION_TIMEOUT
+    try {
+      const files = getCheckFiles(
+        definition,
+        DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
       );
 
-      let finishedCounter = 0;
-      const matches: ProjectCheckMatch[] = [];
-      for (const file of files) {
-        const content = fs.readFile(file);
+      task.title = `${task.title}, found ${files.length} files`;
 
-        const activeContentPatternFlags = resolveActiveFlags(
-          contentPatternFlags,
-          DEFAULT_CONTENT_PATTERN_FLAGS
-        );
-        const regexp = new RegExp(contentPattern, activeContentPatternFlags);
-
-        const matchesForFile = [];
-
-        let match;
-        if (activeContentPatternFlags.includes('g')) {
-          // const matchesForFile = [...(content as any).matchAll(regexp)]; // TODO node v12+
-          while ((match = regexp.exec(content)) !== null) {
-            matchesForFile.push(match);
-          }
-        } else {
-          match = regexp.exec(content);
-          if (match) {
-            matchesForFile.push(match);
-          }
-        }
-
-        if (matchesForFile?.length) {
-          matches.push({
-            file,
-            matches: matchesForFile.map(
-              (m) =>
-                ({
-                  match: m[0],
-                  groups: m.groups,
-                } as ProjectCheckMatchDetails)
-            ),
-          });
-        }
-        finishedCounter++;
-        if (finishedCounter >= files.length) {
-          ctx.results.checks![name] = {
-            name,
-            type,
-            value: matches.length > 0,
-            matches,
-          };
-          task.title = resolveCheckTaskFulfilledTitle(task, matches);
-          resolveCheckParentTaskProgress(parentTask);
-          resolve();
-        }
+      if (!files.length) {
+        ctx.results.checks![name] = {
+          name,
+          type,
+          value: false,
+        };
+        task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+        resolveCheckParentTaskProgress(parentTask);
+        return;
       }
-    });
+
+      return new Promise<void>((resolve, reject) => {
+        setTimeout(
+          () => reject(`Check "${name}" timeout`),
+          DEFAULT_CHECK_EXECUTION_TIMEOUT
+        );
+
+        let finishedCounter = 0;
+        const errors: Error[] = [];
+        const matches: ProjectCheckMatch[] = [];
+        for (const file of files) {
+          try {
+            const content = fs.readFile(file);
+
+            const activeContentPatternFlags = resolveActiveFlags(
+              contentPatternFlags,
+              DEFAULT_CONTENT_PATTERN_FLAGS
+            );
+            const regexp = new RegExp(contentPattern, activeContentPatternFlags);
+
+            const matchesForFile = [];
+
+            let match;
+            if (activeContentPatternFlags.includes('g')) {
+              // const matchesForFile = [...(content as any).matchAll(regexp)]; // TODO node v12+
+              while ((match = regexp.exec(content)) !== null) {
+                matchesForFile.push(match);
+              }
+            } else {
+              match = regexp.exec(content);
+              if (match) {
+                matchesForFile.push(match);
+              }
+            }
+
+            if (matchesForFile?.length) {
+              matches.push({
+                file,
+                matches: matchesForFile.map(
+                  (m) =>
+                    ({
+                      match: m[0],
+                      groups: m.groups,
+                    } as ProjectCheckMatchDetails)
+                ),
+              });
+            }
+          } catch (err: any) {
+            const error = new Error(
+              `[content] "${name}"\n   File: ${file}\n   Error: ${err.message}`
+            );
+            errors.push(error);
+            ctx.handledCheckFailures.push(error);
+          }
+
+          finishedCounter++;
+          if (finishedCounter >= files.length) {
+            ctx.results.checks![name] = {
+              name,
+              type,
+              value: matches.length > 0,
+              matches,
+            };
+            task.title = errors.length
+              ? errors.map((e) => e.message).join(',')
+              : resolveCheckTaskFulfilledTitle(task, matches);
+            resolveCheckParentTaskProgress(parentTask);
+            resolve();
+          }
+        }
+      });
+    } catch (err: any) {
+      const error = new Error(`[content] "${name}"\n   Error: ${err.message}`);
+      ctx.handledCheckFailures.push(error);
+      task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${err.message}`;
+      resolveCheckParentTaskProgress(parentTask);
+    }
   }
   return contentCheckTask;
 }

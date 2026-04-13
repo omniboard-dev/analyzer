@@ -57,33 +57,29 @@ export function readXmlAsDom(
   path: string,
   options: { xpathSanitizeAngularTemplate?: boolean; verbose?: boolean } = {}
 ) {
-  try {
-    const buffer = fs.readFileSync(path);
-    const content =
-      (options.xpathSanitizeAngularTemplate
-        ? buffer?.toString()?.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
-        : buffer?.toString()) ?? '';
-    return new DOMParser({
-      locator: {},
-      errorHandler: {
-        warning(warning) {
-          if (options.verbose) {
-            console.warn(warning);
-          }
-        },
-        error(error) {
-          if (options.verbose) {
-            console.error(error);
-          }
-        },
-        fatalError(error) {
-          console.error(error);
-        },
+  const buffer = fs.readFileSync(path);
+  const content =
+    (options.xpathSanitizeAngularTemplate
+      ? buffer?.toString()?.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
+      : buffer?.toString()) ?? '';
+  return new DOMParser({
+    locator: {},
+    errorHandler: {
+      warning(warning) {
+        if (options.verbose) {
+          console.warn(warning);
+        }
       },
-    }).parseFromString(content);
-  } catch (err) {
-    return undefined;
-  }
+      error(error) {
+        if (options.verbose) {
+          console.error(error);
+        }
+      },
+      fatalError(error) {
+        console.error(error);
+      },
+    },
+  }).parseFromString(content);
 }
 
 export function writeJson(destinationPath: string, data: any) {

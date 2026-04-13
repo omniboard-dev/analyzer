@@ -32,96 +32,103 @@ export function jsonCheckTaskFactory(
   ) {
     const { name, type, jsonPropertyPath } = definition;
 
-    const files = getCheckFiles(
-      definition,
-      DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
-    );
-
-    task.title = `${task.title}, found ${files.length} files`;
-
-    if (!files.length) {
-      ctx.results.checks![name] = {
-        name,
-        type,
-        value: false,
-      };
-      task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
-      resolveCheckParentTaskProgress(parentTask);
-      return;
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(
-        () => reject(`Check "${name}" timeout`),
-        DEFAULT_CHECK_EXECUTION_TIMEOUT
+    try {
+      const files = getCheckFiles(
+        definition,
+        DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
       );
 
-      let finishedCounter = 0;
+      task.title = `${task.title}, found ${files.length} files`;
 
-      const errors: Error[] = [];
-      const matches: ProjectCheckMatch[] = [];
+      if (!files.length) {
+        ctx.results.checks![name] = {
+          name,
+          type,
+          value: false,
+        };
+        task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+        resolveCheckParentTaskProgress(parentTask);
+        return;
+      }
 
-      for (const file of files) {
-        setTimeout(() => {
-          let json: any;
-          let result: any[];
-          try {
-            json = JSON.parse(
-              stripJsonTrailingCommas(stripJsonComments(fs.readFile(file)))
-            );
-            result = JSONPath({
-              path: jsonPropertyPath?.startsWith('$')
-                ? jsonPropertyPath
-                : `$${jsonPropertyPath}`,
-              json,
-            });
-          } catch (err: any) {
-            const error = new Error(
-              `[json] "${name}"\n   File: ${file}\n   Error: ${err.message}`
-            );
-            errors.push(error);
-            ctx.handledCheckFailures.push(error);
+      return new Promise<void>((resolve, reject) => {
+        setTimeout(
+          () => reject(`Check "${name}" timeout`),
+          DEFAULT_CHECK_EXECUTION_TIMEOUT
+        );
+
+        let finishedCounter = 0;
+
+        const errors: Error[] = [];
+        const matches: ProjectCheckMatch[] = [];
+
+        for (const file of files) {
+          setTimeout(() => {
+            let json: any;
+            let result: any[];
+            try {
+              json = JSON.parse(
+                stripJsonTrailingCommas(stripJsonComments(fs.readFile(file)))
+              );
+              result = JSONPath({
+                path: jsonPropertyPath?.startsWith('$')
+                  ? jsonPropertyPath
+                  : `$${jsonPropertyPath}`,
+                json,
+              });
+            } catch (err: any) {
+              const error = new Error(
+                `[json] "${name}"\n   File: ${file}\n   Error: ${err.message}`
+              );
+              errors.push(error);
+              ctx.handledCheckFailures.push(error);
+              finishedCounter++;
+              if (finishedCounter === files.length) {
+                resolve();
+              }
+              task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
+              resolveCheckParentTaskProgress(parentTask);
+              return;
+            }
+
+            if (result?.length) {
+              matches.push({
+                file,
+                matches: result.map((r) => ({
+                  match: jsonPropertyPath,
+                  groups: {
+                    [jsonPropertyPath]: r,
+                  },
+                })),
+              });
+            }
+
             finishedCounter++;
+
             if (finishedCounter === files.length) {
+              ctx.results.checks![name] = {
+                name,
+                type,
+                value: matches.length > 0,
+                matches,
+              };
+
+              task.title = errors.length
+                ? errors.map((e) => e.message).join(',')
+                : resolveCheckTaskFulfilledTitle(task, matches);
+              resolveCheckParentTaskProgress(parentTask);
+
               resolve();
             }
-            task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
-            resolveCheckParentTaskProgress(parentTask);
-            return;
-          }
-
-          if (result?.length) {
-            matches.push({
-              file,
-              matches: result.map((r) => ({
-                match: jsonPropertyPath,
-                groups: {
-                  [jsonPropertyPath]: r,
-                },
-              })),
-            });
-          }
-
-          finishedCounter++;
-
-          if (finishedCounter === files.length) {
-            ctx.results.checks![name] = {
-              name,
-              type,
-              value: matches.length > 0,
-              matches,
-            };
-
-            task.title = errors.length
-              ? errors.map((e) => e.message).join(',')
-              : resolveCheckTaskFulfilledTitle(task, matches);
-            resolveCheckParentTaskProgress(parentTask);
-
-            resolve();
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    } catch (err: any) {
+      const error = new Error(`[json] "${name}"\n   Error: ${err.message}`);
+      ctx.handledCheckFailures.push(error);
+      task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${err.message}`;
+      resolveCheckParentTaskProgress(parentTask);
+    }
   }
   return jsonCheckTask;
 }

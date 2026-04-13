@@ -31,99 +31,106 @@ export function yamlCheckTaskFactory(
   ) {
     const { name, type, yamlPropertyPath } = definition;
 
-    const files = getCheckFiles(
-      definition,
-      DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
-    );
-
-    task.title = `${task.title}, found ${files.length} files`;
-
-    if (!files.length) {
-      ctx.results.checks![name] = {
-        name,
-        type,
-        value: false,
-      };
-      task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
-      resolveCheckParentTaskProgress(parentTask);
-      return;
-    }
-
-    return new Promise<void>(async (resolve, reject) => {
-      setTimeout(
-        () => reject(`Check "${name}" timeout`),
-        DEFAULT_CHECK_EXECUTION_TIMEOUT
+    try {
+      const files = getCheckFiles(
+        definition,
+        DEFAULT_EXCLUDE_FILES_PATTERN_CONTENT
       );
 
-      let finishedCounter = 0;
+      task.title = `${task.title}, found ${files.length} files`;
 
-      const errors: Error[] = [];
-      const matches: ProjectCheckMatch[] = [];
+      if (!files.length) {
+        ctx.results.checks![name] = {
+          name,
+          type,
+          value: false,
+        };
+        task.title = `${CheckResultSymbol.UNFULFILLED} ${task.title}`;
+        resolveCheckParentTaskProgress(parentTask);
+        return;
+      }
 
-      for (const file of files) {
-        setTimeout(async () => {
-          let data: any;
-          let result: any;
-          try {
-            data = YAML.parse(fs.readFile(file), { strict: false });
-            result = await jq
-              .run(yamlPropertyPath, data, { input: 'json', output: 'json' })
-              .then((result) => {
-                if (typeof result === 'string') {
-                  return result.split(/\n/g);
-                } else {
-                  return result;
-                }
+      return new Promise<void>(async (resolve, reject) => {
+        setTimeout(
+          () => reject(`Check "${name}" timeout`),
+          DEFAULT_CHECK_EXECUTION_TIMEOUT
+        );
+
+        let finishedCounter = 0;
+
+        const errors: Error[] = [];
+        const matches: ProjectCheckMatch[] = [];
+
+        for (const file of files) {
+          setTimeout(async () => {
+            let data: any;
+            let result: any;
+            try {
+              data = YAML.parse(fs.readFile(file), { strict: false });
+              result = await jq
+                .run(yamlPropertyPath, data, { input: 'json', output: 'json' })
+                .then((result) => {
+                  if (typeof result === 'string') {
+                    return result.split(/\n/g);
+                  } else {
+                    return result;
+                  }
+                });
+            } catch (err: any) {
+              const error = new Error(
+                `[yaml] "${name}" - ${file} - ${err.message}`
+              );
+              errors.push(error);
+              ctx.handledCheckFailures.push(error);
+              finishedCounter++;
+              if (finishedCounter === files.length) {
+                resolve();
+              }
+              task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
+              resolveCheckParentTaskProgress(parentTask);
+              return;
+            }
+
+            if (result?.length) {
+              matches.push({
+                file,
+                matches: [
+                  {
+                    match: yamlPropertyPath,
+                    groups: {
+                      [yamlPropertyPath]: result,
+                    },
+                  },
+                ],
               });
-          } catch (err: any) {
-            const error = new Error(
-              `[yaml] "${name}" - ${file} - ${err.message}`
-            );
-            errors.push(error);
-            ctx.handledCheckFailures.push(error);
+            }
+
             finishedCounter++;
+
             if (finishedCounter === files.length) {
+              ctx.results.checks![name] = {
+                name,
+                type,
+                value: matches.length > 0,
+                matches,
+              };
+
+              task.title = errors.length
+                ? errors.map((e) => e.message).join(',')
+                : resolveCheckTaskFulfilledTitle(task, matches);
+              resolveCheckParentTaskProgress(parentTask);
+
               resolve();
             }
-            task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
-            resolveCheckParentTaskProgress(parentTask);
-            return;
-          }
-
-          if (result?.length) {
-            matches.push({
-              file,
-              matches: [
-                {
-                  match: yamlPropertyPath,
-                  groups: {
-                    [yamlPropertyPath]: result,
-                  },
-                },
-              ],
-            });
-          }
-
-          finishedCounter++;
-
-          if (finishedCounter === files.length) {
-            ctx.results.checks![name] = {
-              name,
-              type,
-              value: matches.length > 0,
-              matches,
-            };
-
-            task.title = errors.length
-              ? errors.map((e) => e.message).join(',')
-              : resolveCheckTaskFulfilledTitle(task, matches);
-            resolveCheckParentTaskProgress(parentTask);
-
-            resolve();
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    } catch (err: any) {
+      const error = new Error(`[yaml] "${name}"\n   Error: ${err.message}`);
+      ctx.handledCheckFailures.push(error);
+      task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${err.message}`;
+      resolveCheckParentTaskProgress(parentTask);
+    }
   }
   return yamlCheckTask;
 }
