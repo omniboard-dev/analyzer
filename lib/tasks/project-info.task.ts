@@ -7,6 +7,7 @@ import {
   findProjectNamesNpm,
   findProjectNamesPip,
   findProjectNamesRepo,
+  findProjectTeamNames,
   findProjectRepositoriesMaven,
   findProjectRepositoriesNpm,
   findProjectRepositoriesRepo,
@@ -24,7 +25,7 @@ export const projectInfoTask: ListrTask = {
         {
           title: 'Get project name',
           task: (ctx: Context, task) => {
-            const { customProjectResolvers } = ctx.settings;
+            const { customProjectResolvers, teamResolvers } = ctx.settings;
             let names: string[] = [];
             if (customProjectResolvers?.length) {
               for (let resolver of customProjectResolvers) {
@@ -82,6 +83,15 @@ export const projectInfoTask: ListrTask = {
               ctx.control.skipEverySubsequentTask = true;
             } else {
               task.title = `${task.title}: ${ctx.results.name} [${ctx.results?.info?.type}]`;
+
+              const teamNames = findProjectTeamNames(teamResolvers);
+              if (ctx.results) {
+                ctx.results.team = teamNames;
+                ctx.results.info;
+              }
+              if (teamNames.length) {
+                task.title = `${task.title} (Team: ${teamNames.join(', ')})`;
+              }
             }
 
             const { projectsBlacklistPattern, projectsBlacklistExplicit } =

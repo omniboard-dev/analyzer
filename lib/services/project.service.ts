@@ -1,6 +1,6 @@
 import xpath from 'xpath';
 
-import { CustomProjectResolver } from '../interface';
+import { CustomProjectResolver, TeamResolver } from '../interface';
 import {
   findFiles,
   readJson,
@@ -11,6 +11,7 @@ import {
 
 const PROJECT_INFO_TASK_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
 const PROJECT_INFO_TASK_PATTERN_FLAGS = 'i';
+const PROJECT_TEAM_PATTERN_FLAGS = 'ig';
 
 export const isMavenWorkspace = (): boolean => {
   return !!findPomXmlFiles()?.length;
@@ -159,6 +160,38 @@ export const findProjectNameCustomProjectResolver = (
           ?.groups?.projectName!
     )
     .filter(Boolean);
+};
+
+export const findProjectTeamNames = (
+  teamResolvers: TeamResolver[] = []
+): string[] => {
+  return Array.from(
+    new Set(
+      teamResolvers.flatMap((resolver) =>
+        Array.from(
+          new Set(
+            findFiles(
+              resolver.filePattern,
+              PROJECT_INFO_TASK_PATTERN_FLAGS,
+              PROJECT_INFO_TASK_EXCLUDE_PATTERN,
+              PROJECT_INFO_TASK_PATTERN_FLAGS
+            )
+          )
+        )
+          .map((filePath) => readFile(filePath))
+          .map((content) =>
+            new RegExp(
+              resolver.teamNamePattern,
+              resolver?.teamNameFlags ?? PROJECT_TEAM_PATTERN_FLAGS
+            )
+              .exec(content)
+              ?.groups?.team?.trim()
+              .toLowerCase()
+          )
+          .filter((teamName): teamName is string => Boolean(teamName))
+      )
+    )
+  );
 };
 
 function sanitizeRepositoryUrl(rawUrl: string, sanitizeRepoUrl: boolean) {

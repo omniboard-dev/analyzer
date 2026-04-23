@@ -39,6 +39,7 @@ export interface Context {
   };
   results: {
     name?: string;
+    team?: string[];
     info?: ProjectInfo;
     checks?: {
       [key: string]: ProjectCheck;
@@ -63,8 +64,16 @@ export interface CustomProjectResolver {
   projectNamePattern: string;
 }
 
+export interface TeamResolver {
+  type: string;
+  filePattern: string;
+  teamNamePattern: string;
+  teamNameFlags?: string;
+}
+
 export interface Settings {
   customProjectResolvers?: CustomProjectResolver[];
+  teamResolvers?: TeamResolver[];
   projectsMaxLimit?: number;
   checkResultSizeLimit?: number;
   totalCheckResultSizeLimit?: number;
@@ -81,6 +90,7 @@ export interface Settings {
 export interface ProjectInfo {
   name: string;
   names: string[];
+  team?: string[];
   type?: ProjectType | string;
   repository?: string;
   repositories?: string[];
