@@ -179,15 +179,23 @@ export const findProjectTeamNames = (
           )
         )
           .map((filePath) => readFile(filePath))
-          .map((content) =>
-            new RegExp(
+          .flatMap((content) => {
+            const regexp = new RegExp(
               resolver.teamNamePattern,
               resolver?.teamNameFlags ?? PROJECT_TEAM_PATTERN_FLAGS
-            )
-              .exec(content)
-              ?.groups?.team?.trim()
-              .toLowerCase()
-          )
+            );
+            const matchesForFile: RegExpExecArray[] = [];
+            let match: RegExpExecArray | null;
+
+            // const matchesForFile = [...(content as any).matchAll(regexp)]; // TODO node v12+
+            while ((match = regexp.exec(content)) !== null) {
+              matchesForFile.push(match);
+            }
+
+            return matchesForFile.map((currentMatch) =>
+              currentMatch.groups?.team?.trim().toLowerCase()
+            );
+          })
           .filter((teamName): teamName is string => Boolean(teamName))
       )
     )
