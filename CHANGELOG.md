@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.33.2](https://github.com/omniboard-dev/analyzer/compare/v2.33.1...v2.33.2) (2026-05-14)
+
+
+### Bug Fixes
+
+* robustness if team resolver was not defined ([674d346](https://github.com/omniboard-dev/analyzer/commit/674d346af5b24c7d41c47e8d3feb1e43c39ae8be))
+
 ### [2.33.1](https://github.com/omniboard-dev/analyzer/compare/v2.33.0...v2.33.1) (2026-04-24)
 
 
