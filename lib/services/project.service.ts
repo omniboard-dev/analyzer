@@ -163,11 +163,13 @@ export const findProjectNameCustomProjectResolver = (
 };
 
 export const findProjectTeamNames = (
-  teamResolvers: TeamResolver[] = []
+  teamResolvers: TeamResolver[] | null = []
 ): string[] => {
+  const resolvers = teamResolvers ?? [];
+
   return Array.from(
     new Set(
-      teamResolvers.flatMap((resolver) =>
+      resolvers.flatMap((resolver) =>
         Array.from(
           new Set(
             findFiles(

@@ -73,7 +73,7 @@ export interface TeamResolver {
 
 export interface Settings {
   customProjectResolvers?: CustomProjectResolver[];
-  teamResolvers?: TeamResolver[];
+  teamResolvers?: TeamResolver[] | null;
   projectsMaxLimit?: number;
   checkResultSizeLimit?: number;
   totalCheckResultSizeLimit?: number;
