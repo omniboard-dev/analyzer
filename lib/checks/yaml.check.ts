@@ -1,5 +1,4 @@
 import YAML from 'yaml';
-import * as jq from 'node-jq';
 import { ListrDefaultRenderer, ListrTaskWrapper } from 'listr2';
 
 import {
@@ -18,6 +17,7 @@ import {
   resolveCheckParentTaskProgress,
   resolveCheckTaskFulfilledTitle,
 } from './check.service';
+import { readYamlPath } from './yaml-path';
 
 export function yamlCheckTaskFactory(
   definition: YAMLCheckDefinition,
@@ -63,18 +63,10 @@ export function yamlCheckTaskFactory(
         for (const file of files) {
           setTimeout(async () => {
             let data: any;
-            let result: any;
+            let result: any[];
             try {
               data = YAML.parse(fs.readFile(file), { strict: false });
-              result = await jq
-                .run(yamlPropertyPath, data, { input: 'json', output: 'json' })
-                .then((result) => {
-                  if (typeof result === 'string') {
-                    return result.split(/\n/g);
-                  } else {
-                    return result;
-                  }
-                });
+              result = readYamlPath(data, yamlPropertyPath);
             } catch (err: any) {
               const error = new Error(
                 `[yaml] "${name}" - ${file} - ${err.message}`
