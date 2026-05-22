@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as p from 'path';
 import filesize from 'filesize';
-import { DOMParser } from 'xmldom';
+import { DOMParser } from '@xmldom/xmldom';
 
 const REGEXP_MATCH_NOTHING = /a^/;
 
@@ -56,30 +56,28 @@ export function readJson(path: string) {
 export function readXmlAsDom(
   path: string,
   options: { xpathSanitizeAngularTemplate?: boolean; verbose?: boolean } = {}
-) {
+): any {
   const buffer = fs.readFileSync(path);
   const content =
     (options.xpathSanitizeAngularTemplate
       ? buffer?.toString()?.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
       : buffer?.toString()) ?? '';
   return new DOMParser({
-    locator: {},
-    errorHandler: {
-      warning(warning) {
+    locator: true,
+    onError(level, message) {
+      if (level === 'warning') {
         if (options.verbose) {
-          console.warn(warning);
+          console.warn(message);
         }
-      },
-      error(error) {
+      } else if (level === 'error') {
         if (options.verbose) {
-          console.error(error);
+          console.error(message);
         }
-      },
-      fatalError(error) {
-        console.error(error);
-      },
+      } else {
+        console.error(message);
+      }
     },
-  }).parseFromString(content);
+  }).parseFromString(content, 'text/xml') as any;
 }
 
 export function writeJson(destinationPath: string, data: any) {
