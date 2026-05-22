@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.34.0](https://github.com/omniboard-dev/analyzer/compare/v2.33.2...v2.34.0) (2026-05-22)
+
+
+### Features
+
+* cleanups and npm audit violations, jest to vitest migration ([2cb8d5c](https://github.com/omniboard-dev/analyzer/commit/2cb8d5cea810c7778906fe1b4ccf5affcf15a41c))
+* install size optimization, remove unused package ([2f79168](https://github.com/omniboard-dev/analyzer/commit/2f791688731b54636ef4070dd37d909e478907e5))
+* install size optimization, use native fetch, prevent result upload with --json flag ([6c7cac5](https://github.com/omniboard-dev/analyzer/commit/6c7cac5cc7e3347184367a6ece6084a70de3e0d2))
+* yaml check rework to local impl, install size optimization ([8ef92be](https://github.com/omniboard-dev/analyzer/commit/8ef92bebbc1f2303de4a7324d5dd74d3767b0a79))
+
 ### [2.33.2](https://github.com/omniboard-dev/analyzer/compare/v2.33.1...v2.33.2) (2026-05-14)
 
 
