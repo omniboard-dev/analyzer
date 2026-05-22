@@ -34,8 +34,8 @@ or
 
 ## Commands
 
-- `omniboard analyze` - (same as `omniboard`) analyze project and upload results to Omniboard.dev (and generate local json, optional)
-- `omniboard batch` - Clone (or update) and analyze multiple project repositories and upload results to Omniboard.dev
+- `omniboard analyze` - (same as `omniboard`) analyze project and upload results to Omniboard.dev, or store results locally with `--json`
+- `omniboard batch` - Clone (or update) and analyze multiple project repositories and upload results to Omniboard.dev, or store results locally with `--json`
 - `omniboard test-connection` - test connection to the Omniboard.dev app
 - `omniboard test-check` - test check definition provided as a CLI argument (can be copied from the Omniboard.dev app)
 
@@ -43,8 +43,8 @@ or
 
 1. retrieve current checks defined in the Omniboard.dev app
 2. run retrieved checks for the current project (skip checks that are disabled or if project name does not match provided pattern)
-3. upload checks results to the Omniboard.dev app (if `OMNIBOARD_API_KEY` env variable or `--api-key` flag is present)
-4. (Optional) store check results locally (when `--json` flag was present)
+3. store check results locally when `--json` flag was present
+4. upload checks results to the Omniboard.dev app when `--json` is not present and `OMNIBOARD_API_KEY` env variable or `--api-key` flag is present
 5. Explore results in the Omniboard.dev app using projects, results or dashboards overview
 
 ## How it works - batch
@@ -72,7 +72,7 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 - `--errors-as-warnings` - exit with success (0) even in case of errors and log them as warnings (useful for CI)
 - `--api-key` - pass in API key when not set as an environment variable
 - `--api-url` - pass in URL of the on-prem Omniboard instance (for custom enterprise plans only)
-- `--json` - store data in local json file
+- `--json` - store data in local json file and skip upload
 - `--json-path` - location of local json file
 - `--check-pattern` - only run checks matching provided pattern
 - `--sanitize-repo-url` - try to sanitize auth tokens from repo urls

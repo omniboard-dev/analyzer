@@ -16,7 +16,7 @@ export const command = 'batch';
 export const aliases = ['b'];
 
 export const describe =
-  'Clone (or update) and analyze multiple project repositories and upload results to Omniboard.dev';
+  'Clone (or update) and analyze multiple project repositories and upload results to Omniboard.dev, or store results locally with --json';
 
 export const builder = (yargs: Argv) =>
   yargs
@@ -40,7 +40,7 @@ export const builder = (yargs: Argv) =>
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store results data in local json file',
+      description: 'Store results data in local json file and skip upload',
     })
     .option('check-pattern', {
       alias: 'cp',

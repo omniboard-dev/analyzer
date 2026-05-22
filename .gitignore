@@ -3,3 +3,4 @@ node_modules
 dist
 AGENTS.md
 omniboard-analyzer-*.tgz
+.codex

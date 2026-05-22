@@ -10,6 +10,9 @@ export const saveProjectApiTask: ListrTask = {
     if (ctx.control.skipEverySubsequentTask) {
       return true;
     }
+    if (ctx.options.json) {
+      return `Local json output requested, skipping Omniboard.dev upload`;
+    }
     if (!process.env.OMNIBOARD_API_KEY && !ctx.options.apiKey) {
       ctx.control.skipEverySubsequentTask = true;
       return `Please provide --api-key argument or OMNIBOARD_API_KEY env variable`;

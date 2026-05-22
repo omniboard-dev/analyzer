@@ -17,14 +17,14 @@ export const command = 'analyze';
 export const aliases = ['$0', 'a'];
 
 export const describe =
-  'Analyze project and upload results to Omniboard.dev (and generate local json, optional)';
+  'Analyze project and upload results to Omniboard.dev, or store results locally with --json';
 
 export const builder = (yargs: Argv) =>
   yargs
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store results data in local json file',
+      description: 'Store results data in local json file and skip upload',
     })
     .option('json-path', {
       type: 'string',
