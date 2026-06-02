@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.34.1](https://github.com/omniboard-dev/analyzer/compare/v2.34.0...v2.34.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* add undici to restore proxy behavior after migration from got to fetch ([d916c5d](https://github.com/omniboard-dev/analyzer/commit/d916c5de7b4c4d049654b5df646e90e9764553f2))
+
 ## [2.34.0](https://github.com/omniboard-dev/analyzer/compare/v2.33.2...v2.34.0) (2026-05-22)
 
 
