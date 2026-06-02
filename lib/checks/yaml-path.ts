@@ -65,7 +65,9 @@ function readDotProperty(source: string, start: number) {
   }
 
   if (end === start) {
-    throw new Error(`Unsupported YAML path syntax near "${source.slice(start)}"`);
+    throw new Error(
+      `Unsupported YAML path syntax near "${source.slice(start)}"`
+    );
   }
 
   return {
@@ -95,7 +97,9 @@ function readSimpleProperty(source: string, start: number, end: number) {
 function readBracketToken(source: string, start: number) {
   const end = source.indexOf(']', start);
   if (end === -1) {
-    throw new Error(`Unsupported YAML path syntax near "${source.slice(start)}"`);
+    throw new Error(
+      `Unsupported YAML path syntax near "${source.slice(start)}"`
+    );
   }
 
   const content = source.slice(start + 1, end).trim();
