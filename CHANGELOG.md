@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.35.1](https://github.com/omniboard-dev/analyzer/compare/v2.35.0...v2.35.1) (2026-07-28)
+
+
+### Bug Fixes
+
+* support basename-only JSON paths ([1373586](https://github.com/omniboard-dev/analyzer/commit/13735866cc5dce0c3ac1146f72212f2e0127a099))
+
 ## [2.35.0](https://github.com/omniboard-dev/analyzer/compare/v2.34.1...v2.35.0) (2026-07-28)
 
 
