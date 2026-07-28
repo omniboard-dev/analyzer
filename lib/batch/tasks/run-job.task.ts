@@ -5,6 +5,7 @@ import { writeJson } from '../../services/fs.service';
 import { getRepoNameFromUrl } from '../../services/git.service';
 
 import { projectInfoTask } from '../../tasks/project-info.task';
+import { handledCheckFailureInfoTask } from '../../tasks/handled-check-failure-info.tast';
 import { saveProjectApiTask } from '../../tasks/save-project-api.task';
 import { runChecksWrapperTask } from '../../tasks/run-checks-wrapper.task';
 
@@ -40,6 +41,7 @@ export function runJobTaskFactory(
           runChecksWrapperTask,
           batchSaveProjectJsonTaskFactory(job),
           saveProjectApiTask,
+          handledCheckFailureInfoTask,
           finalizeJobTaskFactory(job, task),
         ],
         {
