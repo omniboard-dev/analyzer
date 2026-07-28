@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.35.0](https://github.com/omniboard-dev/analyzer/compare/v2.34.1...v2.35.0) (2026-07-28)
+
+
+### Features
+
+* check / result size violation error handling improvements ([dc9d7f2](https://github.com/omniboard-dev/analyzer/commit/dc9d7f2baf502b06249a185e54038f609af964cf))
+
 ### [2.34.1](https://github.com/omniboard-dev/analyzer/compare/v2.34.0...v2.34.1) (2026-06-02)
 
 
