@@ -81,9 +81,11 @@ export function readXmlAsDom(
 }
 
 export function writeJson(destinationPath: string, data: any) {
-  const { base, dir } = p.parse(destinationPath);
+  const { dir } = p.parse(destinationPath);
   const dataAsString = JSON.stringify(data, null, 2);
-  fs.mkdirSync(dir, { recursive: true });
+  if (dir) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
   fs.writeFileSync(destinationPath, dataAsString);
 }
 
