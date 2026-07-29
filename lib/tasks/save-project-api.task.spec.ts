@@ -70,6 +70,15 @@ describe('saveProjectApiTask', () => {
     vi.mocked(api.uploadProject).mockReset().mockResolvedValue(undefined);
   });
 
+  it('does not upload a project excluded by an earlier task', async () => {
+    const ctx = createContext(false);
+    ctx.control.skipEverySubsequentTask = true;
+
+    await runSaveTask(ctx);
+
+    expect(api.uploadProject).not.toHaveBeenCalled();
+  });
+
   it('aborts before upload with exact size details by default', async () => {
     const ctx = createContext(false);
 

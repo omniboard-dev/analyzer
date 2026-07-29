@@ -53,6 +53,10 @@ export const saveProjectApiTask: ListrTask = {
     }
   },
   task: async (ctx, task) => {
+    if (ctx.control.skipEverySubsequentTask) {
+      return;
+    }
+
     const { results, rejectedCheckResults } = prepareProjectResultsForUpload(
       ctx.results,
       ctx.settings
