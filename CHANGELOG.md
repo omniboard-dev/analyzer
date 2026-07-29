@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.35.3](https://github.com/omniboard-dev/analyzer/compare/v2.35.2...v2.35.3) (2026-07-29)
+
+
+### Bug Fixes
+
+* skip blocklisted projects across analyzer flows ([39ea8c5](https://github.com/omniboard-dev/analyzer/commit/39ea8c548eb1bc0b6f574c5cac5d1dfda6f666b1))
+
 ### [2.35.2](https://github.com/omniboard-dev/analyzer/compare/v2.35.1...v2.35.2) (2026-07-29)
 
 
