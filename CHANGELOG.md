@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.35.4](https://github.com/omniboard-dev/analyzer/compare/v2.35.3...v2.35.4) (2026-07-29)
+
+
+### Bug Fixes
+
+* handle UTF-8 BOM in XML files ([02b8e26](https://github.com/omniboard-dev/analyzer/commit/02b8e260192c50ee4f73dc4f2df435ba227e2ea1))
+
 ### [2.35.3](https://github.com/omniboard-dev/analyzer/compare/v2.35.2...v2.35.3) (2026-07-29)
 
 
