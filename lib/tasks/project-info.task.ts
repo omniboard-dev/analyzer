@@ -94,22 +94,26 @@ export const projectInfoTask: ListrTask = {
               }
             }
 
-            const { projectsBlacklistPattern, projectsBlacklistExplicit } =
-              ctx.settings;
+            const projectsBlocklistPattern =
+              ctx.settings.projectsBlocklistPattern ??
+              ctx.settings.projectsBlacklistPattern;
+            const projectsBlocklistExplicit =
+              ctx.settings.projectsBlocklistExplicit ??
+              ctx.settings.projectsBlacklistExplicit;
             if (
-              projectsBlacklistPattern &&
-              new RegExp(projectsBlacklistPattern, 'i').test(names[0])
+              projectsBlocklistPattern &&
+              new RegExp(projectsBlocklistPattern, 'i').test(names[0])
             ) {
-              task.title = `${task.title} - project name matched by blacklist pattern`;
+              task.title = `${task.title} - project name matched by blocklist pattern`;
               ctx.control.skipEverySubsequentTask = true;
             }
             if (
-              projectsBlacklistExplicit &&
-              projectsBlacklistExplicit.some(
+              projectsBlocklistExplicit &&
+              projectsBlocklistExplicit.some(
                 (projectName) => projectName === names[0]
               )
             ) {
-              task.title = `${task.title} - project name was explicitly blacklisted`;
+              task.title = `${task.title} - project name was explicitly blocklisted`;
               ctx.control.skipEverySubsequentTask = true;
             }
           },

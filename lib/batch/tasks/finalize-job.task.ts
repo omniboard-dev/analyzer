@@ -10,6 +10,8 @@ export function finalizeJobTaskFactory(
   return {
     title: 'Finalize job',
     task: async (ctx: Context, task) => {
+      const skipped = ctx.control.skipEverySubsequentTask;
+
       // reset job CTX state
       ctx.control = { skipEverySubsequentTask: false };
       ctx.results = { checks: {} };
@@ -27,7 +29,9 @@ export function finalizeJobTaskFactory(
       }
 
       task.title = `${task.title} successful`;
-      parentTask.title = `${parentTask.title} successful`;
+      parentTask.title = `${parentTask.title} ${
+        skipped ? 'skipped' : 'successful'
+      }`;
     },
   };
 }

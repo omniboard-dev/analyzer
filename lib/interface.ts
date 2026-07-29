@@ -77,6 +77,9 @@ export interface Settings {
   projectsMaxLimit?: number;
   checkResultSizeLimit?: number;
   totalCheckResultSizeLimit?: number;
+  projectsBlocklistPattern?: string;
+  projectsBlocklistExplicit?: string[];
+  // Legacy API field names retained for backwards compatibility.
   projectsBlacklistPattern?: string;
   projectsBlacklistExplicit?: string[];
   analyzerIncludeFilesFlag?: string;
