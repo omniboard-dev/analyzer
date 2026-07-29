@@ -58,10 +58,10 @@ export function readXmlAsDom(
   options: { xpathSanitizeAngularTemplate?: boolean; verbose?: boolean } = {}
 ): any {
   const buffer = fs.readFileSync(path);
-  const content =
-    (options.xpathSanitizeAngularTemplate
-      ? buffer?.toString()?.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
-      : buffer?.toString()) ?? '';
+  const rawContent = buffer.toString().replace(/^\uFEFF/, '');
+  const content = options.xpathSanitizeAngularTemplate
+    ? rawContent.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
+    : rawContent;
   return new DOMParser({
     locator: true,
     onError(level, message) {

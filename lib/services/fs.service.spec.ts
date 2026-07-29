@@ -3,7 +3,7 @@ import { tmpdir } from 'os';
 import * as p from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { writeJson } from './fs.service';
+import { readXmlAsDom, writeJson } from './fs.service';
 
 const originalWorkingDirectory = process.cwd();
 let testDirectory: string | undefined;
@@ -26,5 +26,20 @@ describe('writeJson', () => {
     expect(JSON.parse(fs.readFileSync('job.json', 'utf8'))).toEqual({
       queue: [],
     });
+  });
+});
+
+describe('readXmlAsDom', () => {
+  it('parses an XML declaration preceded by a UTF-8 BOM', () => {
+    testDirectory = fs.mkdtempSync(p.join(tmpdir(), 'omniboard-analyzer-'));
+    const xmlPath = p.join(testDirectory, 'pom.xml');
+    fs.writeFileSync(
+      xmlPath,
+      '\uFEFF<?xml version="1.0" encoding="UTF-8"?><project />'
+    );
+
+    const document = readXmlAsDom(xmlPath);
+
+    expect(document.documentElement.nodeName).toBe('project');
   });
 });
