@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.35.5](https://github.com/omniboard-dev/analyzer/compare/v2.35.4...v2.35.5) (2026-07-29)
+
+
+### Bug Fixes
+
+* report malformed project files as warnings ([bae3db4](https://github.com/omniboard-dev/analyzer/commit/bae3db492684224a17e7458b044bb65d0008e512))
+
 ### [2.35.4](https://github.com/omniboard-dev/analyzer/compare/v2.35.3...v2.35.4) (2026-07-29)
 
 
