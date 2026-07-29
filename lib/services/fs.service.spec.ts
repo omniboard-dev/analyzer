@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { tmpdir } from 'os';
 import * as p from 'path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { readXmlAsDom, writeJson } from './fs.service';
 
@@ -14,6 +14,7 @@ afterEach(() => {
     fs.rmSync(testDirectory, { recursive: true, force: true });
     testDirectory = undefined;
   }
+  vi.restoreAllMocks();
 });
 
 describe('writeJson', () => {
@@ -41,5 +42,18 @@ describe('readXmlAsDom', () => {
     const document = readXmlAsDom(xmlPath);
 
     expect(document.documentElement.nodeName).toBe('project');
+  });
+
+  it('does not print a handled fatal parse error unless verbose', () => {
+    testDirectory = fs.mkdtempSync(p.join(tmpdir(), 'omniboard-analyzer-'));
+    const xmlPath = p.join(testDirectory, 'pom.xml');
+    fs.writeFileSync(xmlPath, '<project></wrongClosingTag>');
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    expect(() => readXmlAsDom(xmlPath)).toThrow();
+
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });

@@ -13,6 +13,8 @@ const PROJECT_INFO_TASK_EXCLUDE_PATTERN = '(^\\.|node_modules|coverage|dist)';
 const PROJECT_INFO_TASK_PATTERN_FLAGS = 'i';
 const PROJECT_TEAM_PATTERN_FLAGS = 'ig';
 
+export type ProjectFileWarningHandler = (warning: Error) => void;
+
 export const isMavenWorkspace = (): boolean => {
   return !!findPomXmlFiles()?.length;
 };
@@ -31,16 +33,16 @@ export const findProjectNamesNpm = (): string[] => {
     .filter(Boolean);
 };
 
-export const findProjectNamesMaven = (): string[] => {
-  return findPomXmlFiles()
-    .map((f) => readXmlAsDom(f))
-    .filter(Boolean)
+export const findProjectNamesMaven = (
+  onWarning?: ProjectFileWarningHandler
+): string[] => {
+  return findPomXmlDocuments(onWarning)
     .map(
-      (document) =>
+      ({ document }) =>
         xpath
           .select(
             'string(//*[local-name()="project"]/*[local-name()="artifactId"])',
-            document!,
+            document,
             true
           )
           ?.toString() || ''
@@ -75,17 +77,16 @@ export const findProjectRepositoriesNpm = (sanitizeRepoUrl: boolean) => {
 };
 
 export const findProjectRepositoriesMaven = (
-  sanitizeRepoUrl: boolean
+  sanitizeRepoUrl: boolean,
+  onWarning?: ProjectFileWarningHandler
 ): string[] => {
   return Array.from(
     new Set(
-      findPomXmlFiles()
-        .map((f) => readXmlAsDom(f))
-        .filter(Boolean)
-        .flatMap((document) =>
+      findPomXmlDocuments(onWarning)
+        .flatMap(({ document }) =>
           xpath.select(
             'string(//*[local-name()="project"]/*[local-name()="scm"]/*[local-name()="connection" or local-name()="developerConnection"][last()])',
-            document!,
+            document,
             true
           )
         )
@@ -129,6 +130,21 @@ function findPomXmlFiles() {
     'i',
     '.teamcity' // TODO what else to exclude in java repo?
   );
+}
+
+function findPomXmlDocuments(onWarning?: ProjectFileWarningHandler) {
+  return findPomXmlFiles().flatMap((file) => {
+    try {
+      return [{ file, document: readXmlAsDom(file) }];
+    } catch (err: any) {
+      onWarning?.(
+        new Error(
+          `[project-info:maven]\n   File: ${file}\n   Error: ${err.message}`
+        )
+      );
+      return [];
+    }
+  });
 }
 
 function findSetupPyFiles() {

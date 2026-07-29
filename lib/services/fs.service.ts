@@ -73,7 +73,7 @@ export function readXmlAsDom(
         if (options.verbose) {
           console.error(message);
         }
-      } else {
+      } else if (options.verbose) {
         console.error(message);
       }
     },

@@ -60,6 +60,25 @@ export function yamlCheckTaskFactory(
         const errors: Error[] = [];
         const matches: ProjectCheckMatch[] = [];
 
+        const completeCheck = () => {
+          if (finishedCounter !== files.length) {
+            return;
+          }
+
+          ctx.results.checks![name] = {
+            name,
+            type,
+            value: matches.length > 0,
+            matches,
+          };
+
+          task.title = errors.length
+            ? errors.map((e) => e.message).join(',')
+            : resolveCheckTaskFulfilledTitle(task, matches);
+          resolveCheckParentTaskProgress(parentTask);
+          resolve();
+        };
+
         for (const file of files) {
           setTimeout(async () => {
             let data: any;
@@ -74,11 +93,7 @@ export function yamlCheckTaskFactory(
               errors.push(error);
               ctx.handledCheckFailures.push(error);
               finishedCounter++;
-              if (finishedCounter === files.length) {
-                resolve();
-              }
-              task.title = `${CheckResultSymbol.ERROR} ${task.title} - ${file} - ${err.message}`;
-              resolveCheckParentTaskProgress(parentTask);
+              completeCheck();
               return;
             }
 
@@ -97,22 +112,7 @@ export function yamlCheckTaskFactory(
             }
 
             finishedCounter++;
-
-            if (finishedCounter === files.length) {
-              ctx.results.checks![name] = {
-                name,
-                type,
-                value: matches.length > 0,
-                matches,
-              };
-
-              task.title = errors.length
-                ? errors.map((e) => e.message).join(',')
-                : resolveCheckTaskFulfilledTitle(task, matches);
-              resolveCheckParentTaskProgress(parentTask);
-
-              resolve();
-            }
+            completeCheck();
           });
         }
       });

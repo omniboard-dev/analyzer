@@ -52,7 +52,9 @@ export const projectInfoTask: ListrTask = {
                   names,
                 };
               } else if (isMavenWorkspace()) {
-                names = findProjectNamesMaven();
+                names = findProjectNamesMaven((warning) =>
+                  addHandledWarning(ctx, warning)
+                );
                 ctx.results.name = names[0];
                 ctx.results.info = {
                   type: ProjectType.MAVEN,
@@ -129,7 +131,8 @@ export const projectInfoTask: ListrTask = {
               ctx.options.sanitizeRepoUrl
             );
             const reposMaven = findProjectRepositoriesMaven(
-              ctx.options.sanitizeRepoUrl
+              ctx.options.sanitizeRepoUrl,
+              (warning) => addHandledWarning(ctx, warning)
             );
             const repositories = Array.from(
               new Set([...repos, ...reposNpm, ...reposMaven])
@@ -153,3 +156,13 @@ export const projectInfoTask: ListrTask = {
       { rendererOptions: {} }
     ),
 };
+
+function addHandledWarning(ctx: Context, warning: Error) {
+  if (
+    !ctx.handledCheckFailures.some(
+      (existingWarning) => existingWarning.message === warning.message
+    )
+  ) {
+    ctx.handledCheckFailures.push(warning);
+  }
+}
