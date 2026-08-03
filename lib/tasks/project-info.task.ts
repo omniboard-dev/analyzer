@@ -15,7 +15,10 @@ import {
   isNpmWorkspace,
   isPipWorkspace,
 } from '../services/project.service';
-import { getCurrentBranch } from '../services/git.service';
+import {
+  getCurrentBranch,
+  getTrackedProjectSize,
+} from '../services/git.service';
 
 export const projectInfoTask: ListrTask = {
   title: 'Resolve basic project info',
@@ -149,6 +152,26 @@ export const projectInfoTask: ListrTask = {
 
             if (ctx.results.info?.repository) {
               task.title = `${task.title}: ${ctx.results.info?.repository}`;
+            }
+          },
+        },
+        {
+          title: 'Count tracked project files',
+          skip: (ctx: Context) => ctx.control.skipEverySubsequentTask,
+          task: async (ctx: Context, task) => {
+            try {
+              const projectSize = await getTrackedProjectSize();
+              ctx.results.projectSize = projectSize;
+              task.title = `${task.title}: ${projectSize.totalFiles} files`;
+            } catch (error) {
+              ctx.handledCheckFailures.push(
+                new Error(
+                  `[project-info:project-size] Unable to count Git-tracked files: ${
+                    error instanceof Error ? error.message : String(error)
+                  }`
+                )
+              );
+              task.skip('Git-tracked file count unavailable');
             }
           },
         },

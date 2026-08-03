@@ -12,6 +12,7 @@ import { projectInfoTask } from './project-info.task';
 
 vi.mock('../services/git.service', () => ({
   getCurrentBranch: vi.fn(),
+  getTrackedProjectSize: vi.fn(),
 }));
 
 const originalWorkingDirectory = process.cwd();
@@ -46,7 +47,7 @@ function writePom(path: string, content: string) {
   fs.writeFileSync(path, content);
 }
 
-function createValidAndMalformedPoms() {
+function createValidPom() {
   testDirectory = fs.mkdtempSync(p.join(tmpdir(), 'omniboard-analyzer-'));
   writePom(
     p.join(testDirectory, 'pom.xml'),
@@ -58,14 +59,18 @@ function createValidAndMalformedPoms() {
   </scm>
 </project>`
   );
+  process.chdir(testDirectory);
+}
+
+function createValidAndMalformedPoms() {
+  createValidPom();
   writePom(
-    p.join(testDirectory, 'module', 'pom.xml'),
+    p.join(testDirectory!, 'module', 'pom.xml'),
     `<project>
   <artifactId>broken-project</artifactId>
   <properties><testOnly>false</wrongClosingTag></properties>
 </project>`
   );
-  process.chdir(testDirectory);
 }
 
 afterEach(() => {
@@ -79,6 +84,12 @@ afterEach(() => {
 
 beforeEach(() => {
   vi.mocked(git.getCurrentBranch).mockResolvedValue('main');
+  vi.mocked(git.getTrackedProjectSize).mockResolvedValue({
+    totalFiles: 0,
+    totalLines: 0,
+    byExtension: {},
+    linesByExtension: {},
+  });
 });
 
 describe('projectInfoTask Maven warnings', () => {
@@ -125,6 +136,30 @@ describe('projectInfoTask Maven warnings', () => {
     );
     expect(consoleLog.mock.calls.flat().join(' ')).toContain(
       '[project-info:maven]'
+    );
+  });
+});
+
+describe('projectInfoTask project size', () => {
+  it('continues when project-size collection fails', async () => {
+    createValidPom();
+    vi.mocked(git.getTrackedProjectSize).mockRejectedValue(
+      new Error('Git project-size collection failed')
+    );
+    const ctx = createContext();
+    const tasks = new Listr([projectInfoTask], { renderer: 'silent' });
+
+    await expect(tasks.run(ctx)).resolves.toBe(ctx);
+
+    expect(ctx.results.name).toBe('valid-project');
+    expect(ctx.results.projectSize).toBeUndefined();
+    expect(ctx.control.skipEverySubsequentTask).toBe(false);
+    expect(ctx.handledCheckFailures).toHaveLength(1);
+    expect(ctx.handledCheckFailures[0].message).toContain(
+      '[project-info:project-size]'
+    );
+    expect(ctx.handledCheckFailures[0].message).toContain(
+      'Git project-size collection failed'
     );
   });
 });

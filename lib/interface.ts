@@ -40,6 +40,7 @@ export interface Context {
   results: {
     name?: string;
     team?: string[];
+    projectSize?: ProjectSize;
     info?: ProjectInfo;
     checks?: {
       [key: string]: ProjectCheck;
@@ -88,6 +89,13 @@ export interface Settings {
   analyzerExcludeFilesPatternSize?: string;
   analyzerExcludeFilesPatternFlags?: string;
   analyzerCheckExecutionTimeout?: number;
+}
+
+export interface ProjectSize {
+  totalFiles: number;
+  totalLines: number;
+  byExtension: Record<string, number>;
+  linesByExtension: Record<string, number>;
 }
 
 export interface ProjectInfo {
