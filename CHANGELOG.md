@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.36.0](https://github.com/omniboard-dev/analyzer/compare/v2.35.5...v2.36.0) (2026-08-03)
+
+
+### Features
+
+* add tracked project size metadata ([b6560e2](https://github.com/omniboard-dev/analyzer/commit/b6560e24fb8caf13ea0769c5fa764b47fdc566a3))
+
 ### [2.35.5](https://github.com/omniboard-dev/analyzer/compare/v2.35.4...v2.35.5) (2026-07-29)
 
 
