@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/omniboard-dev/analyzer/compare/v2.36.0...v3.0.0) (2026-08-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* Analyzer v3 removes the legacy per-check execution engine and replaces it with the file-major streaming engine.
+
+### Features
+
+* replace analyzer execution with streaming v3 ([8778919](https://github.com/omniboard-dev/analyzer/commit/87789194928da326720a67de01b40f180b609aac))
+
 ## [2.36.0](https://github.com/omniboard-dev/analyzer/compare/v2.35.5...v2.36.0) (2026-08-03)
 
 
