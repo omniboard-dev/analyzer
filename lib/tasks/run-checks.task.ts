@@ -1,130 +1,171 @@
-import { ListrTask, ListrTaskWrapper, ListrDefaultRenderer } from 'listr2';
+import { ListrTask } from 'listr2';
 
+import { CheckDefinition, Context, ParentTask } from '../interface';
 import {
-  CheckType,
-  ContentCheckDefinition,
-  Context,
-  ParentTask,
-  XPathCheckDefinition,
-} from '../interface';
-import { sizeCheckTaskFactory } from '../checks/size.check';
-import { xpathCheckTaskFactory } from '../checks/xpath.check';
-import { contentCheckTaskFactory } from '../checks/content.check';
-import { resolveActiveFlags } from '../utils/regexp';
+  CheckExecutionSummary,
+  StreamingCheckMetrics,
+  StreamingCheckProgress,
+} from '../checks/engine/types';
 import {
-  CheckResultSymbol,
-  resolveCheckParentTaskProgress,
-} from '../checks/check.service';
-import { fileCheckTaskFactory } from '../checks/file.check';
-import { jsonCheckTaskFactory } from '../checks/json.check';
-import { yamlCheckTaskFactory } from '../checks/yaml.check';
+  prepareCheckRun,
+  runStreamingCheckEngine,
+} from '../checks/engine/check-engine';
+import { getHumanReadableFileSize } from '../services/fs.service';
 
-const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
+enum CheckResultSymbol {
+  FULFILLED = '✅',
+  UNFULFILLED = '❌',
+  ERROR = '⚠️',
+}
 
 export const runChecksTask: ListrTask = {
-  title: 'Run checks',
+  title: 'Analyze project checks',
   skip: (ctx: Context) => {
     if (ctx.control.skipEverySubsequentTask) {
       return true;
     }
     if (
-      (!ctx.definitions.checks || !ctx.definitions.checks?.length) &&
+      (!ctx.definitions.checks || !ctx.definitions.checks.length) &&
       !ctx.options.checkDefinition
     ) {
-      return `No checks found`;
-    } else {
-      return false;
+      return 'No checks found';
     }
+    return false;
   },
   task: async (ctx: Context, task) => {
-    const checkTasks = buildTasks(ctx, task);
-    task.title += `, ${checkTasks.length} applicable checks found, 0/${checkTasks.length}`;
-    return task.newListr(checkTasks, {
-      concurrent: checkTasks?.length < 100,
+    const definitions = resolveDefinitions(ctx);
+    const prepared = prepareCheckRun(ctx, definitions);
+    const updateProgress = createProgressReporter(ctx, task);
+    task.title = `${task.title}: ${prepared.checks.length} executable, ${prepared.selectorGroups.length} selector groups, ${prepared.skippedChecks.length} skipped`;
+
+    const execution = await runStreamingCheckEngine(ctx, definitions, {
+      verbose: ctx.options.verbose,
+      onProgress: updateProgress,
+    });
+
+    ctx.results.checks = execution.results;
+    ctx.debug.streamingCheckMetrics = execution.metrics;
+    task.output = formatFinalMetrics(execution.metrics);
+    task.title = `${task.title} - completed in ${formatDuration(
+      execution.metrics.elapsedMs
+    )}`;
+
+    if (
+      !ctx.options.showCheckSubtasks ||
+      ctx.options.silent ||
+      !execution.summaries.length
+    ) {
+      return;
+    }
+
+    return task.newListr(execution.summaries.map(createCheckSummaryTask), {
+      concurrent: false,
+      rendererOptions: {
+        collapseSubtasks: false,
+      },
     });
   },
 };
 
-function buildTasks(ctx: Context, parentTask: ParentTask): ListrTask[] {
-  const checksDefinitionsFromApi = ctx.definitions?.checks ?? [];
-  const checksDefinitionsFromCli = ctx.options?.checkDefinition
-    ? [JSON.parse(ctx.options.checkDefinition)]
-    : [];
-  const checkDefinitions = (
-    checksDefinitionsFromCli.length
-      ? checksDefinitionsFromCli
-      : checksDefinitionsFromApi
-  ).filter((definition) => {
-    if (
-      ctx.options.checkPattern &&
-      !new RegExp(ctx.options.checkPattern, 'i').test(definition.name)
-    ) {
-      return false;
+function resolveDefinitions(ctx: Context): CheckDefinition[] {
+  if (ctx.options.checkDefinition) {
+    return [JSON.parse(ctx.options.checkDefinition) as CheckDefinition];
+  }
+  return ctx.definitions.checks ?? [];
+}
+
+function createProgressReporter(
+  ctx: Context,
+  task: ParentTask & { output?: string }
+) {
+  let lastUpdate = 0;
+  const interval = ctx.options.verbose ? 1_000 : 200;
+
+  return (progress: StreamingCheckProgress) => {
+    if (ctx.options.silent || progress.phase !== 'walking') {
+      return;
     }
-    return definition.type !== CheckType.META;
-  });
-  return checkDefinitions.map((definition) => ({
-    title: `[${definition.type.padEnd(7, ' ')}] "${definition.name}"`,
-    skip: async (ctx: Context): Promise<any> => {
-      if (definition.disabled) {
-        resolveCheckParentTaskProgress(parentTask);
-        return `${CheckResultSymbol.SKIPPED} [${definition.type.padEnd(
-          7,
-          ' '
-        )}] "${definition.name}": DISABLED`;
-      } else if (definition.projectNamePattern) {
-        const projectNameRegexp = new RegExp(
-          definition.projectNamePattern,
-          resolveActiveFlags(
-            definition.projectNamePatternFlags,
-            DEFAULT_PROJECT_NAME_PATTERN_FLAGS
-          )
-        );
-        if (!projectNameRegexp.test(ctx.results.name || '')) {
-          resolveCheckParentTaskProgress(parentTask);
-          return `${CheckResultSymbol.SKIPPED} [${definition.type.padEnd(
-            7,
-            ' '
-          )}] "${definition.name}": project ${ctx.results.name} doesn't match ${
-            definition.projectNamePattern
-          }`;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    },
-    task: (() => {
-      if (definition.type === CheckType.CONTENT) {
-        return contentCheckTaskFactory(
-          definition as ContentCheckDefinition,
-          parentTask
-        );
-      } else if (definition.type === CheckType.XPATH) {
-        return xpathCheckTaskFactory(
-          definition as XPathCheckDefinition,
-          parentTask
-        );
-      } else if (definition.type === CheckType.SIZE) {
-        return sizeCheckTaskFactory(definition, parentTask);
-      } else if (definition.type === CheckType.FILE) {
-        return fileCheckTaskFactory(definition, parentTask);
-      } else if (definition.type === CheckType.JSON) {
-        return jsonCheckTaskFactory(definition, parentTask);
-      } else if (definition.type === CheckType.YAML) {
-        return yamlCheckTaskFactory(definition, parentTask);
-      } else {
-        return function unknownCheckTask(
-          ctx: Context,
-          task: ListrTaskWrapper<Context, ListrDefaultRenderer>
-        ) {
-          task.skip(
-            `Implementation for a check with type "${definition.type}" not found`
-          );
-          resolveCheckParentTaskProgress(parentTask);
-        };
-      }
-    })(),
-  }));
+
+    const now = Date.now();
+    if (progress.elapsedMs !== 0 && now - lastUpdate < interval) {
+      return;
+    }
+    lastUpdate = now;
+    task.output = formatProgress(progress, ctx.options.verbose);
+  };
+}
+
+export function formatProgress(
+  progress: StreamingCheckProgress,
+  verbose: boolean
+): string {
+  const elapsedSeconds = Math.max(progress.elapsedMs / 1_000, 0.001);
+  const rate = Math.round(progress.filesVisited / elapsedSeconds);
+  const base = [
+    `${progress.filesVisited.toLocaleString()} files`,
+    `${progress.eligibleFiles.toLocaleString()} eligible`,
+    `${progress.filesRead.toLocaleString()} read`,
+    `${progress.evaluationsCompleted.toLocaleString()} evaluations`,
+    getHumanReadableFileSize(progress.bytesRead),
+    `${rate.toLocaleString()} files/s`,
+  ].join(' · ');
+
+  if (!verbose) {
+    return base;
+  }
+
+  return [
+    base,
+    `${progress.directoriesVisited.toLocaleString()} directories`,
+    `${progress.handledWarnings.toLocaleString()} warnings`,
+    `${getHumanReadableFileSize(progress.currentInFlightBytes)} in flight`,
+    progress.currentDirectory
+      ? `current=${progress.currentDirectory}`
+      : undefined,
+  ]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+export function formatFinalMetrics(metrics: StreamingCheckMetrics): string {
+  return [
+    `${metrics.filesVisited.toLocaleString()} files`,
+    `${metrics.eligibleFiles.toLocaleString()} eligible`,
+    `${metrics.filesRead.toLocaleString()} read`,
+    `${metrics.evaluationsCompleted.toLocaleString()} evaluations`,
+    getHumanReadableFileSize(metrics.bytesRead),
+  ].join(' · ');
+}
+
+function createCheckSummaryTask(summary: CheckExecutionSummary): ListrTask {
+  const { definition, result, errors, skippedReason } = summary;
+  const baseTitle = `[${definition.type.padEnd(7, ' ')}] "${definition.name}"`;
+
+  if (skippedReason) {
+    return {
+      title: baseTitle,
+      task: (_ctx, task) => task.skip(skippedReason),
+    };
+  }
+
+  const symbol = errors.length
+    ? CheckResultSymbol.ERROR
+    : result?.value
+    ? CheckResultSymbol.FULFILLED
+    : CheckResultSymbol.UNFULFILLED;
+  const matches = result?.matches?.length ?? 0;
+
+  return {
+    title: `${symbol} ${baseTitle}${
+      matches ? `, found matches: ${matches}` : ''
+    }`,
+    task: () => undefined,
+  };
+}
+
+function formatDuration(durationMs: number): string {
+  if (durationMs < 1_000) {
+    return `${durationMs}ms`;
+  }
+  return `${(durationMs / 1_000).toFixed(2)}s`;
 }

@@ -35,7 +35,7 @@ export interface Context {
   };
   settings: Settings;
   definitions: {
-    checks?: (ContentCheckDefinition | XPathCheckDefinition)[];
+    checks?: CheckDefinition[];
   };
   results: {
     name?: string;
@@ -146,6 +146,7 @@ export interface BaseCheckDefinition {
   filesPatternFlags?: string;
   filesExcludePattern?: string;
   filesExcludePatternFlags?: string;
+
   projectNamePattern?: string;
   projectNamePatternFlags?: string;
 }
@@ -168,6 +169,13 @@ export interface JSONCheckDefinition extends BaseCheckDefinition {
 export interface YAMLCheckDefinition extends BaseCheckDefinition {
   yamlPropertyPath: string;
 }
+
+export type CheckDefinition =
+  | BaseCheckDefinition
+  | ContentCheckDefinition
+  | XPathCheckDefinition
+  | JSONCheckDefinition
+  | YAMLCheckDefinition;
 
 export enum CheckType {
   CONTENT = 'content',

@@ -7,7 +7,7 @@ import { getRepoNameFromUrl } from '../../services/git.service';
 import { projectInfoTask } from '../../tasks/project-info.task';
 import { handledCheckFailureInfoTask } from '../../tasks/handled-check-failure-info.tast';
 import { saveProjectApiTask } from '../../tasks/save-project-api.task';
-import { runChecksWrapperTask } from '../../tasks/run-checks-wrapper.task';
+import { runChecksTask } from '../../tasks/run-checks.task';
 
 import { initJobRepo } from './init-job-repo.task';
 import { initJobStateTask } from './init-job-state.task';
@@ -38,7 +38,7 @@ export function runJobTaskFactory(
           initJobStateTask,
           initJobRepo(job),
           projectInfoTask,
-          runChecksWrapperTask,
+          runChecksTask,
           batchSaveProjectJsonTaskFactory(job),
           saveProjectApiTask,
           handledCheckFailureInfoTask,
@@ -48,7 +48,7 @@ export function runJobTaskFactory(
           collectErrors: 'minimal',
           exitOnError: true,
           rendererOptions: {
-            collapse: true,
+            collapseSubtasks: true,
           },
         }
       );

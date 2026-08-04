@@ -1,8 +1,11 @@
 import xpath from 'xpath';
 
 import { CustomProjectResolver, TeamResolver } from '../interface';
+import { execRegExpAll } from '../utils/regexp';
 import {
+  fileExists,
   findFiles,
+  pathJoin,
   readJson,
   readXmlAsDom,
   readFile,
@@ -99,8 +102,8 @@ export const findProjectRepositoriesMaven = (
 export const findProjectRepositoriesRepo = (
   sanitizeRepoUrl: boolean
 ): string[] => {
-  const gitConfigPath = findFiles('.git/config')[0];
-  if (!gitConfigPath) {
+  const gitConfigPath = pathJoin('.git', 'config');
+  if (!fileExists(gitConfigPath)) {
     return [];
   }
   const gitConfig = readFile(gitConfigPath);
@@ -202,15 +205,7 @@ export const findProjectTeamNames = (
               resolver.teamNamePattern,
               resolver?.teamNameFlags ?? PROJECT_TEAM_PATTERN_FLAGS
             );
-            const matchesForFile: RegExpExecArray[] = [];
-            let match: RegExpExecArray | null;
-
-            // const matchesForFile = [...(content as any).matchAll(regexp)]; // TODO node v12+
-            while ((match = regexp.exec(content)) !== null) {
-              matchesForFile.push(match);
-            }
-
-            return matchesForFile.map((currentMatch) =>
+            return execRegExpAll(regexp, content).map((currentMatch) =>
               currentMatch.groups?.team?.trim().toLowerCase()
             );
           })

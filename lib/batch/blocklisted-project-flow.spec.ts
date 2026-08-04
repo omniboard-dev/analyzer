@@ -8,7 +8,7 @@ import * as git from '../services/git.service';
 import { handledCheckFailureInfoTask } from '../tasks/handled-check-failure-info.tast';
 import { projectInfoTask } from '../tasks/project-info.task';
 import { retrieveChecksTask } from '../tasks/retrieve-checks.task';
-import { runChecksWrapperTask } from '../tasks/run-checks-wrapper.task';
+import { runChecksTask } from '../tasks/run-checks.task';
 import { saveProjectApiTask } from '../tasks/save-project-api.task';
 import { saveProjectJsonTask } from '../tasks/save-project-json.task';
 
@@ -75,7 +75,7 @@ async function runBlocklistedProject(settings: Settings) {
   const tasks = new Listr(
     [
       projectInfoTask,
-      runChecksWrapperTask,
+      runChecksTask,
       batchSaveProjectJsonTaskFactory(JOB),
       saveProjectApiTask,
       handledCheckFailureInfoTask,
@@ -100,7 +100,7 @@ async function runBlocklistedAnalyze(settings: Settings) {
     [
       projectInfoTask,
       retrieveChecksTask,
-      runChecksWrapperTask,
+      runChecksTask,
       saveProjectJsonTask,
       saveProjectApiTask,
       handledCheckFailureInfoTask,

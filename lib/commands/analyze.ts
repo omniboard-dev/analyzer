@@ -8,7 +8,7 @@ import { saveProjectApiTask } from '../tasks/save-project-api.task';
 import { saveProjectJsonTask } from '../tasks/save-project-json.task';
 import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
 import { handledCheckFailureInfoTask } from '../tasks/handled-check-failure-info.tast';
-import { runChecksWrapperTask } from '../tasks/run-checks-wrapper.task';
+import { runChecksTask } from '../tasks/run-checks.task';
 
 const logger = createLogger('ANALYZE');
 
@@ -49,7 +49,7 @@ export const handler = async (argv: any) =>
       retrieveSettingsTask,
       projectInfoTask,
       retrieveChecksTask,
-      runChecksWrapperTask,
+      runChecksTask,
       saveProjectJsonTask,
       saveProjectApiTask,
       handledCheckFailureInfoTask,

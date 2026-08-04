@@ -1,9 +1,44 @@
-import { Listr, ListrTask } from 'listr2';
+import { Listr, ListrTask, PRESET_TIMER } from 'listr2';
 
 import { Context, Options } from '../interface';
 import { Logger } from '../services/logger.service';
 
 import { formatTime } from './time';
+
+type RunnerRenderer = 'default' | 'simple' | 'silent' | 'verbose';
+
+export function createRunnerRendererOptions(
+  options: Options,
+  stdoutIsTty = process.stdout.isTTY === true
+) {
+  const renderer: RunnerRenderer = options.silent
+    ? 'silent'
+    : options.verbose
+    ? 'verbose'
+    : stdoutIsTty
+    ? 'default'
+    : 'simple';
+
+  return {
+    fallbackRenderer: 'simple' as const,
+    fallbackRendererOptions: {
+      timer: PRESET_TIMER,
+    },
+    renderer,
+    rendererOptions:
+      renderer === 'default'
+        ? {
+            collapseSubtasks: false,
+            formatOutput: 'wrap' as const,
+            timer: PRESET_TIMER,
+          }
+        : renderer === 'silent'
+        ? undefined
+        : {
+            timer: PRESET_TIMER,
+          },
+  };
+}
 
 export const runner = async (
   tasks: ListrTask[],
@@ -11,7 +46,9 @@ export const runner = async (
   logger: Logger
 ) => {
   const start = new Date().getTime();
-  logger.info('Start');
+  if (!options.silent) {
+    logger.info('Start');
+  }
   const context: Context = {
     options,
     settings: {},
@@ -22,61 +59,61 @@ export const runner = async (
     batch: { queue: [], completed: [], failed: [] },
     debug: {},
   };
-  const rootTasks = new Listr(tasks, {
-    fallbackRenderer: 'verbose',
-    rendererOptions: {
-      collapse: false,
-      showTimer: true,
-      formatOutput: 'wrap',
-    },
-    renderer: options.silent
-      ? 'silent'
-      : options.verbose
-      ? 'verbose'
-      : 'default',
+  const rootTasks = new Listr<Context, RunnerRenderer, 'simple'>(tasks, {
+    ...createRunnerRendererOptions(options),
   });
-  await rootTasks
-    .run(context)
-    .then((ctx: Context) => {
-      const duration = new Date().getTime() - start;
+
+  try {
+    const ctx = await rootTasks.run(context);
+    const duration = new Date().getTime() - start;
+
+    if (!options.silent) {
       logger.info(`Finished (${formatTime(duration)})`);
-      const { batch } = ctx;
-      if (batch.completed.length || batch.failed.length) {
+    }
+
+    const { batch } = ctx;
+    if (batch.completed.length || batch.failed.length) {
+      if (!options.silent) {
         logger.info(
           `Batch results, queue: ${batch.queue.length}, completed: ${batch.completed.length}, failed: ${batch.failed.length}`
         );
-        batch.failed.forEach((project, index) => {
-          logger.error(`[FAILED] ${project}`);
-        });
-        rootTasks?.errors.forEach((error) => {
-          logger.error(`[FAILED] ${error}`);
-        });
       }
-      process.exit(0);
-    })
-    .catch((err) => {
-      const duration = new Date().getTime() - start;
 
-      if (options.errorsAsWarnings) {
-        logger.warning(`Finished (${formatTime(duration)}) with error`);
-        logger.warning(err);
-        if (err?.response?.body?.message) {
-          logger.warning(err.response.body.message);
-        }
-        rootTasks?.errors.forEach((error) => {
-          logger.warning(error);
-        });
-        process.exit(0);
-      } else {
-        logger.error(`Finished (${formatTime(duration)}) with error`);
-        logger.error(err);
-        if (err?.response?.body?.message) {
-          logger.error(err.response.body.message);
-        }
-        rootTasks?.errors.forEach((error) => {
-          logger.error(error);
-        });
-        process.exit(1);
+      batch.failed.forEach((project) => {
+        logger.error(`[FAILED] ${project}`);
+      });
+      rootTasks.errors.forEach((error) => {
+        logger.error(`[FAILED] ${error}`);
+      });
+    }
+
+    process.exitCode = 0;
+    return;
+  } catch (err: any) {
+    const duration = new Date().getTime() - start;
+
+    if (options.errorsAsWarnings) {
+      logger.warning(`Finished (${formatTime(duration)}) with error`);
+      logger.warning(err);
+      if (err?.response?.body?.message) {
+        logger.warning(err.response.body.message);
       }
-    });
+      rootTasks.errors.forEach((error) => {
+        logger.warning(error);
+      });
+      process.exitCode = 0;
+    } else {
+      logger.error(`Finished (${formatTime(duration)}) with error`);
+      logger.error(err);
+      if (err?.response?.body?.message) {
+        logger.error(err.response.body.message);
+      }
+      rootTasks.errors.forEach((error) => {
+        logger.error(error);
+      });
+      process.exitCode = 1;
+    }
+
+    return;
+  }
 };

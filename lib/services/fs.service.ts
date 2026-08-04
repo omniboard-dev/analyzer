@@ -58,7 +58,14 @@ export function readXmlAsDom(
   options: { xpathSanitizeAngularTemplate?: boolean; verbose?: boolean } = {}
 ): any {
   const buffer = fs.readFileSync(path);
-  const rawContent = buffer.toString().replace(/^\uFEFF/, '');
+  return parseXmlAsDom(buffer.toString(), options);
+}
+
+export function parseXmlAsDom(
+  rawContent: string,
+  options: { xpathSanitizeAngularTemplate?: boolean; verbose?: boolean } = {}
+): any {
+  rawContent = rawContent.replace(/^\uFEFF/, '');
   const content = options.xpathSanitizeAngularTemplate
     ? rawContent.replace(/(\*|\(|\)|\[|\]|\#|\@|\.)/gi, '')
     : rawContent;
@@ -128,4 +135,7 @@ export function removeDirectoryRecursive(path: string) {
     });
     fs.rmdirSync(path);
   }
+}
+export function fileExists(path: string) {
+  return fs.existsSync(path) && fs.lstatSync(path).isFile();
 }

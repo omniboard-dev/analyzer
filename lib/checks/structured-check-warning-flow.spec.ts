@@ -1,32 +1,31 @@
 import * as fs from 'fs';
 import { tmpdir } from 'os';
 import * as p from 'path';
+import { Listr } from 'listr2';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import {
-  CheckType,
-  Context,
-  JSONCheckDefinition,
-  ParentTask,
-  YAMLCheckDefinition,
-} from '../interface';
-
-import { jsonCheckTaskFactory } from './json.check';
-import { yamlCheckTaskFactory } from './yaml.check';
+import { CheckDefinition, CheckType, Context } from '../interface';
+import { runChecksTask } from '../tasks/run-checks.task';
 
 const originalWorkingDirectory = process.cwd();
 let testDirectory: string | undefined;
 
-function createContext(): Context {
+function createContext(definition: CheckDefinition): Context {
   return {
-    options: {} as Context['options'],
+    options: {
+      silent: true,
+      verbose: false,
+      showCheckSubtasks: false,
+    } as Context['options'],
     control: {
       skipEverySubsequentTask: false,
     },
     settings: {
-      analyzerCheckExecutionTimeout: 25,
+      analyzerCheckExecutionTimeout: 2_000,
     },
-    definitions: {},
+    definitions: {
+      checks: [definition],
+    },
     results: {
       checks: {},
     },
@@ -46,6 +45,13 @@ function createInvalidFile(name: string, content: string) {
   process.chdir(testDirectory);
 }
 
+async function runDefinition(definition: CheckDefinition) {
+  const ctx = createContext(definition);
+  const tasks = new Listr([runChecksTask], { renderer: 'silent' });
+  await tasks.run(ctx);
+  return ctx;
+}
+
 afterEach(() => {
   process.chdir(originalWorkingDirectory);
   if (testDirectory) {
@@ -57,18 +63,15 @@ afterEach(() => {
 describe('structured check warning flow', () => {
   it('completes an all-invalid JSON check with a false result and warning', async () => {
     createInvalidFile('invalid.json', '{"broken": }');
-    const ctx = createContext();
-    const parentTask: ParentTask = { title: 'Run checks 0/1' };
-    const definition: JSONCheckDefinition = {
+    const definition: CheckDefinition = {
       name: 'invalid-json',
       type: CheckType.JSON,
       disabled: false,
       filesPattern: 'invalid\\.json$',
       jsonPropertyPath: '$.target',
     };
-    const task = { title: 'JSON check' } as any;
 
-    await jsonCheckTaskFactory(definition, parentTask)(ctx, task);
+    const ctx = await runDefinition(definition);
 
     expect(ctx.results.checks?.['invalid-json']).toEqual({
       name: 'invalid-json',
@@ -77,24 +80,22 @@ describe('structured check warning flow', () => {
       matches: [],
     });
     expect(ctx.handledCheckFailures).toHaveLength(1);
-    expect(parentTask.title).toBe('Run checks 1/1');
-    expect(task.title).toBe(ctx.handledCheckFailures[0].message);
+    expect(ctx.handledCheckFailures[0].message).toContain(
+      '[json] "invalid-json"'
+    );
   });
 
   it('completes an all-invalid YAML check with a false result and warning', async () => {
     createInvalidFile('invalid.yaml', 'target: [');
-    const ctx = createContext();
-    const parentTask: ParentTask = { title: 'Run checks 0/1' };
-    const definition: YAMLCheckDefinition = {
+    const definition: CheckDefinition = {
       name: 'invalid-yaml',
       type: CheckType.YAML,
       disabled: false,
       filesPattern: 'invalid\\.yaml$',
       yamlPropertyPath: '$.target',
     };
-    const task = { title: 'YAML check' } as any;
 
-    await yamlCheckTaskFactory(definition, parentTask)(ctx, task);
+    const ctx = await runDefinition(definition);
 
     expect(ctx.results.checks?.['invalid-yaml']).toEqual({
       name: 'invalid-yaml',
@@ -103,7 +104,8 @@ describe('structured check warning flow', () => {
       matches: [],
     });
     expect(ctx.handledCheckFailures).toHaveLength(1);
-    expect(parentTask.title).toBe('Run checks 1/1');
-    expect(task.title).toBe(ctx.handledCheckFailures[0].message);
+    expect(ctx.handledCheckFailures[0].message).toContain(
+      '[yaml] "invalid-yaml"'
+    );
   });
 });
