@@ -76,36 +76,6 @@ Run `omniboard --help` for list of all supported commands and options (`omniboar
 - `--check-pattern` - only run checks matching provided pattern
 - `--sanitize-repo-url` - try to sanitize auth tokens from repo urls
 
-## Analyzer v3 streaming execution
-
-Analyzer v3 executes checks file-by-file in one bounded-memory traversal. Checks
-with the same include and exclude patterns share a selector bucket. An eligible
-file is read once, then its text and lazily parsed JSON, YAML, or XML resources
-are reused by every applicable check before being released. No project-wide
-source or parsed-document cache is retained.
-
-This preserves the established check result schema, file ordering, filtering,
-handled-warning behavior, UTF-8/XML BOM handling, Angular template XPath
-sanitization, JSON comments and trailing commas, YAML paths, batch behavior, and
-upload-size enforcement. The implementation plan and acceptance gates are in
-[`docs/analyzer-v3-streaming-plan.md`](docs/analyzer-v3-streaming-plan.md).
-
-Listr2 remains the CLI renderer, with a single streaming analysis task:
-
-- Standard mode shows live files visited, eligible files, physical reads,
-  evaluations, bytes read, and throughput.
-- `--verbose` adds directory progress, warning count, current source bytes in
-  flight, and the current directory with less frequent updates.
-- `--silent` emits no successful progress output. Fatal and handled warnings
-  remain observable according to `--errors-as-warnings`.
-- `--show-check-subtasks` prints completed per-check summaries after the stream;
-  it does not create one concurrently running task per check.
-
-Memory usage scales with definitions, result matches, directory metadata, and
-the largest currently processed file—not with the total source size of the
-project. Result matches necessarily remain in memory until serialization or
-upload because they are the analyzer output.
-
 ## FAQ
 
 #### Is it possible to run @omniboard/analyzer behind organization proxy?

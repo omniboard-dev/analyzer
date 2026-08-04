@@ -138,9 +138,9 @@ export interface ProjectCheckMatchDetails {
   groups: { [key: string]: any };
 }
 
-export interface BaseCheckDefinition {
+export interface BaseCheckDefinition<TType extends CheckType = CheckType> {
   name: string;
-  type: CheckType;
+  type: TType;
   disabled: boolean;
   filesPattern: string;
   filesPatternFlags?: string;
@@ -151,31 +151,47 @@ export interface BaseCheckDefinition {
   projectNamePatternFlags?: string;
 }
 
-export interface ContentCheckDefinition extends BaseCheckDefinition {
+export interface ContentCheckDefinition
+  extends BaseCheckDefinition<CheckType.CONTENT> {
   contentPattern: string;
   contentPatternFlags?: string;
 }
 
-export interface XPathCheckDefinition extends BaseCheckDefinition {
+export interface XPathCheckDefinition
+  extends BaseCheckDefinition<CheckType.XPATH> {
   xpathExpression: string;
   xpathNamespaces?: { prefix: string; uri: string }[];
   xpathSanitizeAngularTemplate?: boolean;
 }
 
-export interface JSONCheckDefinition extends BaseCheckDefinition {
+export interface JSONCheckDefinition
+  extends BaseCheckDefinition<CheckType.JSON> {
   jsonPropertyPath: string;
 }
 
-export interface YAMLCheckDefinition extends BaseCheckDefinition {
+export interface YAMLCheckDefinition
+  extends BaseCheckDefinition<CheckType.YAML> {
   yamlPropertyPath: string;
 }
 
-export type CheckDefinition =
-  | BaseCheckDefinition
+export interface FileCheckDefinition
+  extends BaseCheckDefinition<CheckType.FILE> {}
+
+export interface SizeCheckDefinition
+  extends BaseCheckDefinition<CheckType.SIZE> {}
+
+export interface MetaCheckDefinition
+  extends BaseCheckDefinition<CheckType.META> {}
+
+export type ExecutableCheckDefinition =
   | ContentCheckDefinition
   | XPathCheckDefinition
   | JSONCheckDefinition
-  | YAMLCheckDefinition;
+  | YAMLCheckDefinition
+  | FileCheckDefinition
+  | SizeCheckDefinition;
+
+export type CheckDefinition = ExecutableCheckDefinition | MetaCheckDefinition;
 
 export enum CheckType {
   CONTENT = 'content',

@@ -1,9 +1,12 @@
 import {
   CheckDefinition,
+  ExecutableCheckDefinition,
   ProjectCheck,
   ProjectCheckMatch,
   ProjectCheckSizeDetails,
 } from '../../interface';
+
+import type { AnyCheckHandler } from './check-handler';
 
 export { CheckDefinition };
 
@@ -17,8 +20,9 @@ export interface CheckAccumulator {
 
 export interface PreparedCheck {
   ordinal: number;
-  definition: CheckDefinition;
-  contentPattern?: RegExp;
+  definition: ExecutableCheckDefinition;
+  handler: AnyCheckHandler;
+  handlerState: unknown;
   accumulator: CheckAccumulator;
 }
 

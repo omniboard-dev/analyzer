@@ -1,21 +1,10 @@
 import * as p from 'path';
-import xpath from 'xpath';
-import { JSONPath } from 'jsonpath-plus';
 
-import {
-  CheckType,
-  ContentCheckDefinition,
-  Context,
-  JSONCheckDefinition,
-  ProjectCheck,
-  ProjectCheckMatchDetails,
-  XPathCheckDefinition,
-  YAMLCheckDefinition,
-} from '../../interface';
-import * as fs from '../../services/fs.service';
+import { CheckType, Context, ProjectCheck } from '../../interface';
 import { resolveActiveFlags } from '../../utils/regexp';
-import { readYamlPath } from '../yaml-path';
 
+import { formatDefaultFileError, resolveErrorMessage } from './check-handler';
+import { getCheckHandler } from './check-handler-registry';
 import { FileResource } from './file-resource';
 import { getRegExpKey, testRegExpStateless } from './regexp';
 import {
@@ -36,30 +25,8 @@ import {
 
 const FALLBACK_INCLUDE_FILES_FLAG = 'i';
 const FALLBACK_EXCLUDE_FILES_PATTERN_FLAGS = 'i';
-const FALLBACK_EXCLUDE_FILES_PATTERN_XPATH =
-  '((^|\\/)\\.|node_modules|coverage|dist|.teamcity)';
-const FALLBACK_EXCLUDE_FILES_PATTERN_CONTENT =
-  '((^|\\/)\\.|node_modules|coverage|dist)';
-const FALLBACK_EXCLUDE_FILES_PATTERN_SIZE = 'node_modules';
 const FALLBACK_CHECK_EXECUTION_TIMEOUT = 10_000;
-const DEFAULT_CONTENT_PATTERN_FLAGS = 'ig';
 const DEFAULT_PROJECT_NAME_PATTERN_FLAGS = 'i';
-
-const EXECUTABLE_CHECK_TYPES = new Set<CheckType>([
-  CheckType.CONTENT,
-  CheckType.XPATH,
-  CheckType.SIZE,
-  CheckType.FILE,
-  CheckType.JSON,
-  CheckType.YAML,
-]);
-
-const CHECK_TYPES_WITH_EXECUTION_TIMEOUT = new Set<CheckType>([
-  CheckType.CONTENT,
-  CheckType.XPATH,
-  CheckType.JSON,
-  CheckType.YAML,
-]);
 
 export interface PreparedCheckRun {
   checks: PreparedCheck[];
@@ -111,7 +78,8 @@ export function prepareCheckRun(
       }
     }
 
-    if (!EXECUTABLE_CHECK_TYPES.has(definition.type)) {
+    const handler = getCheckHandler(definition.type);
+    if (!handler) {
       skippedChecks.push({
         ordinal,
         definition,
@@ -133,8 +101,7 @@ export function prepareCheckRun(
       )
     );
     const excludeRegexp = new RegExp(
-      definition.filesExcludePattern ||
-        getDefaultExcludeFilesPattern(ctx, definition.type),
+      definition.filesExcludePattern || handler.getDefaultExcludePattern(ctx),
       resolveActiveFlags(
         definition.filesExcludePatternFlags,
         ctx.settings.analyzerExcludeFilesPatternFlags ||
@@ -147,16 +114,8 @@ export function prepareCheckRun(
     const preparedCheck: PreparedCheck = {
       ordinal,
       definition,
-      contentPattern:
-        definition.type === CheckType.CONTENT
-          ? new RegExp(
-              (definition as ContentCheckDefinition).contentPattern,
-              resolveActiveFlags(
-                (definition as ContentCheckDefinition).contentPatternFlags,
-                DEFAULT_CONTENT_PATTERN_FLAGS
-              )
-            )
-          : undefined,
+      handler,
+      handlerState: handler.prepare(definition, ctx),
       accumulator: {
         selectedFiles: 0,
         matches: [],
@@ -258,12 +217,12 @@ export async function runStreamingCheckEngine(
     try {
       for (const check of applicableChecks) {
         const startedAt = process.hrtime.bigint();
-        evaluateCheck(ctx, check, routedFile.path, resource, metrics);
+        evaluateCheck(check, routedFile.path, resource, metrics);
         check.accumulator.elapsedMs +=
           Number(process.hrtime.bigint() - startedAt) / 1_000_000;
         metrics.evaluationsCompleted++;
 
-        if (CHECK_TYPES_WITH_EXECUTION_TIMEOUT.has(check.definition.type)) {
+        if (check.handler.hasExecutionTimeout) {
           const timeout =
             ctx.settings.analyzerCheckExecutionTimeout ||
             FALLBACK_CHECK_EXECUTION_TIMEOUT;
@@ -285,7 +244,10 @@ export async function runStreamingCheckEngine(
   for (const check of prepared.checks.sort(
     (left, right) => left.ordinal - right.ordinal
   )) {
-    const result = finalizeCheck(check);
+    const result = check.handler.finalize({
+      definition: check.definition,
+      accumulator: check.accumulator,
+    });
     results[check.definition.name] = result;
     summariesByOrdinal.set(check.ordinal, {
       definition: check.definition,
@@ -297,8 +259,7 @@ export async function runStreamingCheckEngine(
   const handledCheckFailures = [...prepared.checks]
     .sort(
       (left, right) =>
-        getWarningPriority(left.definition.type) -
-          getWarningPriority(right.definition.type) ||
+        left.handler.warningPriority - right.handler.warningPriority ||
         left.ordinal - right.ordinal
     )
     .flatMap((check) => check.accumulator.errors);
@@ -326,261 +287,28 @@ export async function runStreamingCheckEngine(
 }
 
 function evaluateCheck(
-  ctx: Context,
   check: PreparedCheck,
   resultPath: string,
   resource: FileResource,
   metrics: StreamingCheckMetrics
 ) {
-  const { definition, accumulator } = check;
+  const { definition, handler, handlerState, accumulator } = check;
   accumulator.selectedFiles++;
 
   try {
-    switch (definition.type) {
-      case CheckType.FILE:
-        accumulator.matches.push({ file: resultPath, matches: [] });
-        return;
-      case CheckType.SIZE: {
-        metrics.statCalls++;
-        const size = fs.getFileSize(resource.path);
-        accumulator.sizeDetails.push({
-          file: resultPath,
-          size,
-          sizeHumanReadable: fs.getHumanReadableFileSize(size),
-        });
-        return;
-      }
-      case CheckType.CONTENT:
-        evaluateContent(check, resultPath, resource.readText());
-        return;
-      case CheckType.JSON:
-        evaluateJson(
-          definition as JSONCheckDefinition,
-          accumulator.matches,
-          resultPath,
-          resource.readJson()
-        );
-        return;
-      case CheckType.YAML:
-        evaluateYaml(
-          definition as YAMLCheckDefinition,
-          accumulator.matches,
-          resultPath,
-          resource.readYaml()
-        );
-        return;
-      case CheckType.XPATH:
-        evaluateXpath(
-          definition as XPathCheckDefinition,
-          accumulator.matches,
-          resultPath,
-          resource.readDom(
-            Boolean(
-              (definition as XPathCheckDefinition).xpathSanitizeAngularTemplate
-            )
-          )
-        );
-        return;
-    }
+    handler.evaluate({
+      definition,
+      prepared: handlerState,
+      resultPath,
+      resource,
+      accumulator,
+      metrics,
+    });
   } catch (error) {
-    accumulator.errors.push(
-      createCheckFileError(definition, resultPath, error)
-    );
+    const formatFileError = handler.formatFileError ?? formatDefaultFileError;
+    accumulator.errors.push(formatFileError(definition, resultPath, error));
     metrics.handledWarnings++;
   }
-}
-
-function evaluateContent(
-  check: PreparedCheck,
-  resultPath: string,
-  content: string
-) {
-  const regexp = check.contentPattern!;
-  const matchesForFile: RegExpExecArray[] = [];
-  regexp.lastIndex = 0;
-
-  if (regexp.global) {
-    let match: RegExpExecArray | null;
-    while ((match = regexp.exec(content)) !== null) {
-      matchesForFile.push(match);
-      if (match[0] === '') {
-        regexp.lastIndex = advanceStringIndex(
-          content,
-          regexp.lastIndex,
-          regexp.unicode
-        );
-      }
-    }
-  } else {
-    const match = regexp.exec(content);
-    if (match) {
-      matchesForFile.push(match);
-    }
-  }
-  regexp.lastIndex = 0;
-
-  if (matchesForFile.length) {
-    check.accumulator.matches.push({
-      file: resultPath,
-      matches: matchesForFile.map(
-        (match) =>
-          ({
-            match: match[0],
-            groups: match.groups,
-          } as ProjectCheckMatchDetails)
-      ),
-    });
-  }
-}
-
-function evaluateJson(
-  definition: JSONCheckDefinition,
-  matches: CheckAccumulatorMatches,
-  resultPath: string,
-  json: any
-) {
-  const path = definition.jsonPropertyPath?.startsWith('$')
-    ? definition.jsonPropertyPath
-    : `$${definition.jsonPropertyPath}`;
-  const result = JSONPath({ path, json });
-
-  if (result?.length) {
-    matches.push({
-      file: resultPath,
-      matches: result.map((value: any) => ({
-        match: definition.jsonPropertyPath,
-        groups: {
-          [definition.jsonPropertyPath]: value,
-        },
-      })),
-    });
-  }
-}
-
-function evaluateYaml(
-  definition: YAMLCheckDefinition,
-  matches: CheckAccumulatorMatches,
-  resultPath: string,
-  yaml: any
-) {
-  const result = readYamlPath(yaml, definition.yamlPropertyPath);
-
-  if (result.length) {
-    matches.push({
-      file: resultPath,
-      matches: [
-        {
-          match: definition.yamlPropertyPath,
-          groups: {
-            [definition.yamlPropertyPath]: result,
-          },
-        },
-      ],
-    });
-  }
-}
-
-function evaluateXpath(
-  definition: XPathCheckDefinition,
-  matches: CheckAccumulatorMatches,
-  resultPath: string,
-  document: any
-) {
-  const namespaces =
-    definition.xpathNamespaces?.reduce(
-      (result, { prefix, uri }) => ({ ...result, [prefix]: uri }),
-      {}
-    ) ?? {};
-  const xpathSelect = xpath.useNamespaces(namespaces);
-  const result: any = xpathSelect(definition.xpathExpression, document);
-  const resultMatches: any[] = [];
-
-  if (typeof result === 'object' && Array.from(result as any[])?.length) {
-    for (const node of Array.from(result as any[])) {
-      const value =
-        node?.nodeValue?.toString()?.trim() ||
-        node?.textContent?.toString()?.trim();
-      if (value) {
-        const property =
-          node.nodeName === '#text'
-            ? node?.parentNode?.nodeName ?? node.nodeName
-            : node.nodeName;
-        resultMatches.push({
-          match: resolveNodePath(node),
-          lineNumber: node?.lineNumber,
-          columnNumber: node?.columnNumber,
-          groups: {
-            [property]: value,
-          },
-        });
-      }
-    }
-  }
-
-  if (resultMatches.length) {
-    matches.push({
-      file: resultPath,
-      matches: resultMatches,
-    });
-  }
-}
-
-type CheckAccumulatorMatches = PreparedCheck['accumulator']['matches'];
-
-function finalizeCheck(check: PreparedCheck): ProjectCheck {
-  const { definition, accumulator } = check;
-
-  if (definition.type === CheckType.SIZE) {
-    accumulator.sizeDetails.sort((left, right) => right.size - left.size);
-    const total = accumulator.sizeDetails.reduce(
-      (result, detail) => result + detail.size,
-      0
-    );
-    return {
-      name: definition.name,
-      type: definition.type,
-      value: accumulator.selectedFiles > 0,
-      size: {
-        total,
-        totalHumanReadable: fs.getHumanReadableFileSize(total),
-        details: accumulator.sizeDetails,
-      },
-    };
-  }
-
-  if (!accumulator.selectedFiles) {
-    return {
-      name: definition.name,
-      type: definition.type,
-      value: false,
-    };
-  }
-
-  return {
-    name: definition.name,
-    type: definition.type,
-    value:
-      definition.type === CheckType.FILE
-        ? true
-        : accumulator.matches.length > 0,
-    matches: accumulator.matches,
-  };
-}
-
-function createCheckFileError(
-  definition: CheckDefinition,
-  file: string,
-  error: unknown
-): Error {
-  const message = error instanceof Error ? error.message : String(error);
-
-  if (definition.type === CheckType.YAML) {
-    return new Error(`[yaml] "${definition.name}" - ${file} - ${message}`);
-  }
-
-  return new Error(
-    `[${definition.type}] "${definition.name}"\n   File: ${file}\n   Error: ${message}`
-  );
 }
 
 function createCheckDirectoryError(
@@ -588,62 +316,10 @@ function createCheckDirectoryError(
   directory: string,
   error: unknown
 ): Error {
-  const message = error instanceof Error ? error.message : String(error);
   return new Error(
-    `[${definition.type}] "${definition.name}"\n   Directory: ${directory}\n   Error: ${message}`
-  );
-}
-
-function resolveNodePath(originalNode: any) {
-  let currentNode = originalNode;
-  let path = originalNode.nodeName;
-
-  while (
-    (currentNode?.parentNode &&
-      currentNode?.parentNode?.nodeName !== '#document') ||
-    currentNode?.ownerElement
-  ) {
-    currentNode = currentNode?.parentNode ?? currentNode?.ownerElement;
-    path = `${currentNode.nodeName} > ${path}`;
-  }
-
-  return path;
-}
-
-function advanceStringIndex(
-  value: string,
-  index: number,
-  unicode: boolean
-): number {
-  if (!unicode || index >= value.length) {
-    return index + 1;
-  }
-
-  const first = value.charCodeAt(index);
-  if (first < 0xd800 || first > 0xdbff || index + 1 >= value.length) {
-    return index + 1;
-  }
-
-  const second = value.charCodeAt(index + 1);
-  return second >= 0xdc00 && second <= 0xdfff ? index + 2 : index + 1;
-}
-
-function getDefaultExcludeFilesPattern(ctx: Context, type: CheckType): string {
-  if (type === CheckType.XPATH) {
-    return (
-      ctx.settings.analyzerExcludeFilesPatternXpath ||
-      FALLBACK_EXCLUDE_FILES_PATTERN_XPATH
-    );
-  }
-  if (type === CheckType.SIZE) {
-    return (
-      ctx.settings.analyzerExcludeFilesPatternSize ||
-      FALLBACK_EXCLUDE_FILES_PATTERN_SIZE
-    );
-  }
-  return (
-    ctx.settings.analyzerExcludeFilesPatternContent ||
-    FALLBACK_EXCLUDE_FILES_PATTERN_CONTENT
+    `[${definition.type}] "${
+      definition.name
+    }"\n   Directory: ${directory}\n   Error: ${resolveErrorMessage(error)}`
   );
 }
 
@@ -668,10 +344,6 @@ function createMetrics(): StreamingCheckMetrics {
     startedAt: Date.now(),
     elapsedMs: 0,
   };
-}
-
-function getWarningPriority(type: CheckType): number {
-  return type === CheckType.JSON || type === CheckType.YAML ? 1 : 0;
 }
 
 function applyWalkCounters(
