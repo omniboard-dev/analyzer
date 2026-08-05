@@ -20,7 +20,7 @@ describe('saveProjectApiTask skip-unchanged integration', () => {
     vi.mocked(api.uploadProject).mockReset().mockResolvedValue(undefined);
   });
 
-  it('records completion only after a successful project upload', async () => {
+  it('does not record reusable analysis state before batch finalization', async () => {
     const ctx = {
       options: { errorsAsWarnings: false },
       control: { skipEverySubsequentTask: false },
@@ -39,11 +39,7 @@ describe('saveProjectApiTask skip-unchanged integration', () => {
       title: 'Save project results (Omniboard.dev)',
     });
 
-    expect(recordAnalyzedProject).toHaveBeenCalledWith(ctx, 'project-a');
-    expect(
-      vi.mocked(api.uploadProject).mock.invocationCallOrder[0]
-    ).toBeLessThan(
-      vi.mocked(recordAnalyzedProject).mock.invocationCallOrder[0]
-    );
+    expect(api.uploadProject).toHaveBeenCalled();
+    expect(recordAnalyzedProject).not.toHaveBeenCalled();
   });
 });
