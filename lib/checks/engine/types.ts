@@ -58,6 +58,23 @@ export interface StreamingCheckProgress extends StreamingCheckMetrics {
   phase: 'preparing' | 'walking' | 'finalizing';
 }
 
+export interface CheckExecutionMetric {
+  name: string;
+  type: string;
+  evaluatorDurationMs: number;
+  evaluatedFiles: number;
+  timeoutMs?: number;
+}
+
+export class CheckExecutionTimeoutError extends Error {
+  constructor(public readonly check: CheckExecutionMetric) {
+    super(
+      `Check "${check.name}" exceeded its ${check.timeoutMs}ms execution timeout`
+    );
+    this.name = 'CheckExecutionTimeoutError';
+  }
+}
+
 export interface CheckExecutionSummary {
   definition: CheckDefinition;
   result?: ProjectCheck;
@@ -69,6 +86,7 @@ export interface StreamingCheckEngineResult {
   results: Record<string, ProjectCheck>;
   summaries: CheckExecutionSummary[];
   metrics: StreamingCheckMetrics;
+  checkMetrics: CheckExecutionMetric[];
 }
 
 export interface StreamingCheckEngineOptions {

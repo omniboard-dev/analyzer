@@ -9,7 +9,9 @@ import { FileResource } from './file-resource';
 import { getRegExpKey, testRegExpStateless } from './regexp';
 import {
   CheckDefinition,
+  CheckExecutionMetric,
   CheckExecutionSummary,
+  CheckExecutionTimeoutError,
   PreparedCheck,
   SkippedCheck,
   StreamingCheckEngineOptions,
@@ -227,7 +229,9 @@ export async function runStreamingCheckEngine(
             ctx.settings.analyzerCheckExecutionTimeout ||
             FALLBACK_CHECK_EXECUTION_TIMEOUT;
           if (check.accumulator.elapsedMs > timeout) {
-            throw new Error(`Check "${check.definition.name}" timeout`);
+            throw new CheckExecutionTimeoutError(
+              createCheckExecutionMetric(check, timeout)
+            );
           }
         }
       }
@@ -283,6 +287,28 @@ export async function runStreamingCheckEngine(
       .sort(([left], [right]) => left - right)
       .map(([, summary]) => summary),
     metrics,
+    checkMetrics: prepared.checks.map((check) =>
+      createCheckExecutionMetric(
+        check,
+        check.handler.hasExecutionTimeout
+          ? ctx.settings.analyzerCheckExecutionTimeout ||
+              FALLBACK_CHECK_EXECUTION_TIMEOUT
+          : undefined
+      )
+    ),
+  };
+}
+
+function createCheckExecutionMetric(
+  check: PreparedCheck,
+  timeoutMs?: number
+): CheckExecutionMetric {
+  return {
+    name: check.definition.name,
+    type: check.definition.type,
+    evaluatorDurationMs: check.accumulator.elapsedMs,
+    evaluatedFiles: check.accumulator.selectedFiles,
+    timeoutMs,
   };
 }
 

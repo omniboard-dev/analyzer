@@ -40,6 +40,14 @@ export const builder = (yargs: Argv) =>
       type: 'string',
       description: 'Only run checks matching provided pattern',
     })
+    .option('telemetry', {
+      type: 'string',
+      choices: ['true', 'false'],
+      default: 'false',
+      description:
+        'Report analyzer performance telemetry to Omniboard.dev (true or false)',
+    })
+    .requiresArg('telemetry')
     .option('sanitize-repo-url', {
       alias: 'sru',
       type: 'boolean',
@@ -60,6 +68,6 @@ export const handler = async (argv: any) =>
       saveProjectApiTask,
       handledCheckFailureInfoTask,
     ],
-    argv,
+    { ...argv, telemetry: argv.telemetry === 'true' },
     logger
   );

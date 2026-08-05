@@ -7,6 +7,7 @@ import { saveProjectApiTask } from './save-project-api.task';
 
 vi.mock('../services/api.service', () => ({
   uploadProject: vi.fn(),
+  uploadAnalyzerTelemetry: vi.fn(),
 }));
 
 function createContext(errorsAsWarnings: boolean): Context {

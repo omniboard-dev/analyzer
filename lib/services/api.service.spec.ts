@@ -8,7 +8,7 @@ import {
 import { connect, type AddressInfo } from 'net';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { createApiService, ping } from './api.service';
+import { createApiService, ping, uploadAnalyzerTelemetry } from './api.service';
 
 const listen = (server: Server): Promise<number> =>
   new Promise((resolve) => {
@@ -119,5 +119,28 @@ describe('api service', () => {
 
     await expect(ping()).resolves.toEqual({ organization: 'acme' });
     expect(proxiedRequests).toBe(1);
+  });
+
+  it('aborts telemetry while reading a stalled response body', async () => {
+    const apiServer = createServer((_request, response) => {
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.flushHeaders();
+    });
+    const apiPort = await listen(apiServer);
+    servers.push(apiServer);
+
+    delete process.env.HTTP_PROXY;
+    delete process.env.HTTPS_PROXY;
+    delete process.env.NO_PROXY;
+    delete process.env.http_proxy;
+    delete process.env.https_proxy;
+    delete process.env.no_proxy;
+
+    createApiService({
+      apiKey: 'test',
+      apiUrl: `http://127.0.0.1:${apiPort}`,
+    });
+
+    await expect(uploadAnalyzerTelemetry({})).rejects.toThrow(/aborted/i);
   });
 });

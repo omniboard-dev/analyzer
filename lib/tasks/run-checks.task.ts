@@ -38,13 +38,20 @@ export const runChecksTask: ListrTask = {
     const updateProgress = createProgressReporter(ctx, task);
     task.title = `${task.title}: ${prepared.checks.length} executable, ${prepared.selectorGroups.length} selector groups, ${prepared.skippedChecks.length} skipped`;
 
-    const execution = await runStreamingCheckEngine(ctx, definitions, {
-      verbose: ctx.options.verbose,
-      onProgress: updateProgress,
-    });
+    let execution;
+    try {
+      execution = await runStreamingCheckEngine(ctx, definitions, {
+        verbose: ctx.options.verbose,
+        onProgress: updateProgress,
+      });
+    } catch (error) {
+      ctx.debug.analyzerTelemetryError = error;
+      throw error;
+    }
 
     ctx.results.checks = execution.results;
     ctx.debug.streamingCheckMetrics = execution.metrics;
+    ctx.debug.checkExecutionMetrics = execution.checkMetrics;
     task.output = formatFinalMetrics(execution.metrics);
     task.title = `${task.title} - completed in ${formatDuration(
       execution.metrics.elapsedMs

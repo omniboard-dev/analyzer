@@ -46,7 +46,15 @@ export const builder = (yargs: Argv) =>
       alias: 'cp',
       type: 'string',
       description: 'Only run checks matching provided pattern',
-    });
+    })
+    .option('telemetry', {
+      type: 'string',
+      choices: ['true', 'false'],
+      default: 'true',
+      description:
+        'Report analyzer performance telemetry to Omniboard.dev (true or false)',
+    })
+    .requiresArg('telemetry');
 
 export const handler = async (argv: any) =>
   runner(
@@ -57,6 +65,6 @@ export const handler = async (argv: any) =>
       retrieveChecksTask,
       runJobsTask,
     ],
-    argv,
+    { ...argv, telemetry: argv.telemetry === 'true' },
     logger
   );

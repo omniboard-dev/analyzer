@@ -133,7 +133,11 @@ function createFetchError(url: string, error: unknown): Error {
 
 async function request<T>(
   path: string,
-  options: { method?: 'GET' | 'PUT'; json?: any } = {}
+  options: {
+    method?: 'GET' | 'POST' | 'PUT';
+    json?: any;
+    timeoutMs?: number;
+  } = {}
 ): Promise<T> {
   const method = options.method ?? 'GET';
   const url = createUrl(path);
@@ -153,21 +157,34 @@ async function request<T>(
     });
   }
 
-  const response = await fetch(url, {
-    method,
-    headers,
-    body,
-    dispatcher: apiConfig.dispatcher,
-  }).catch((error) => {
-    throw createFetchError(url, error);
-  });
-  const responseBody = await parseResponseBody(response);
+  const abortController = new AbortController();
+  const timeout = options.timeoutMs
+    ? setTimeout(() => abortController.abort(), options.timeoutMs)
+    : undefined;
+  try {
+    const response = await fetch(url, {
+      method,
+      headers,
+      body,
+      dispatcher: apiConfig.dispatcher,
+      signal: abortController.signal,
+    }).catch((error) => {
+      throw createFetchError(url, error);
+    });
+    const responseBody = await parseResponseBody(response).catch((error) => {
+      throw createFetchError(url, error);
+    });
 
-  if (!response.ok) {
-    throw createApiError(response, responseBody);
+    if (!response.ok) {
+      throw createApiError(response, responseBody);
+    }
+
+    return responseBody as T;
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
   }
-
-  return responseBody as T;
 }
 
 export function ping(): Promise<{ organization: string }> {
@@ -176,6 +193,14 @@ export function ping(): Promise<{ organization: string }> {
 
 export function uploadProject(project: any) {
   return request('project/cli', { method: 'PUT', json: project });
+}
+
+export function uploadAnalyzerTelemetry(event: unknown) {
+  return request('analyzer-telemetry/events', {
+    method: 'POST',
+    json: event,
+    timeoutMs: 1_500,
+  });
 }
 
 export function getChecks(): Promise<any[]> {

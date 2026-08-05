@@ -83,6 +83,26 @@ describe('createRunnerRendererOptions', () => {
 });
 
 describe('runner', () => {
+  it('exposes the resolved telemetry option through the analysis context', async () => {
+    const logger = createLogger();
+    let telemetryEnabled: boolean | undefined;
+
+    await runner(
+      [
+        {
+          title: 'Read telemetry option',
+          task: (ctx: any) => {
+            telemetryEnabled = ctx.debug.analyzerTelemetryEnabled;
+          },
+        },
+      ],
+      createOptions({ telemetry: true }),
+      logger
+    );
+
+    expect(telemetryEnabled).toBe(true);
+  });
+
   it('completes normally, runs every task, and is quiet on silent success', async () => {
     const logger = createLogger();
     const completed: string[] = [];

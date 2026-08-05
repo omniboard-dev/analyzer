@@ -14,6 +14,7 @@ export interface Options {
   // api
   apiUrl?: string;
   apiKey?: string;
+  telemetry?: boolean;
 
   // analysis and checks
   checkPattern?: string;
@@ -52,6 +53,10 @@ export interface Context {
   debug: {
     analysisStartedAt?: number;
     analysisFailures?: AnalysisFailure[];
+    analyzerTelemetryEnabled?: boolean;
+    analyzerTelemetryError?: unknown;
+    checkExecutionMetrics?: import('./checks/engine/types').CheckExecutionMetric[];
+    streamingCheckMetrics?: import('./checks/engine/types').StreamingCheckMetrics;
     [key: string]: any;
   };
 }

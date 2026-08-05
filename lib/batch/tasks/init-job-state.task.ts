@@ -13,6 +13,7 @@ export const initJobStateTask: ListrTask = {
     ctx.handledCheckFailures = [];
     ctx.debug.analysisStartedAt = Date.now();
     ctx.debug.analysisFailures ??= [];
+    ctx.debug.analyzerTelemetryError = undefined;
 
     // reset cwd
     if (!directoryExists(ctx.options.workspacePath)) {

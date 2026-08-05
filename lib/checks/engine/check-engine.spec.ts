@@ -178,7 +178,7 @@ describe('runStreamingCheckEngine', () => {
     ctx.settings.analyzerCheckExecutionTimeout = -1;
 
     await expect(runStreamingCheckEngine(ctx, definitions)).rejects.toThrow(
-      'Check "timed" timeout'
+      'Check "timed" exceeded its -1ms execution timeout'
     );
   });
 

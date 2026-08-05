@@ -1,8 +1,9 @@
-import { ListrTask } from 'listr2';
+import { ListrErrorTypes, ListrTask, type Listr } from 'listr2';
 
 import { Context } from '../../interface';
 import { writeJson } from '../../services/fs.service';
 import { getRepoNameFromUrl } from '../../services/git.service';
+import { reportFailedAnalysis } from '../../services/analyzer-telemetry.service';
 
 import {
   getAnalysisDurationMs,
@@ -24,6 +25,8 @@ export function runJobTaskFactory(
   index: number,
   total: number
 ): ListrTask {
+  let jobTasks: Listr<Context, any, any> | undefined;
+
   return {
     title: `${index} / ${total} - ${getRepoNameFromUrl(job)}`,
     rollback: async (ctx: Context, task) => {
@@ -38,6 +41,16 @@ export function runJobTaskFactory(
           durationMs,
         },
       ];
+      const jobError = jobTasks?.errors.find(
+        ({ type }) => type === ListrErrorTypes.HAS_FAILED
+      )?.error;
+      await reportFailedAnalysis(
+        ctx,
+        jobError ??
+          ctx.debug.analyzerTelemetryError ??
+          new Error('Batch analysis failed'),
+        ctx.results.name ?? repositoryName
+      );
 
       // update batch state
       task.title = `${task.title} failed (${durationMs}ms)`;
@@ -50,7 +63,7 @@ export function runJobTaskFactory(
       }
     },
     task: async (ctx: Context, task) => {
-      return task.newListr(
+      jobTasks = task.newListr(
         [
           initJobStateTask,
           initJobRepo(job),
@@ -71,6 +84,7 @@ export function runJobTaskFactory(
           },
         }
       );
+      return jobTasks;
     },
   };
 }

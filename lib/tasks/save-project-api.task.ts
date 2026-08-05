@@ -8,6 +8,7 @@ import {
   prepareProjectResultsForUpload,
   RejectedCheckResult,
 } from '../services/project-results-upload.service';
+import { reportCompletedAnalysis } from '../services/analyzer-telemetry.service';
 
 function getRejectedCheckResultMessage({
   name,
@@ -79,7 +80,8 @@ export const saveProjectApiTask: ListrTask = {
       );
     }
 
-    return api.uploadProject(results).then(() => {
+    return api.uploadProject(results).then(async () => {
+      await reportCompletedAnalysis(ctx);
       const resultsLength = Buffer.byteLength(JSON.stringify(results), 'utf8');
       task.title = `${task.title} successful, ${getHumanReadableFileSize(
         resultsLength

@@ -5,6 +5,7 @@ import { Listr, ListrTask, PRESET_TIMER } from 'listr2';
 import { AnalysisFailure, Context, Options } from '../interface';
 import { Logger } from '../services/logger.service';
 import { getAnalysisDurationMs } from '../tasks/analysis-duration.task';
+import { reportFailedAnalysis } from '../services/analyzer-telemetry.service';
 
 import { formatTime } from './time';
 
@@ -62,6 +63,7 @@ export const runner = async (
     batch: { queue: [], completed: [], failed: [] },
     debug: { analysisStartedAt: start, analysisFailures: [] },
   };
+  context.debug.analyzerTelemetryEnabled = Boolean(options.telemetry);
   const rootTasks = new Listr<Context, RunnerRenderer, 'simple'>(tasks, {
     ...createRunnerRendererOptions(options),
   });
@@ -111,6 +113,7 @@ export const runner = async (
     process.exitCode = 0;
     return;
   } catch (err: any) {
+    await reportFailedAnalysis(context, err);
     const duration = Date.now() - start;
     const analysisDuration = getAnalysisDurationMs(context);
     const projectName = context.results.name ?? basename(process.cwd());
