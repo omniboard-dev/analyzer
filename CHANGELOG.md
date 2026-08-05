@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/omniboard-dev/analyzer/compare/v3.5.2...v3.6.0) (2026-08-05)
+
+
+### Features
+
+* improved skipped project resolution ([f90db28](https://github.com/omniboard-dev/analyzer/commit/f90db28756d9997f9995704ced502616c9e44e0c))
+
 ### [3.5.2](https://github.com/omniboard-dev/analyzer/compare/v3.5.1...v3.5.2) (2026-08-05)
 
 
