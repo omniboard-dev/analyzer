@@ -21,6 +21,43 @@ export async function pullLatest(targetDir: string) {
   return await run(`git checkout --force && git pull --depth 1`, targetDir);
 }
 
+export interface RemoteHead {
+  ref?: string;
+  sha: string;
+}
+
+export async function getRemoteHead(url: string): Promise<RemoteHead> {
+  const { stdout } = await execFile(
+    'git',
+    ['ls-remote', '--symref', url, 'HEAD'],
+    {
+      encoding: 'utf8',
+      maxBuffer: 1024 * 1024,
+    }
+  );
+  return parseRemoteHead(stdout);
+}
+
+export function parseRemoteHead(output: string): RemoteHead {
+  const ref = /^ref:\s+(\S+)\s+HEAD$/m.exec(output)?.[1];
+  const sha = /^([0-9a-f]{40,64})\s+HEAD$/im.exec(output)?.[1];
+  if (!sha) {
+    throw new Error('Remote HEAD revision could not be resolved');
+  }
+  return { ref, sha: sha.toLowerCase() };
+}
+
+export async function getCurrentCommit(
+  targetDir: string = '.'
+): Promise<string> {
+  const { stdout } = await execFile('git', ['rev-parse', 'HEAD'], {
+    cwd: targetDir,
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024,
+  });
+  return stdout.trim().toLowerCase();
+}
+
 export async function getCurrentBranch(
   targetDir: string = '.'
 ): Promise<string> {

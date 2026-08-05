@@ -27,12 +27,12 @@ export const builder = (yargs: Argv) =>
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store data in local json file',
+      description: 'Store results locally',
     })
     .option('json-path', {
       type: 'string',
       default: './dist/omniboard.json',
-      description: 'Location of local json file',
+      description: 'Local results path',
     });
 
 export const handler = async (argv: any) =>

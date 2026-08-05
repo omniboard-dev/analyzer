@@ -55,26 +55,62 @@ or
 
 ### Execution
 
-1. batch will clone (or update) repository from the queue
-2. batch will run `omniboard analyze` in the cloned repository
-3. batch will remove repository from the queue into `done` array (or `failed` array in case of error), you can use `--preserve-queue` flag to enable multiple runs of the same job file
-4. batch will repeat steps 1-3 until every repository from the queue is processed
+1. batch asks the standalone Analyzer cache API about each repository's remote HEAD revision and skips cloning when the same revision and analysis configuration were completed successfully before
+2. batch will clone (or update) repositories that require analysis
+3. batch will run `omniboard analyze` in the cloned repository, upload its project normally, and then record cache completion separately
+4. batch will remove repository from the queue into `done` array (or `failed` array in case of error), you can use `--preserve-queue` flag to enable multiple runs of the same job file
+5. batch will repeat these steps until every repository from the queue is processed
 
-## Global options
+## Options
 
-Run `omniboard --help` for list of all supported commands and options (`omniboard <command> --help`, provides even more details)
+Run `omniboard --help` or `omniboard <command> --help` for the complete yargs-generated help.
 
-- `--help` - print help
-- `--verbose` - print debug log statements
-- `--silent` - silences the renderer
-- `--show-check-subtasks` - Show checks subtasks in log output (collapsed by default)
-- `--errors-as-warnings` - exit with success (0) even in case of errors and log them as warnings (useful for CI)
-- `--api-key` - pass in API key when not set as an environment variable
-- `--api-url` - pass in URL of the on-prem Omniboard instance (for custom enterprise plans only)
-- `--json` - store data in local json file and skip upload
-- `--json-path` - location of local json file
-- `--check-pattern` - only run checks matching provided pattern
-- `--sanitize-repo-url` - try to sanitize auth tokens from repo urls
+For boolean options, passing the flag means `true` (for example, `--telemetry`). Pass `false` explicitly to disable it (for example, `--telemetry false`). Negated forms such as `--no-telemetry` are not supported.
+
+### Global
+
+```text
+--verbose                    Display debug level logs                       [boolean] [default: false]
+--silent                     Silence renderer output                        [boolean] [default: false]
+--show-check-results         Show individual check results in log output    [boolean] [default: false]
+--api-key, --ak              API key generated in Omniboard.dev             [string]
+--api-url, --api             URL of an on-prem Omniboard instance           [string]
+--errors-as-warnings         Exit successfully when analysis errors occur   [boolean] [default: false]
+--help, -h                   Show help                                      [boolean]
+--version, -v                Show version number                            [boolean]
+```
+
+### `analyze`
+
+```text
+--json                       Store results locally and skip upload          [boolean] [default: false]
+--json-path                  Local results path                 [string] [default: "./dist/omniboard.json"]
+--check-pattern, --cp        Run only checks matching the pattern           [string]
+--telemetry                  Report analyzer performance telemetry          [boolean] [default: false]
+--sanitize-repo-url, --sru   Sanitize authentication tokens in repository URLs
+                                                                            [boolean] [default: true]
+```
+
+### `batch`
+
+```text
+--skip-unchanged             Skip repositories with matching successful analysis state
+                                                                            [boolean] [default: true]
+--job-path                   Batch job file                     [string] [default: "./omniboard-job.json"]
+--preserve-queue             Preserve the queue for repeated runs           [boolean] [default: false]
+--workspace-path             Batch workspace                    [string] [default: "./omniboard-workspace"]
+--json                       Store results locally and skip upload          [boolean] [default: false]
+--check-pattern, --cp        Run only checks matching the pattern           [string]
+--telemetry                  Report analyzer performance telemetry          [boolean] [default: true]
+```
+
+### `test-check`
+
+```text
+--check-definition, --cd     Check definition as JSON                       [string]
+--json                       Store results locally                          [boolean] [default: false]
+--json-path                  Local results path                 [string] [default: "./dist/omniboard.json"]
+```
 
 ## FAQ
 

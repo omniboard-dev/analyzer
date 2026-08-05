@@ -5,7 +5,7 @@ export interface Options {
   // logging
   silent: boolean;
   verbose: boolean;
-  showCheckSubtasks: boolean;
+  showCheckResults: boolean;
 
   // results as local json
   json: boolean;

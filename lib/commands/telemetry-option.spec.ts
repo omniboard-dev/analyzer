@@ -2,23 +2,31 @@ import yargs, { Argv } from 'yargs';
 import { describe, expect, it } from 'vitest';
 
 import { builder as batchBuilder } from '../batch/batch';
+import { configureCliOptions } from '../utils/cli-options';
 
 import { builder as analyzeBuilder } from './analyze';
 
 const parseTelemetry = (builder: (yargs: Argv) => Argv, args: string[]) =>
-  builder(yargs(args).exitProcess(false)).parse().telemetry;
+  builder(configureCliOptions(yargs(args).exitProcess(false))).parse()
+    .telemetry;
 
 describe('telemetry CLI option', () => {
   it('defaults to false for analyze and true for batch', () => {
-    expect(parseTelemetry(analyzeBuilder, [])).toBe('false');
-    expect(parseTelemetry(batchBuilder, [])).toBe('true');
+    expect(parseTelemetry(analyzeBuilder, [])).toBe(false);
+    expect(parseTelemetry(batchBuilder, [])).toBe(true);
   });
 
   it.each([analyzeBuilder, batchBuilder])(
-    'accepts explicit true and false values',
+    'treats option presence as true',
     (builder) => {
-      expect(parseTelemetry(builder, ['--telemetry', 'true'])).toBe('true');
-      expect(parseTelemetry(builder, ['--telemetry', 'false'])).toBe('false');
+      expect(parseTelemetry(builder, ['--telemetry'])).toBe(true);
+    }
+  );
+
+  it.each([analyzeBuilder, batchBuilder])(
+    'accepts an explicit false value',
+    (builder) => {
+      expect(parseTelemetry(builder, ['--telemetry', 'false'])).toBe(false);
     }
   );
 
@@ -26,7 +34,7 @@ describe('telemetry CLI option', () => {
     'rejects --no-telemetry',
     (builder) => {
       expect(() => parseTelemetry(builder, ['--no-telemetry'])).toThrow(
-        'Invalid values'
+        'Unknown arguments'
       );
     }
   );

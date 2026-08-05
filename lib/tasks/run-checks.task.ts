@@ -58,7 +58,7 @@ export const runChecksTask: ListrTask = {
     )}`;
 
     if (
-      !ctx.options.showCheckSubtasks ||
+      !ctx.options.showCheckResults ||
       ctx.options.silent ||
       !execution.summaries.length
     ) {

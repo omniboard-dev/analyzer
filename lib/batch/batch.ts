@@ -9,6 +9,8 @@ import { runJobsTask } from './tasks/run-jobs.task';
 import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
 import { retrieveChecksTask } from '../tasks/retrieve-checks.task';
 
+import * as skipUnchanged from './skip-unchanged';
+
 const logger = createLogger('BATCH');
 
 export const command = 'batch';
@@ -19,42 +21,38 @@ export const describe =
   'Clone (or update) and analyze multiple project repositories and upload results to Omniboard.dev, or store results locally with --json';
 
 export const builder = (yargs: Argv) =>
-  yargs
-
+  skipUnchanged
+    .addSkipUnchangedOption(yargs)
     .option('job-path', {
       type: 'string',
       default: './omniboard-job.json',
-      description: 'Location of Omniboard batch job file',
+      description: 'Batch job file',
     })
     .option('preserve-queue', {
       type: 'boolean',
       default: false,
-      description:
-        'Preserves Omniboard batch job queue (good for multiple runs)',
+      description: 'Preserve the queue for repeated runs',
     })
     .option('workspace-path', {
       type: 'string',
       default: './omniboard-workspace',
-      description: 'Location where the Omniboard batch workspace is stored',
+      description: 'Batch workspace',
     })
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store results data in local json file and skip upload',
+      description: 'Store results locally and skip upload',
     })
     .option('check-pattern', {
       alias: 'cp',
       type: 'string',
-      description: 'Only run checks matching provided pattern',
+      description: 'Run only checks matching the pattern',
     })
     .option('telemetry', {
-      type: 'string',
-      choices: ['true', 'false'],
-      default: 'true',
-      description:
-        'Report analyzer performance telemetry to Omniboard.dev (true or false)',
-    })
-    .requiresArg('telemetry');
+      type: 'boolean',
+      default: true,
+      description: 'Report analyzer performance telemetry to Omniboard.dev',
+    });
 
 export const handler = async (argv: any) =>
   runner(
@@ -63,8 +61,9 @@ export const handler = async (argv: any) =>
       initJobTask,
       retrieveSettingsTask,
       retrieveChecksTask,
+      skipUnchanged.planUnchangedJobsTask,
       runJobsTask,
     ],
-    { ...argv, telemetry: argv.telemetry === 'true' },
+    argv,
     logger
   );

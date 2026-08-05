@@ -11,7 +11,7 @@ function createOptions(overrides: Partial<Options> = {}): Options {
     errorsAsWarnings: false,
     silent: true,
     verbose: false,
-    showCheckSubtasks: false,
+    showCheckResults: false,
     json: false,
     jsonPath: './dist/omniboard.json',
     sanitizeRepoUrl: true,

@@ -28,31 +28,28 @@ export const builder = (yargs: Argv) =>
     .option('json', {
       type: 'boolean',
       default: false,
-      description: 'Store results data in local json file and skip upload',
+      description: 'Store results locally and skip upload',
     })
     .option('json-path', {
       type: 'string',
       default: './dist/omniboard.json',
-      description: 'Location of results data local json file',
+      description: 'Local results path',
     })
     .option('check-pattern', {
       alias: 'cp',
       type: 'string',
-      description: 'Only run checks matching provided pattern',
+      description: 'Run only checks matching the pattern',
     })
     .option('telemetry', {
-      type: 'string',
-      choices: ['true', 'false'],
-      default: 'false',
-      description:
-        'Report analyzer performance telemetry to Omniboard.dev (true or false)',
+      type: 'boolean',
+      default: false,
+      description: 'Report analyzer performance telemetry to Omniboard.dev',
     })
-    .requiresArg('telemetry')
     .option('sanitize-repo-url', {
       alias: 'sru',
       type: 'boolean',
       default: true,
-      description: 'Try to sanitize auth tokens from repo urls',
+      description: 'Sanitize authentication tokens in repository URLs',
     });
 
 export const handler = async (argv: any) =>
@@ -68,6 +65,6 @@ export const handler = async (argv: any) =>
       saveProjectApiTask,
       handledCheckFailureInfoTask,
     ],
-    { ...argv, telemetry: argv.telemetry === 'true' },
+    argv,
     logger
   );

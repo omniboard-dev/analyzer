@@ -21,8 +21,9 @@ import * as testConnectionCommand from './commands/test-connection';
 import * as batchCommand from './batch/batch';
 import { apiMiddleware } from './middlewares/api.middleware';
 import { loggerMiddleware } from './middlewares/logger.middleware';
+import { configureCliOptions } from './utils/cli-options';
 
-(yargs as Argv)
+configureCliOptions(yargs as Argv)
   .scriptName('omniboard')
   .middleware(loggerMiddleware)
   .middleware(apiMiddleware)
@@ -39,28 +40,28 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
   .option('silent', {
     type: 'boolean',
     default: false,
-    description: 'Silences the renderer.',
+    description: 'Silence renderer output',
   })
-  .option('show-check-subtasks', {
+  .option('show-check-results', {
     type: 'boolean',
     default: false,
-    description: 'Show checks subtasks in log output',
+    description: 'Show individual check results in log output',
   })
   .option('api-key', {
     alias: 'ak',
-    describe: 'API key generated in the Omniboard.dev app',
+    type: 'string',
+    description: 'API key generated in Omniboard.dev',
   })
   .option('api-url', {
     alias: 'api',
     type: 'string',
     description:
-      'URL of the on-prem Omniboard instance (for custom enterprise plans only)',
+      'URL of an on-prem Omniboard instance (custom enterprise plans only)',
   })
   .option('errors-as-warnings', {
     type: 'boolean',
     default: false,
-    description:
-      'Exit with success (0) even in case of errors and log them as warnings',
+    description: 'Exit successfully and log analysis errors as warnings',
   })
 
   .alias('v', 'version')

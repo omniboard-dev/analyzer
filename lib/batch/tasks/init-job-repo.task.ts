@@ -11,6 +11,7 @@ import {
   pathJoin,
   removeDirectoryRecursive,
 } from '../../services/fs.service';
+import { prepareAnalyzedRepository } from '../skip-unchanged';
 
 export function initJobRepo(job: string): ListrTask {
   return {
@@ -35,6 +36,7 @@ export function initJobRepo(job: string): ListrTask {
           }
         }
         process.chdir(repoPath);
+        await prepareAnalyzedRepository(ctx, job, repoPath);
       } catch (error: any) {
         throw error;
       }

@@ -195,6 +195,32 @@ export function uploadProject(project: any) {
   return request('project/cli', { method: 'PUT', json: project });
 }
 
+export function planProjectAnalyses(
+  candidates: { sourceKey: string; fingerprint: string }[]
+): Promise<{ sourceKey: string; unchanged: boolean }[]> {
+  return request('analyzer-cache/plan', {
+    method: 'POST',
+    json: { candidates },
+  });
+}
+
+export function completeProjectAnalysis(entry: {
+  projectName: string;
+  sourceKey: string;
+  sourceIdentity: string;
+  sourceRef?: string;
+  headSha: string;
+  configDigest: string;
+  optionsDigest: string;
+  fingerprint: string;
+  analyzerVersion: string;
+}) {
+  return request('analyzer-cache/complete', {
+    method: 'POST',
+    json: entry,
+  });
+}
+
 export function uploadAnalyzerTelemetry(event: unknown) {
   return request('analyzer-telemetry/events', {
     method: 'POST',

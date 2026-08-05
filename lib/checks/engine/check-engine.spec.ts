@@ -253,7 +253,7 @@ function createContext(definitions: CheckDefinition[]): Context {
     options: {
       silent: true,
       verbose: false,
-      showCheckSubtasks: false,
+      showCheckResults: false,
     } as Context['options'],
     control: {
       skipEverySubsequentTask: false,

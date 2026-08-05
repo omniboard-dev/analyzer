@@ -7,7 +7,27 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   getProjectSizeFromTrackedFiles,
   getTrackedProjectSize,
+  parseRemoteHead,
 } from './git.service';
+
+describe('parseRemoteHead', () => {
+  it('parses the symbolic default branch and revision', () => {
+    expect(
+      parseRemoteHead(
+        'ref: refs/heads/main\tHEAD\nABCDEF1234567890ABCDEF1234567890ABCDEF12\tHEAD\n'
+      )
+    ).toEqual({
+      ref: 'refs/heads/main',
+      sha: 'abcdef1234567890abcdef1234567890abcdef12',
+    });
+  });
+
+  it('rejects a remote without a HEAD revision', () => {
+    expect(() => parseRemoteHead('')).toThrow(
+      'Remote HEAD revision could not be resolved'
+    );
+  });
+});
 
 describe('getProjectSizeFromTrackedFiles', () => {
   it('counts tracked files by normalized extension', () => {
