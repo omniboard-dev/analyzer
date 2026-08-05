@@ -31,6 +31,7 @@
     "enquirer": "^2.3.6",
     "filesize": "^8.0.0",
     "global-agent": "^3.0.0",
+    "json5": "^2.2.3",
     "jsonpath-plus": "^10.1.0",
     "listr2": "^6.3.1",
     "object-path": "^0.11.8",

@@ -1,3 +1,4 @@
+import JSON5 from 'json5';
 import stripJsonComments from 'strip-json-comments';
 import stripJsonTrailingCommas from 'strip-json-trailing-commas';
 import YAML from 'yaml';
@@ -51,10 +52,11 @@ export class FileResource {
     if (!this.jsonAttempt) {
       try {
         this.metrics.jsonParses++;
+        const text = this.readText();
         this.jsonAttempt = {
-          value: JSON.parse(
-            stripJsonTrailingCommas(stripJsonComments(this.readText()))
-          ),
+          value: /\.json5$/i.test(this.path)
+            ? JSON5.parse(text)
+            : JSON.parse(stripJsonTrailingCommas(stripJsonComments(text))),
         };
       } catch (error) {
         this.jsonAttempt = { error };

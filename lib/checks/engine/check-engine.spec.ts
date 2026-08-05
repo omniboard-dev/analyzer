@@ -65,6 +65,42 @@ describe('runStreamingCheckEngine', () => {
     expect(readFile).toHaveBeenCalledTimes(3);
   });
 
+  it('parses JSON5 syntax in JSON5 files', async () => {
+    createFixture({
+      'rwc-config.json5': `{
+        // JSON5 allows unquoted property names and single-quoted strings.
+        contentSecurityPolicyAdd_CLOUD: ['self'],
+        contentSecurityPolicyOverride_CLOUD: true,
+        overrideCsp: false,
+      }`,
+    });
+    const definitions: CheckDefinition[] = [
+      jsonCheck(
+        'contentSecurityPolicyAdd_CLOUD',
+        '$.contentSecurityPolicyAdd_CLOUD',
+        'rwc-config\\.json5$'
+      ),
+      jsonCheck(
+        'contentSecurityPolicyOverride_CLOUD',
+        '$.contentSecurityPolicyOverride_CLOUD',
+        'rwc-config\\.json5$'
+      ),
+      jsonCheck('overrideCsp', '$.overrideCsp', 'rwc-config\\.json5$'),
+    ];
+    const ctx = createContext(definitions);
+
+    const execution = await runStreamingCheckEngine(ctx, definitions);
+
+    expect(
+      definitions.map(({ name }) => execution.results[name].value)
+    ).toEqual([true, true, true]);
+    expect(execution.metrics).toMatchObject({
+      jsonParses: 1,
+      handledWarnings: 0,
+    });
+    expect(ctx.handledCheckFailures).toEqual([]);
+  });
+
   it('advances global zero-width content matches instead of looping forever', async () => {
     createFixture({ 'source.ts': 'ab' });
     const definitions: CheckDefinition[] = [
@@ -258,12 +294,16 @@ function contentCheck(
   };
 }
 
-function jsonCheck(name: string, jsonPropertyPath: string): CheckDefinition {
+function jsonCheck(
+  name: string,
+  jsonPropertyPath: string,
+  filesPattern = 'shared\\.json$'
+): CheckDefinition {
   return {
     name,
     type: CheckType.JSON,
     disabled: false,
-    filesPattern: 'shared\\.json$',
+    filesPattern,
     jsonPropertyPath,
   };
 }
