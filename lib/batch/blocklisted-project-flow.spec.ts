@@ -22,13 +22,13 @@ vi.mock('../services/api.service', () => ({
 
 vi.mock('../services/git.service', () => ({
   getCurrentBranch: vi.fn(),
-  getRepoNameFromUrl: vi.fn(() => 'rwc-lab-test-rwc'),
+  getRepoNameFromUrl: vi.fn(() => 'sample-lab-test-project'),
 }));
 
 vi.mock('../services/project.service', () => ({
   findProjectNameCustomProjectResolver: vi.fn(() => []),
   findProjectNamesMaven: vi.fn(() => []),
-  findProjectNamesNpm: vi.fn(() => ['@mobi/rwc-lab-test-rwc']),
+  findProjectNamesNpm: vi.fn(() => ['@example/sample-lab-test-project']),
   findProjectNamesPip: vi.fn(() => []),
   findProjectNamesRepo: vi.fn(() => []),
   findProjectTeamNames: vi.fn(() => []),
@@ -40,7 +40,7 @@ vi.mock('../services/project.service', () => ({
   isPipWorkspace: vi.fn(() => false),
 }));
 
-const JOB = 'https://gitlab.com/example/rwc-lab-test-rwc.git';
+const JOB = 'https://gitlab.com/example/sample-lab-test-project.git';
 
 function createContext(settings: Settings): Context {
   return {
@@ -70,7 +70,7 @@ function createContext(settings: Settings): Context {
 async function runBlocklistedProject(settings: Settings) {
   const ctx = createContext(settings);
   const parentTask = {
-    title: '1 / 1 - rwc-lab-test-rwc',
+    title: '1 / 1 - sample-lab-test-project',
   };
   const tasks = new Listr(
     [
@@ -147,7 +147,7 @@ describe('blocklisted project flow', () => {
     {
       name: 'explicit project name',
       settings: {
-        projectsBlocklistExplicit: ['@mobi/rwc-lab-test-rwc'],
+        projectsBlocklistExplicit: ['@example/sample-lab-test-project'],
       },
     },
     {
@@ -168,7 +168,7 @@ describe('blocklisted project flow', () => {
         completed: [JOB],
         failed: [],
       });
-      expect(parentTask.title).toBe('1 / 1 - rwc-lab-test-rwc skipped');
+      expect(parentTask.title).toBe('1 / 1 - sample-lab-test-project skipped');
     }
   );
 });
