@@ -20,7 +20,7 @@ function createContext(): Context {
     definitions: {},
     results: { checks: {} },
     handledCheckFailures: [],
-    batch: { queue: [JOB], completed: [], failed: [] },
+    batch: { queue: [JOB], analyzed: [], skipped: [], failed: [] },
     debug: { analysisStartedAt: Date.now() },
   };
 }

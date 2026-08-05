@@ -56,7 +56,7 @@ export const builder = (yargs: Argv) =>
 export const handler = async (argv: any) =>
   runner(
     [
-      testConnectionTask,
+      ...(argv.expectedGroup ? [testConnectionTask] : []),
       retrieveSettingsTask,
       startAnalysisDurationTask,
       projectInfoTask,

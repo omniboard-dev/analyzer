@@ -6,7 +6,8 @@ import { initializeBatchTelemetry } from '../telemetry/state';
 
 const DEFAULT_JOB: Batch = {
   queue: [],
-  completed: [],
+  analyzed: [],
+  skipped: [],
   failed: [],
 };
 

@@ -15,13 +15,17 @@ const SOURCE = 'https://gitlab.example.com/group/project.git';
 describe('runJobsTask skip-unchanged integration', () => {
   it('selects the clone-free task for an unchanged project', async () => {
     const ctx = {
-      batch: { queue: [SOURCE], completed: [], failed: [] },
+      batch: { queue: [SOURCE], analyzed: [], skipped: [], failed: [] },
       control: { skipEverySubsequentTask: false },
       debug: {},
     } as Context;
     setAnalysisPlans(ctx, {
       [SOURCE]: {
-        unchanged: true,
+        decision: {
+          sourceKey: 'a'.repeat(64),
+          action: 'skip',
+          reason: 'unchanged',
+        },
         entry: { headSha: 'a'.repeat(40) } as any,
       },
     });
@@ -30,6 +34,11 @@ describe('runJobsTask skip-unchanged integration', () => {
     await (runJobsTask.task as any)(ctx, task);
 
     expect(task.newListr.mock.calls[0][0][0].title).toBe('1 / 1 - project');
+    expect(task.newListr.mock.calls[0][1]).toMatchObject({
+      rendererOptions: {
+        collapseSubtasks: false,
+      },
+    });
     expect(runJobTaskFactory).not.toHaveBeenCalled();
   });
 });

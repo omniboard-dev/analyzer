@@ -60,7 +60,8 @@ function createContext(settings: Settings): Context {
     handledCheckFailures: [],
     batch: {
       queue: [JOB],
-      completed: [],
+      analyzed: [],
+      skipped: [],
       failed: [],
     },
     debug: {},
@@ -165,10 +166,13 @@ describe('blocklisted project flow', () => {
       expect(api.uploadProject).not.toHaveBeenCalled();
       expect(ctx.batch).toEqual({
         queue: [],
-        completed: [JOB],
+        analyzed: [],
+        skipped: [{ source: JOB, reason: 'excluded' }],
         failed: [],
       });
-      expect(parentTask.title).toBe('1 / 1 - sample-lab-test-project skipped');
+      expect(parentTask.title).toBe(
+        '1 / 1 - sample-lab-test-project skipped (excluded)'
+      );
     }
   );
 });

@@ -6,6 +6,7 @@ import {
   type Response as UndiciResponse,
 } from 'undici';
 
+import { ProjectAnalysisDecision } from '../batch/project-analysis';
 import { Settings } from '../interface';
 
 import { createLogger } from './logger.service';
@@ -202,14 +203,14 @@ export function uploadProject(project: any) {
 
 export function planProjectAnalyses(
   candidates: { sourceKey: string; fingerprint: string }[]
-): Promise<{ sourceKey: string; unchanged: boolean }[]> {
+): Promise<ProjectAnalysisDecision[]> {
   return request('analyzer-cache/plan', {
     method: 'POST',
     json: { candidates },
   });
 }
 
-export function completeProjectAnalysis(entry: {
+export function recordAnalyzedProject(entry: {
   projectName: string;
   sourceKey: string;
   sourceIdentity: string;
@@ -220,7 +221,7 @@ export function completeProjectAnalysis(entry: {
   fingerprint: string;
   analyzerVersion: string;
 }) {
-  return request('analyzer-cache/complete', {
+  return request('analyzer-cache/analyzed', {
     method: 'POST',
     json: entry,
   });

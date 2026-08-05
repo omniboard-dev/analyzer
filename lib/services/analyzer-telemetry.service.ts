@@ -9,7 +9,7 @@ import { getAnalysisDurationMs } from '../tasks/analysis-duration.task';
 import { uploadAnalyzerTelemetry } from './api.service';
 import { createLogger } from './logger.service';
 
-const ANALYZER_TELEMETRY_SCHEMA_VERSION = 1;
+const ANALYZER_TELEMETRY_SCHEMA_VERSION = 2;
 const NEAR_TIMEOUT_RATIO = 0.8;
 const MAX_NEAR_TIMEOUT_CHECKS = 5;
 const logger = createLogger('ANALYZER TELEMETRY');

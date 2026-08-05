@@ -86,6 +86,7 @@ export const projectInfoTask: ListrTask = {
             if (!names.length) {
               task.title = `${task.title}: no project found`;
               ctx.control.skipEverySubsequentTask = true;
+              ctx.control.projectSkipReason = 'unresolved';
             } else {
               task.title = `${task.title}: ${ctx.results.name} [${ctx.results?.info?.type}]`;
 
@@ -111,6 +112,7 @@ export const projectInfoTask: ListrTask = {
             ) {
               task.title = `${task.title} - project name matched by blocklist pattern`;
               ctx.control.skipEverySubsequentTask = true;
+              ctx.control.projectSkipReason = 'excluded';
             }
             if (
               projectsBlocklistExplicit &&
@@ -120,6 +122,7 @@ export const projectInfoTask: ListrTask = {
             ) {
               task.title = `${task.title} - project name was explicitly blocklisted`;
               ctx.control.skipEverySubsequentTask = true;
+              ctx.control.projectSkipReason = 'excluded';
             }
           },
         },

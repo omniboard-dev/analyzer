@@ -24,7 +24,8 @@ function createContext(expectedGroup?: string): Context {
     handledCheckFailures: [],
     batch: {
       queue: [],
-      completed: [],
+      analyzed: [],
+      skipped: [],
       failed: [],
     },
     debug: {},

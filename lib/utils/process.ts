@@ -2,6 +2,7 @@ import { basename } from 'node:path';
 
 import { Listr, ListrTask, PRESET_TIMER } from 'listr2';
 
+import { ProjectAnalysisResultCounts } from '../batch/project-analysis';
 import { AnalysisFailure, Context, Options } from '../interface';
 import { Logger } from '../services/logger.service';
 import { getAnalysisDurationMs } from '../tasks/analysis-duration.task';
@@ -13,6 +14,7 @@ type RunnerRenderer = 'default' | 'simple' | 'silent' | 'verbose';
 export type RunnerOutcome = 'success' | 'partial' | 'failed';
 
 export interface RunnerHooks {
+  getBatchResultCounts?: (ctx: Context) => ProjectAnalysisResultCounts;
   onFinished?: (ctx: Context, outcome: RunnerOutcome) => Promise<void> | void;
 }
 
@@ -69,7 +71,7 @@ export const runner = async (
     control: { skipEverySubsequentTask: false },
     results: { checks: {} },
     handledCheckFailures: [],
-    batch: { queue: [], completed: [], failed: [] },
+    batch: { queue: [], analyzed: [], skipped: [], failed: [] },
     debug: {
       commandStartedAt: start,
       analysisStartedAt: start,
@@ -91,15 +93,29 @@ export const runner = async (
 
     const { batch } = ctx;
     outcome = batch.failed.length
-      ? batch.completed.length
+      ? batch.analyzed.length || batch.skipped.length
         ? 'partial'
         : 'failed'
       : 'success';
-    if (batch.completed.length || batch.failed.length) {
+    if (batch.analyzed.length || batch.skipped.length || batch.failed.length) {
       if (!options.silent) {
-        logger.info(
-          `Batch results, queue: ${batch.queue.length}, completed: ${batch.completed.length}, failed: ${batch.failed.length}`
-        );
+        const counts = hooks.getBatchResultCounts?.(ctx) ?? {
+          analyzed: batch.analyzed.length,
+          skipped: batch.skipped.length,
+          skippedByReason: {
+            unchanged: batch.skipped.filter(
+              ({ reason }) => reason === 'unchanged'
+            ).length,
+            excluded: batch.skipped.filter(
+              ({ reason }) => reason === 'excluded'
+            ).length,
+            unresolved: batch.skipped.filter(
+              ({ reason }) => reason === 'unresolved'
+            ).length,
+          },
+          failed: batch.failed.length,
+        };
+        logger.info(formatBatchResults(batch.queue.length, counts));
       }
 
       batch.failed.forEach((project) => {
@@ -168,6 +184,21 @@ export const runner = async (
     await hooks.onFinished?.(context, outcome);
   }
 };
+
+export function formatBatchResults(
+  queued: number,
+  counts: ProjectAnalysisResultCounts
+): string {
+  const reasons = Object.entries(counts.skippedByReason)
+    .filter(([, count]) => count > 0)
+    .map(([reason, count]) => `${reason}: ${count}`)
+    .join(', ');
+  const skipped = reasons
+    ? `${counts.skipped} (${reasons})`
+    : String(counts.skipped);
+
+  return `Batch results, queue: ${queued}, analyzed: ${counts.analyzed}, skipped: ${skipped}, failed: ${counts.failed}`;
+}
 
 function formatFailure(failure: AnalysisFailure): string {
   return `[FAILED] ${failure.projectName} (${formatTime(failure.durationMs)})`;

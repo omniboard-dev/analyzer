@@ -1,6 +1,6 @@
 export {
   prepareAnalyzedRepository,
-  recordCompletedAnalysis,
+  recordAnalyzedProject,
 } from './execution/lifecycle';
 export { createJobTasks } from './execution/job-tasks';
 export { addSkipUnchangedOption } from './option';

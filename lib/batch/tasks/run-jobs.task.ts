@@ -13,5 +13,8 @@ export const runJobsTask: ListrTask = {
     task.newListr(createJobTasks(ctx, ctx.batch.queue, runJobTaskFactory), {
       exitOnError: false,
       exitAfterRollback: false,
+      rendererOptions: {
+        collapseSubtasks: false,
+      },
     }),
 };

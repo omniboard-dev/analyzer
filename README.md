@@ -55,11 +55,33 @@ or
 
 ### Execution
 
-1. batch asks the standalone Analyzer cache API about each repository's remote HEAD revision and skips cloning when the same revision and analysis configuration were completed successfully before
-2. batch will clone (or update) repositories that require analysis
-3. batch will run `omniboard analyze` in the cloned repository, upload its project normally, and then record cache completion separately
-4. batch will remove repository from the queue into `done` array (or `failed` array in case of error), you can use `--preserve-queue` flag to enable multiple runs of the same job file
-5. batch will repeat these steps until every repository from the queue is processed
+1. batch asks the Analyzer planning API whether each repository should be analyzed or skipped as unchanged
+2. batch clones (or updates) repositories whose decision is `analyze`
+3. batch runs `omniboard analyze`, uploads the project, and records the successful analysis for future planning
+4. batch moves each repository from `queue` into exactly one outcome collection: `analyzed`, `skipped`, or `failed`; use `--preserve-queue` to retain queue entries for repeated runs
+5. skipped entries include one reason: `unchanged`, `excluded`, or `unresolved`
+6. batch repeats these steps until every queued repository is processed
+7. batch prints the final outcome counts and non-zero skip-reason counts, for example:
+
+   `Batch results, queue: 0, analyzed: 45, skipped: 5 (unchanged: 4, excluded: 1), failed: 0`
+
+The batch job file uses this shape:
+
+```json
+{
+  "queue": [],
+  "analyzed": ["https://example.com/analyzed.git"],
+  "skipped": [
+    {
+      "source": "https://example.com/skipped.git",
+      "reason": "unchanged"
+    }
+  ],
+  "failed": []
+}
+```
+
+This is a breaking format. Recreate older job files that contain `done` or `completed`.
 
 ## Options
 
@@ -84,6 +106,8 @@ For boolean options, passing the flag means `true` (for example, `--telemetry`).
 In CI, pass `--expected-group <group>` to `analyze`, `batch`, or
 `test-connection`. The Analyzer then verifies the API key destination and
 stops before analysis or upload when the authenticated group does not match.
+Without this flag, `analyze` and `batch` do not make the additional connection
+check.
 
 ### `analyze`
 

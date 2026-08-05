@@ -3,7 +3,7 @@ import { ListrTask } from 'listr2';
 import { writeJson } from '../../services/fs.service';
 import { Context, ParentTask } from '../../interface';
 import { getRepoNameFromUrl } from '../../services/git.service';
-import { finishBatchJob } from '../telemetry/state';
+import { finishProjectAnalysis } from '../telemetry/state';
 
 export function finalizeJobTaskFactory(
   job: string,
@@ -12,12 +12,15 @@ export function finalizeJobTaskFactory(
   return {
     title: 'Finalize job',
     task: async (ctx: Context, task) => {
-      const skipped = ctx.control.skipEverySubsequentTask;
-      finishBatchJob(
+      const skipReason = ctx.control.projectSkipReason;
+      const result = skipReason
+        ? { outcome: 'skipped' as const, reason: skipReason }
+        : { outcome: 'analyzed' as const };
+      finishProjectAnalysis(
         ctx,
         job,
         ctx.results.name ?? getRepoNameFromUrl(job),
-        skipped ? 'skipped' : 'succeeded'
+        result
       );
 
       // reset job CTX state
@@ -29,7 +32,11 @@ export function finalizeJobTaskFactory(
       process.chdir('../../');
 
       // update batch state
-      ctx.batch.completed.push(job);
+      if (result.outcome === 'skipped') {
+        ctx.batch.skipped.push({ source: job, reason: result.reason });
+      } else {
+        ctx.batch.analyzed.push(job);
+      }
       ctx.batch.queue = ctx.batch.queue.filter((j) => j !== job);
 
       if (!ctx.options.preserveQueue) {
@@ -37,9 +44,10 @@ export function finalizeJobTaskFactory(
       }
 
       task.title = `${task.title} successful`;
-      parentTask.title = `${parentTask.title} ${
-        skipped ? 'skipped' : 'successful'
-      }`;
+      parentTask.title =
+        result.outcome === 'skipped'
+          ? `${parentTask.title} skipped (${result.reason})`
+          : `${parentTask.title} analyzed`;
     },
   };
 }

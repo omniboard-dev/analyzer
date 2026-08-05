@@ -6,7 +6,7 @@ import * as git from '../../../services/git.service';
 
 import {
   prepareAnalyzedRepository,
-  recordCompletedAnalysis,
+  recordAnalyzedProject,
 } from '../execution/lifecycle';
 import {
   getCurrentAnalysisEntry,
@@ -15,7 +15,7 @@ import {
 } from '../state';
 
 vi.mock('../../../services/api.service', () => ({
-  completeProjectAnalysis: vi.fn(),
+  recordAnalyzedProject: vi.fn(),
 }));
 vi.mock('../../../services/git.service', () => ({
   getCurrentCommit: vi.fn(),
@@ -25,7 +25,7 @@ const SOURCE = 'https://gitlab.example.com/group/project.git';
 
 describe('skip-unchanged analysis lifecycle', () => {
   beforeEach(() => {
-    vi.mocked(api.completeProjectAnalysis).mockReset();
+    vi.mocked(api.recordAnalyzedProject).mockReset();
     vi.mocked(git.getCurrentCommit)
       .mockReset()
       .mockResolvedValue('b'.repeat(40));
@@ -35,7 +35,10 @@ describe('skip-unchanged analysis lifecycle', () => {
     const ctx = context();
     const entry = cacheEntry();
     setAnalysisPlans(ctx, {
-      [SOURCE]: { entry, unchanged: false },
+      [SOURCE]: {
+        entry,
+        decision: { sourceKey: entry.sourceKey, action: 'analyze' },
+      },
     });
 
     await prepareAnalyzedRepository(ctx, SOURCE, '/tmp/project');
@@ -52,9 +55,9 @@ describe('skip-unchanged analysis lifecycle', () => {
     const entry = cacheEntry();
     setCurrentAnalysisEntry(ctx, entry);
 
-    await recordCompletedAnalysis(ctx, 'project-a');
+    await recordAnalyzedProject(ctx, 'project-a');
 
-    expect(api.completeProjectAnalysis).toHaveBeenCalledWith({
+    expect(api.recordAnalyzedProject).toHaveBeenCalledWith({
       projectName: 'project-a',
       ...entry,
     });
@@ -63,12 +66,12 @@ describe('skip-unchanged analysis lifecycle', () => {
   it('fails open when cache completion is unavailable', async () => {
     const ctx = context();
     setCurrentAnalysisEntry(ctx, cacheEntry());
-    vi.mocked(api.completeProjectAnalysis).mockRejectedValue(
+    vi.mocked(api.recordAnalyzedProject).mockRejectedValue(
       new Error('cache unavailable')
     );
 
     await expect(
-      recordCompletedAnalysis(ctx, 'project-a')
+      recordAnalyzedProject(ctx, 'project-a')
     ).resolves.toBeUndefined();
   });
 });

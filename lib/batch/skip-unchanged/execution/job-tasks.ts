@@ -27,22 +27,23 @@ function createSkipUnchangedJobTask(
   total: number
 ): ListrTask | undefined {
   const plan = getAnalysisPlan(ctx, job);
-  if (!plan?.unchanged) {
+  const decision = plan?.decision;
+  const entry = plan?.entry;
+  if (decision?.action !== 'skip' || !entry) {
     return undefined;
   }
 
   return {
     title: `${index} / ${total} - ${getRepoNameFromUrl(job)}`,
     task: (ctx: Context, task) => {
-      ctx.batch.completed.push(job);
+      ctx.batch.skipped.push({ source: job, reason: decision.reason });
       ctx.batch.queue = ctx.batch.queue.filter((queued) => queued !== job);
       if (!ctx.options.preserveQueue) {
         writeJson(ctx.options.jobPath, ctx.batch);
       }
-      task.title = `${task.title} unchanged (${plan.entry.headSha.slice(
-        0,
-        12
-      )}), skipped`;
+      task.title = `${task.title} skipped (${
+        decision.reason
+      }, ${entry.headSha.slice(0, 12)})`;
     },
   };
 }

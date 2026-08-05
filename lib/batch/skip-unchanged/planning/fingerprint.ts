@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 
 import { Context } from '../../../interface';
+import { ProjectAnalysisDecision } from '../../project-analysis';
 import { RemoteHead } from '../../../services/git.service';
 
 const ANALYSIS_FINGERPRINT_SCHEMA_VERSION = 1;
@@ -21,7 +22,7 @@ export interface AnalysisCacheEntry {
 
 export interface BatchAnalysisPlan {
   entry: AnalysisCacheEntry;
-  unchanged: boolean;
+  decision: ProjectAnalysisDecision;
 }
 
 export function createAnalysisCacheEntry(

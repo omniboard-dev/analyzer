@@ -2,10 +2,14 @@ import { randomUUID } from 'node:crypto';
 import { basename } from 'node:path';
 
 import { Context } from '../../interface';
+import {
+  ProjectAnalysisResult,
+  ProjectAnalysisResultCounts,
+  ProjectSkipReason,
+} from '../project-analysis';
 
 import { resolveBatchTelemetryRunContext } from './ci';
 import {
-  BatchJobStatus,
   BatchTelemetryData,
   BatchTelemetryState,
   BatchTelemetryStatus,
@@ -32,96 +36,112 @@ export function initializeBatchTelemetry(
     batchName: basename(ctx.options.jobPath ?? './omniboard-job.json'),
     startedAtMs: ctx.debug.commandStartedAt ?? Date.now(),
     projectsQueued,
-    cachePlanningStatus: 'not-run',
-    cachePlanningDurationMs: 0,
-    cacheCheckedProjects: 0,
-    cacheHitProjects: 0,
-    unresolvedHeadProjects: 0,
-    jobsStarted: 0,
-    jobsSucceeded: 0,
-    jobsFailed: 0,
-    jobsSkipped: 0,
-    jobStartedAt: new Map(),
+    planningStatus: 'not-run',
+    planningDurationMs: 0,
+    projectsCheckedForChanges: 0,
+    projectsWithUnresolvedHead: 0,
+    projectsAnalyzed: 0,
+    projectsSkippedByReason: createSkipReasonCounts(),
+    projectsFailed: 0,
+    projectStartedAt: new Map(),
     slowestProjects: [],
   };
   ctx.debug[STATE_KEY] = state;
   return state;
 }
 
-export function startCachePlanning(ctx: Context, now = Date.now()): void {
+export function startProjectPlanning(ctx: Context, now = Date.now()): void {
   const state = ensureState(ctx);
-  state.cachePlanningStatus = 'running';
-  state.cachePlanningStartedAt = now;
+  state.planningStatus = 'running';
+  state.planningStartedAt = now;
 }
 
-export function completeCachePlanning(
+export function completeProjectPlanning(
   ctx: Context,
   result: {
     checkedProjects: number;
-    cacheHitProjects: number;
+    unchangedProjects: number;
     unresolvedHeadProjects: number;
   },
   now = Date.now()
 ): void {
   const state = ensureState(ctx);
-  state.cachePlanningStatus = 'completed';
-  state.cachePlanningDurationMs = elapsed(state.cachePlanningStartedAt, now);
-  state.cacheCheckedProjects = result.checkedProjects;
-  state.cacheHitProjects = result.cacheHitProjects;
-  state.unresolvedHeadProjects = result.unresolvedHeadProjects;
+  state.planningStatus = 'completed';
+  state.planningDurationMs = elapsed(state.planningStartedAt, now);
+  state.projectsCheckedForChanges = result.checkedProjects;
+  state.projectsSkippedByReason.unchanged = result.unchangedProjects;
+  state.projectsWithUnresolvedHead = result.unresolvedHeadProjects;
 }
 
-export function failCachePlanning(
+export function failProjectPlanning(
   ctx: Context,
   unresolvedHeadProjects: number,
   now = Date.now()
 ): void {
   const state = ensureState(ctx);
-  state.cachePlanningStatus = 'unavailable';
-  state.cachePlanningDurationMs = elapsed(state.cachePlanningStartedAt, now);
-  state.unresolvedHeadProjects = unresolvedHeadProjects;
+  state.planningStatus = 'unavailable';
+  state.planningDurationMs = elapsed(state.planningStartedAt, now);
+  state.projectsWithUnresolvedHead = unresolvedHeadProjects;
 }
 
-export function startBatchJob(
+export function startProjectAnalysis(
   ctx: Context,
   source: string,
   now = Date.now()
 ): void {
   const state = ensureState(ctx);
-  if (!state.jobStartedAt.has(source)) {
-    state.jobStartedAt.set(source, now);
-    state.jobsStarted += 1;
+  if (!state.projectStartedAt.has(source)) {
+    state.projectStartedAt.set(source, now);
   }
 }
 
-export function finishBatchJob(
+export function finishProjectAnalysis(
   ctx: Context,
   source: string,
   projectName: string,
-  status: BatchJobStatus,
+  result: ProjectAnalysisResult,
   now = Date.now()
 ): void {
   const state = ensureState(ctx);
-  const startedAt = state.jobStartedAt.get(source);
+  const startedAt = state.projectStartedAt.get(source);
   if (startedAt === undefined) {
     return;
   }
-  state.jobStartedAt.delete(source);
+  state.projectStartedAt.delete(source);
 
-  if (status === 'succeeded') {
-    state.jobsSucceeded += 1;
-  } else if (status === 'failed') {
-    state.jobsFailed += 1;
+  if (result.outcome === 'analyzed') {
+    state.projectsAnalyzed += 1;
+  } else if (result.outcome === 'failed') {
+    state.projectsFailed += 1;
   } else {
-    state.jobsSkipped += 1;
+    state.projectsSkippedByReason[result.reason] += 1;
   }
 
   state.slowestProjects = [
     ...state.slowestProjects,
-    { projectName, durationMs: elapsed(startedAt, now), status },
+    {
+      projectName,
+      durationMs: elapsed(startedAt, now),
+      outcome: result.outcome,
+      skipReason: result.outcome === 'skipped' ? result.reason : undefined,
+    },
   ]
     .sort((left, right) => right.durationMs - left.durationMs)
     .slice(0, SLOWEST_PROJECT_LIMIT);
+}
+
+export function getBatchResultCounts(
+  ctx: Context
+): ProjectAnalysisResultCounts {
+  const state = ensureState(ctx);
+  const skipped = sumSkipReasons(state.projectsSkippedByReason);
+
+  return {
+    analyzed: state.projectsAnalyzed,
+    skipped,
+    skippedByReason: { ...state.projectsSkippedByReason },
+    failed: state.projectsFailed,
+  };
 }
 
 export function createBatchTelemetryData(
@@ -130,10 +150,11 @@ export function createBatchTelemetryData(
   now = Date.now()
 ): BatchTelemetryData {
   const state = ensureState(ctx);
-  if (state.cachePlanningStatus === 'running') {
-    state.cachePlanningStatus = 'unavailable';
-    state.cachePlanningDurationMs = elapsed(state.cachePlanningStartedAt, now);
+  if (state.planningStatus === 'running') {
+    state.planningStatus = 'unavailable';
+    state.planningDurationMs = elapsed(state.planningStartedAt, now);
   }
+  const resultCounts = getBatchResultCounts(ctx);
 
   return {
     runId: state.runId,
@@ -144,15 +165,14 @@ export function createBatchTelemetryData(
     durationMs: elapsed(state.startedAtMs, now),
     status,
     projectsQueued: state.projectsQueued,
-    cachePlanningStatus: state.cachePlanningStatus,
-    cachePlanningDurationMs: state.cachePlanningDurationMs,
-    cacheCheckedProjects: state.cacheCheckedProjects,
-    cacheHitProjects: state.cacheHitProjects,
-    unresolvedHeadProjects: state.unresolvedHeadProjects,
-    jobsStarted: state.jobsStarted,
-    jobsSucceeded: state.jobsSucceeded,
-    jobsFailed: state.jobsFailed,
-    jobsSkipped: state.jobsSkipped,
+    planningStatus: state.planningStatus,
+    planningDurationMs: state.planningDurationMs,
+    projectsCheckedForChanges: state.projectsCheckedForChanges,
+    projectsWithUnresolvedHead: state.projectsWithUnresolvedHead,
+    projectsAnalyzed: resultCounts.analyzed,
+    projectsSkipped: resultCounts.skipped,
+    projectsSkippedByReason: resultCounts.skippedByReason,
+    projectsFailed: resultCounts.failed,
     slowestProjects: state.slowestProjects,
     shardIndex: state.shardIndex,
     shardCount: state.shardCount,
@@ -165,7 +185,8 @@ function ensureState(ctx: Context): BatchTelemetryState {
     initializeBatchTelemetry(
       ctx,
       ctx.batch.queue.length +
-        ctx.batch.completed.length +
+        ctx.batch.analyzed.length +
+        ctx.batch.skipped.length +
         ctx.batch.failed.length
     )
   );
@@ -173,6 +194,14 @@ function ensureState(ctx: Context): BatchTelemetryState {
 
 function getState(ctx: Context): BatchTelemetryState | undefined {
   return ctx.debug[STATE_KEY] as BatchTelemetryState | undefined;
+}
+
+function createSkipReasonCounts(): Record<ProjectSkipReason, number> {
+  return { unchanged: 0, excluded: 0, unresolved: 0 };
+}
+
+function sumSkipReasons(counts: Record<ProjectSkipReason, number>): number {
+  return Object.values(counts).reduce((total, count) => total + count, 0);
 }
 
 function elapsed(startedAt: number | undefined, now: number): number {

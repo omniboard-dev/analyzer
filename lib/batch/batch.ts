@@ -12,6 +12,7 @@ import { testConnectionTask } from '../tasks/test-connection.task';
 
 import * as skipUnchanged from './skip-unchanged';
 import { reportBatchTelemetry } from './telemetry/reporter';
+import { getBatchResultCounts } from './telemetry/state';
 
 const logger = createLogger('BATCH');
 
@@ -65,7 +66,7 @@ export const builder = (yargs: Argv) =>
 export const handler = async (argv: any) =>
   runner(
     [
-      testConnectionTask,
+      ...(argv.expectedGroup ? [testConnectionTask] : []),
       initWorkspaceTask,
       initJobTask,
       retrieveSettingsTask,
@@ -75,5 +76,5 @@ export const handler = async (argv: any) =>
     ],
     argv,
     logger,
-    { onFinished: reportBatchTelemetry }
+    { getBatchResultCounts, onFinished: reportBatchTelemetry }
   );

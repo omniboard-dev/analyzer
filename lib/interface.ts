@@ -34,6 +34,7 @@ export interface Context {
   options: Options;
   control: {
     skipEverySubsequentTask: boolean;
+    projectSkipReason?: import('./batch/project-analysis').ProjectSkipReason;
   };
   settings: Settings;
   definitions: {
@@ -73,7 +74,8 @@ export interface AnalysisFailure {
 
 export interface Batch {
   queue: string[];
-  completed: string[];
+  analyzed: string[];
+  skipped: import('./batch/project-analysis').SkippedProject[];
   failed: string[];
 }
 

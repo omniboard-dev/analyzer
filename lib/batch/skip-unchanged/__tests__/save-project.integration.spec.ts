@@ -4,10 +4,10 @@ import { Context } from '../../../interface';
 import * as api from '../../../services/api.service';
 import { saveProjectApiTask } from '../../../tasks/save-project-api.task';
 
-import { recordCompletedAnalysis } from '../index';
+import { recordAnalyzedProject } from '../index';
 
 vi.mock('../index', () => ({
-  recordCompletedAnalysis: vi.fn(),
+  recordAnalyzedProject: vi.fn(),
 }));
 vi.mock('../../../services/api.service', () => ({
   uploadProject: vi.fn(),
@@ -16,7 +16,7 @@ vi.mock('../../../services/api.service', () => ({
 
 describe('saveProjectApiTask skip-unchanged integration', () => {
   beforeEach(() => {
-    vi.mocked(recordCompletedAnalysis).mockReset().mockResolvedValue(undefined);
+    vi.mocked(recordAnalyzedProject).mockReset().mockResolvedValue(undefined);
     vi.mocked(api.uploadProject).mockReset().mockResolvedValue(undefined);
   });
 
@@ -31,7 +31,7 @@ describe('saveProjectApiTask skip-unchanged integration', () => {
         checks: {},
       },
       handledCheckFailures: [],
-      batch: { queue: [], completed: [], failed: [] },
+      batch: { queue: [], analyzed: [], skipped: [], failed: [] },
       debug: {},
     } as Context;
 
@@ -39,11 +39,11 @@ describe('saveProjectApiTask skip-unchanged integration', () => {
       title: 'Save project results (Omniboard.dev)',
     });
 
-    expect(recordCompletedAnalysis).toHaveBeenCalledWith(ctx, 'project-a');
+    expect(recordAnalyzedProject).toHaveBeenCalledWith(ctx, 'project-a');
     expect(
       vi.mocked(api.uploadProject).mock.invocationCallOrder[0]
     ).toBeLessThan(
-      vi.mocked(recordCompletedAnalysis).mock.invocationCallOrder[0]
+      vi.mocked(recordAnalyzedProject).mock.invocationCallOrder[0]
     );
   });
 });

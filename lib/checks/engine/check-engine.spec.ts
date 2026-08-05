@@ -271,7 +271,8 @@ function createContext(definitions: CheckDefinition[]): Context {
     handledCheckFailures: [],
     batch: {
       queue: [],
-      completed: [],
+      analyzed: [],
+      skipped: [],
       failed: [],
     },
     debug: {},

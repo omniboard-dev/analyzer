@@ -21,7 +21,7 @@ function createContext(): Context {
         '[json] "hasDependency"\n   File: package.json\n   Error: Unknown value type'
       ),
     ],
-    batch: { queue: [], completed: [], failed: [] },
+    batch: { queue: [], analyzed: [], skipped: [], failed: [] },
     debug: {},
   };
 }

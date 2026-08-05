@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { ListrTask } from 'listr2';
 
-import { recordCompletedAnalysis } from '../batch/skip-unchanged';
+import { recordAnalyzedProject } from '../batch/skip-unchanged';
 import * as api from '../services/api.service';
 import { Context } from '../interface';
 import { getHumanReadableFileSize } from '../services/fs.service';
@@ -82,7 +82,7 @@ export const saveProjectApiTask: ListrTask = {
     }
 
     return api.uploadProject(results).then(async () => {
-      await recordCompletedAnalysis(ctx, results.name);
+      await recordAnalyzedProject(ctx, results.name);
       await reportCompletedAnalysis(ctx);
       const resultsLength = Buffer.byteLength(JSON.stringify(results), 'utf8');
       task.title = `${task.title} successful, ${getHumanReadableFileSize(

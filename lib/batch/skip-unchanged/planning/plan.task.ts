@@ -4,9 +4,9 @@ import { Context } from '../../../interface';
 import * as api from '../../../services/api.service';
 import { getRemoteHead } from '../../../services/git.service';
 import {
-  completeCachePlanning,
-  failCachePlanning,
-  startCachePlanning,
+  completeProjectPlanning,
+  failProjectPlanning,
+  startProjectPlanning,
 } from '../../telemetry/state';
 
 import { isSkipUnchangedEnabled } from '../option';
@@ -35,7 +35,7 @@ export const planUnchangedJobsTask: ListrTask = {
     return false;
   },
   task: async (ctx: Context, task) => {
-    startCachePlanning(ctx);
+    startProjectPlanning(ctx);
     setAnalysisPlans(ctx, undefined);
     const resolved = await mapWithConcurrency(
       ctx.batch.queue,
@@ -62,9 +62,9 @@ export const planUnchangedJobsTask: ListrTask = {
     );
 
     if (!candidates.length) {
-      completeCachePlanning(ctx, {
+      completeProjectPlanning(ctx, {
         checkedProjects: 0,
-        cacheHitProjects: 0,
+        unchangedProjects: 0,
         unresolvedHeadProjects: ctx.batch.queue.length,
       });
       task.skip('No remote HEAD revisions could be resolved');
@@ -96,25 +96,27 @@ export const planUnchangedJobsTask: ListrTask = {
       for (const { source, entry } of candidates) {
         plans[source] = {
           entry,
-          unchanged:
-            decisionsBySourceKey.get(entry.sourceKey)?.unchanged === true,
+          decision: decisionsBySourceKey.get(entry.sourceKey) ?? {
+            sourceKey: entry.sourceKey,
+            action: 'analyze',
+          },
         };
       }
       setAnalysisPlans(ctx, plans);
 
       const unchanged = Object.values(plans).filter(
-        (plan) => plan.unchanged
+        ({ decision }) => decision.action === 'skip'
       ).length;
-      completeCachePlanning(ctx, {
+      completeProjectPlanning(ctx, {
         checkedProjects: candidates.length,
-        cacheHitProjects: unchanged,
+        unchangedProjects: unchanged,
         unresolvedHeadProjects: ctx.batch.queue.length - candidates.length,
       });
       task.title = `${task.title}: ${unchanged} unchanged, ${
         ctx.batch.queue.length - unchanged
       } to analyze`;
     } catch {
-      failCachePlanning(ctx, ctx.batch.queue.length - candidates.length);
+      failProjectPlanning(ctx, ctx.batch.queue.length - candidates.length);
       task.skip('Analysis cache unavailable; all projects will be analyzed');
     }
   },

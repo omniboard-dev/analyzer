@@ -29,14 +29,24 @@ describe('planUnchangedJobsTask', () => {
 
   it('records an exact server cache hit as unchanged', async () => {
     vi.mocked(api.planProjectAnalyses).mockImplementation(async (candidates) =>
-      candidates.map(({ sourceKey }) => ({ sourceKey, unchanged: true }))
+      candidates.map(({ sourceKey }) => ({
+        sourceKey,
+        action: 'skip' as const,
+        reason: 'unchanged' as const,
+      }))
     );
     const ctx = context();
     const task = { title: 'Plan unchanged projects', skip: vi.fn() };
 
     await (planUnchangedJobsTask.task as any)(ctx, task);
 
-    expect(getAnalysisPlan(ctx, SOURCE)?.unchanged).toBe(true);
+    const sourceKey = vi.mocked(api.planProjectAnalyses).mock.calls[0][0][0]
+      .sourceKey;
+    expect(getAnalysisPlan(ctx, SOURCE)?.decision).toEqual({
+      sourceKey,
+      action: 'skip',
+      reason: 'unchanged',
+    });
     expect(task.title).toContain('1 unchanged, 0 to analyze');
   });
 
@@ -74,7 +84,7 @@ function context(): Context {
     settings: {},
     definitions: { checks: [] },
     control: { skipEverySubsequentTask: false },
-    batch: { queue: [SOURCE], completed: [], failed: [] },
+    batch: { queue: [SOURCE], analyzed: [], skipped: [], failed: [] },
     debug: {},
   } as Context;
 }

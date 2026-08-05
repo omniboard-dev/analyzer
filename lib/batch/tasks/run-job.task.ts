@@ -4,7 +4,10 @@ import { Context } from '../../interface';
 import { writeJson } from '../../services/fs.service';
 import { getRepoNameFromUrl } from '../../services/git.service';
 import { reportFailedAnalysis } from '../../services/analyzer-telemetry.service';
-import { finishBatchJob, startBatchJob } from '../telemetry/state';
+import {
+  finishProjectAnalysis,
+  startProjectAnalysis,
+} from '../telemetry/state';
 
 import {
   getAnalysisDurationMs,
@@ -33,7 +36,9 @@ export function runJobTaskFactory(
     rollback: async (ctx: Context, task) => {
       const repositoryName = getRepoNameFromUrl(job);
       const durationMs = getAnalysisDurationMs(ctx);
-      finishBatchJob(ctx, job, ctx.results.name ?? repositoryName, 'failed');
+      finishProjectAnalysis(ctx, job, ctx.results.name ?? repositoryName, {
+        outcome: 'failed',
+      });
       ctx.debug.analysisFailures = [
         ...(ctx.debug.analysisFailures ?? []),
         {
@@ -65,7 +70,7 @@ export function runJobTaskFactory(
       }
     },
     task: async (ctx: Context, task) => {
-      startBatchJob(ctx, job);
+      startProjectAnalysis(ctx, job);
       jobTasks = task.newListr(
         [
           initJobStateTask,

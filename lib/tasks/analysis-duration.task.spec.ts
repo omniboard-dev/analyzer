@@ -16,7 +16,7 @@ function createContext(): Context {
     definitions: {},
     results: { checks: {} },
     handledCheckFailures: [],
-    batch: { queue: [], completed: [], failed: [] },
+    batch: { queue: [], analyzed: [], skipped: [], failed: [] },
     debug: {},
   };
 }

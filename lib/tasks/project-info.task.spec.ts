@@ -35,7 +35,8 @@ function createContext(): Context {
     handledCheckFailures: [],
     batch: {
       queue: [],
-      completed: [],
+      analyzed: [],
+      skipped: [],
       failed: [],
     },
     debug: {},

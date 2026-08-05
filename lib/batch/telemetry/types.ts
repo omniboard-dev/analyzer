@@ -1,6 +1,7 @@
+import { ProjectAnalysisOutcome, ProjectSkipReason } from '../project-analysis';
+
 export type BatchTelemetryStatus = 'success' | 'partial' | 'failed';
-export type BatchJobStatus = 'succeeded' | 'failed' | 'skipped';
-export type CachePlanningStatus =
+export type ProjectPlanningStatus =
   | 'not-run'
   | 'running'
   | 'completed'
@@ -9,7 +10,8 @@ export type CachePlanningStatus =
 export interface BatchTelemetryProjectDuration {
   projectName: string;
   durationMs: number;
-  status: BatchJobStatus;
+  outcome: ProjectAnalysisOutcome;
+  skipReason?: ProjectSkipReason;
 }
 
 export interface BatchTelemetryData {
@@ -21,15 +23,14 @@ export interface BatchTelemetryData {
   durationMs: number;
   status: BatchTelemetryStatus;
   projectsQueued: number;
-  cachePlanningStatus: CachePlanningStatus;
-  cachePlanningDurationMs: number;
-  cacheCheckedProjects: number;
-  cacheHitProjects: number;
-  unresolvedHeadProjects: number;
-  jobsStarted: number;
-  jobsSucceeded: number;
-  jobsFailed: number;
-  jobsSkipped: number;
+  planningStatus: ProjectPlanningStatus;
+  planningDurationMs: number;
+  projectsCheckedForChanges: number;
+  projectsWithUnresolvedHead: number;
+  projectsAnalyzed: number;
+  projectsSkipped: number;
+  projectsSkippedByReason: Record<ProjectSkipReason, number>;
+  projectsFailed: number;
   slowestProjects: BatchTelemetryProjectDuration[];
   shardIndex?: number;
   shardCount?: number;
@@ -47,16 +48,14 @@ export interface BatchTelemetryState extends BatchTelemetryRunContext {
   batchName: string;
   startedAtMs: number;
   projectsQueued: number;
-  cachePlanningStatus: CachePlanningStatus;
-  cachePlanningStartedAt?: number;
-  cachePlanningDurationMs: number;
-  cacheCheckedProjects: number;
-  cacheHitProjects: number;
-  unresolvedHeadProjects: number;
-  jobsStarted: number;
-  jobsSucceeded: number;
-  jobsFailed: number;
-  jobsSkipped: number;
-  jobStartedAt: Map<string, number>;
+  planningStatus: ProjectPlanningStatus;
+  planningStartedAt?: number;
+  planningDurationMs: number;
+  projectsCheckedForChanges: number;
+  projectsWithUnresolvedHead: number;
+  projectsAnalyzed: number;
+  projectsSkippedByReason: Record<ProjectSkipReason, number>;
+  projectsFailed: number;
+  projectStartedAt: Map<string, number>;
   slowestProjects: BatchTelemetryProjectDuration[];
 }

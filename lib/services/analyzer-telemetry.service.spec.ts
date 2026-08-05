@@ -20,7 +20,7 @@ function context(): Context {
     definitions: {},
     results: { name: 'project-a', analysisDurationMs: 12_000, checks: {} },
     handledCheckFailures: [],
-    batch: { queue: [], completed: [], failed: [] },
+    batch: { queue: [], analyzed: [], skipped: [], failed: [] },
     debug: {
       analyzerTelemetryEnabled: true,
       streamingCheckMetrics: {
@@ -75,7 +75,7 @@ describe('analyzer telemetry', () => {
 
     expect(api.uploadAnalyzerTelemetry).toHaveBeenCalledWith(
       expect.objectContaining({
-        schemaVersion: 1,
+        schemaVersion: 2,
         eventType: 'analysis.completed',
         projectName: 'project-a',
         data: expect.objectContaining({
@@ -127,15 +127,18 @@ describe('analyzer telemetry', () => {
       durationMs: 30_000,
       status: 'partial',
       projectsQueued: 50,
-      cachePlanningStatus: 'completed',
-      cachePlanningDurationMs: 500,
-      cacheCheckedProjects: 48,
-      cacheHitProjects: 35,
-      unresolvedHeadProjects: 2,
-      jobsStarted: 15,
-      jobsSucceeded: 14,
-      jobsFailed: 1,
-      jobsSkipped: 0,
+      planningStatus: 'completed',
+      planningDurationMs: 500,
+      projectsCheckedForChanges: 48,
+      projectsWithUnresolvedHead: 2,
+      projectsAnalyzed: 14,
+      projectsSkipped: 35,
+      projectsSkippedByReason: {
+        unchanged: 35,
+        excluded: 0,
+        unresolved: 0,
+      },
+      projectsFailed: 1,
       slowestProjects: [],
       shardIndex: 2,
       shardCount: 4,
@@ -147,7 +150,11 @@ describe('analyzer telemetry', () => {
         projectName: 'shard-2.json',
         data: expect.objectContaining({
           runId: 'gitlab:12:456',
-          cacheHitProjects: 35,
+          projectsSkippedByReason: {
+            unchanged: 35,
+            excluded: 0,
+            unresolved: 0,
+          },
         }),
       })
     );

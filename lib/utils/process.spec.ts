@@ -201,6 +201,44 @@ describe('runner', () => {
     expect(logger.error).not.toHaveBeenCalled();
   });
 
+  it('prints analyzed, skipped by reason, and failed batch result counts', async () => {
+    const logger = createLogger();
+    vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+    await runner(
+      [
+        {
+          title: 'Record batch results',
+          task: (ctx: any) => {
+            ctx.batch.analyzed.push('analyzed');
+            ctx.batch.skipped.push({
+              source: 'skipped',
+              reason: 'unchanged',
+            });
+          },
+        },
+      ],
+      createOptions({ silent: false }),
+      logger,
+      {
+        getBatchResultCounts: () => ({
+          analyzed: 45,
+          skipped: 5,
+          skippedByReason: {
+            unchanged: 4,
+            excluded: 1,
+            unresolved: 0,
+          },
+          failed: 0,
+        }),
+      }
+    );
+
+    expect(logger.info).toHaveBeenCalledWith(
+      'Batch results, queue: 0, analyzed: 45, skipped: 5 (unchanged: 4, excluded: 1), failed: 0'
+    );
+  });
+
   it('keeps failed batch jobs observable in silent mode', async () => {
     const logger = createLogger();
 

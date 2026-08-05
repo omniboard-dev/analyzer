@@ -29,7 +29,7 @@ export async function prepareAnalyzedRepository(
   );
 }
 
-export async function recordCompletedAnalysis(
+export async function recordAnalyzedProject(
   ctx: Context,
   projectName?: string
 ): Promise<void> {
@@ -39,7 +39,7 @@ export async function recordCompletedAnalysis(
   }
 
   try {
-    await api.completeProjectAnalysis({ projectName, ...entry });
+    await api.recordAnalyzedProject({ projectName, ...entry });
   } catch (error) {
     logger.debug(
       `Unable to record analysis cache state: ${
