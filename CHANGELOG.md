@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/omniboard-dev/analyzer/compare/v3.1.2...v3.2.0) (2026-08-05)
+
+
+### Features
+
+* json5 parsing ([63ee03b](https://github.com/omniboard-dev/analyzer/commit/63ee03b1a87c4cdbe14f1e33d7f8e94df6743f75))
+
 ### [3.1.2](https://github.com/omniboard-dev/analyzer/compare/v3.1.1...v3.1.2) (2026-08-05)
 
 
