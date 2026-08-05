@@ -35,8 +35,8 @@ export function initJobRepo(job: string): ListrTask {
             task.title = `${task.title}, cloned`;
           }
         }
-        process.chdir(repoPath);
         await prepareAnalyzedRepository(ctx, job, repoPath);
+        process.chdir(repoPath);
       } catch (error: any) {
         throw error;
       }
