@@ -75,10 +75,15 @@ For boolean options, passing the flag means `true` (for example, `--telemetry`).
 --show-check-results         Show individual check results in log output    [boolean] [default: false]
 --api-key, --ak              API key generated in Omniboard.dev             [string]
 --api-url, --api             URL of an on-prem Omniboard instance           [string]
+--expected-group             Fail if the API key targets another group      [string]
 --errors-as-warnings         Exit successfully when analysis errors occur   [boolean] [default: false]
 --help, -h                   Show help                                      [boolean]
 --version, -v                Show version number                            [boolean]
 ```
+
+In CI, pass `--expected-group <group>` to `analyze`, `batch`, or
+`test-connection`. The Analyzer then verifies the API key destination and
+stops before analysis or upload when the authenticated group does not match.
 
 ### `analyze`
 

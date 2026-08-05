@@ -13,6 +13,7 @@ import { saveProjectJsonTask } from '../tasks/save-project-json.task';
 import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
 import { handledCheckFailureInfoTask } from '../tasks/handled-check-failure-info.tast';
 import { runChecksTask } from '../tasks/run-checks.task';
+import { testConnectionTask } from '../tasks/test-connection.task';
 
 const logger = createLogger('ANALYZE');
 
@@ -55,6 +56,7 @@ export const builder = (yargs: Argv) =>
 export const handler = async (argv: any) =>
   runner(
     [
+      testConnectionTask,
       retrieveSettingsTask,
       startAnalysisDurationTask,
       projectInfoTask,

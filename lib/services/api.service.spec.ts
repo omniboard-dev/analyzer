@@ -79,7 +79,7 @@ describe('api service', () => {
     let proxiedRequests = 0;
     const apiServer = createServer((_request, response) => {
       response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ organization: 'acme' }));
+      response.end(JSON.stringify({ group: 'RWC', organization: 'acme' }));
     });
     const apiPort = await listen(apiServer);
     servers.push(apiServer);
@@ -117,7 +117,10 @@ describe('api service', () => {
       apiUrl: `http://127.0.0.1:${apiPort}`,
     });
 
-    await expect(ping()).resolves.toEqual({ organization: 'acme' });
+    await expect(ping()).resolves.toEqual({
+      group: 'RWC',
+      organization: 'acme',
+    });
     expect(proxiedRequests).toBe(1);
   });
 

@@ -58,6 +58,11 @@ configureCliOptions(yargs as Argv)
     description:
       'URL of an on-prem Omniboard instance (custom enterprise plans only)',
   })
+  .option('expected-group', {
+    type: 'string',
+    description:
+      'Fail before analysis if the API key is not bound to this Omniboard group',
+  })
   .option('errors-as-warnings', {
     type: 'boolean',
     default: false,

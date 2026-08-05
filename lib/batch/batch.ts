@@ -8,6 +8,7 @@ import { initJobTask } from './tasks/init-job.task';
 import { runJobsTask } from './tasks/run-jobs.task';
 import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
 import { retrieveChecksTask } from '../tasks/retrieve-checks.task';
+import { testConnectionTask } from '../tasks/test-connection.task';
 
 import * as skipUnchanged from './skip-unchanged';
 import { reportBatchTelemetry } from './telemetry/reporter';
@@ -64,6 +65,7 @@ export const builder = (yargs: Argv) =>
 export const handler = async (argv: any) =>
   runner(
     [
+      testConnectionTask,
       initWorkspaceTask,
       initJobTask,
       retrieveSettingsTask,

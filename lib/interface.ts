@@ -14,6 +14,7 @@ export interface Options {
   // api
   apiUrl?: string;
   apiKey?: string;
+  expectedGroup?: string;
   telemetry?: boolean;
 
   // analysis and checks
@@ -56,6 +57,7 @@ export interface Context {
     analysisFailures?: AnalysisFailure[];
     analyzerTelemetryEnabled?: boolean;
     analyzerTelemetryError?: unknown;
+    apiIdentity?: import('./services/api.service').ApiIdentity;
     checkExecutionMetrics?: import('./checks/engine/types').CheckExecutionMetric[];
     streamingCheckMetrics?: import('./checks/engine/types').StreamingCheckMetrics;
     [key: string]: any;

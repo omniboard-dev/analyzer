@@ -17,6 +17,11 @@ interface ApiConfig {
   dispatcher?: Dispatcher;
 }
 
+export interface ApiIdentity {
+  group?: string;
+  organization: string;
+}
+
 interface ApiErrorBody {
   error?: string;
   statusCode?: number;
@@ -187,7 +192,7 @@ async function request<T>(
   }
 }
 
-export function ping(): Promise<{ organization: string }> {
+export function ping(): Promise<ApiIdentity> {
   return request('ping');
 }
 

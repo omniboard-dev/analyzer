@@ -24,6 +24,8 @@ export function createRunnerRendererOptions(
     ? 'silent'
     : options.verbose
     ? 'verbose'
+    : options.showCheckResults
+    ? 'simple'
     : stdoutIsTty
     ? 'default'
     : 'simple';

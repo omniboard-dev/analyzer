@@ -69,6 +69,15 @@ describe('createRunnerRendererOptions', () => {
     });
   });
 
+  it('uses the line-oriented renderer for check results in a TTY', () => {
+    expect(
+      createRunnerRendererOptions(
+        createOptions({ silent: false, showCheckResults: true }),
+        true
+      ).renderer
+    ).toBe('simple');
+  });
+
   it('gives silent and verbose modes precedence over TTY detection', () => {
     expect(createRunnerRendererOptions(createOptions(), true).renderer).toBe(
       'silent'
