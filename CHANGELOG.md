@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.6.1](https://github.com/omniboard-dev/analyzer/compare/v3.6.0...v3.6.1) (2026-08-05)
+
+
+### Bug Fixes
+
+* dont mark failed project as unchanged ([282ab7f](https://github.com/omniboard-dev/analyzer/commit/282ab7f4a1e6aaab5bc0416cf3680b1c587d7ed8))
+
 ## [3.6.0](https://github.com/omniboard-dev/analyzer/compare/v3.5.2...v3.6.0) (2026-08-05)
 
 
