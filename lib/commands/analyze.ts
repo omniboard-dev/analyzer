@@ -1,5 +1,9 @@
 import { Argv } from 'yargs';
 
+import {
+  recordAnalysisDurationTask,
+  startAnalysisDurationTask,
+} from '../tasks/analysis-duration.task';
 import { runner } from '../utils/process';
 import { createLogger } from '../services/logger.service';
 import { projectInfoTask } from '../tasks/project-info.task';
@@ -47,9 +51,11 @@ export const handler = async (argv: any) =>
   runner(
     [
       retrieveSettingsTask,
+      startAnalysisDurationTask,
       projectInfoTask,
       retrieveChecksTask,
       runChecksTask,
+      recordAnalysisDurationTask,
       saveProjectJsonTask,
       saveProjectApiTask,
       handledCheckFailureInfoTask,

@@ -118,6 +118,12 @@ describe('runner', () => {
     await runner(
       [
         {
+          title: 'Resolve project',
+          task: (ctx: any) => {
+            ctx.results.name = 'example-project';
+          },
+        },
+        {
           title: 'Fail',
           task: () => {
             throw failure;
@@ -129,8 +135,15 @@ describe('runner', () => {
     );
 
     expect(process.exitCode).toBe(1);
-    expect(logger.error).toHaveBeenCalledWith(failure);
-    expect(logger.error).toHaveBeenCalledWith('Remote failure details');
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringMatching(/\[FAILED\] example-project \(.+\) -$/),
+      failure
+    );
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /\[FAILED\] example-project \(.+\) - Remote failure details/
+      )
+    );
     expect(logger.warning).not.toHaveBeenCalled();
   });
 
@@ -152,7 +165,10 @@ describe('runner', () => {
     );
 
     expect(process.exitCode).toBe(0);
-    expect(logger.warning).toHaveBeenCalledWith(failure);
+    expect(logger.warning).toHaveBeenCalledWith(
+      expect.stringMatching(/\[FAILED\] .+ \(.+\) -$/),
+      failure
+    );
     expect(logger.error).not.toHaveBeenCalled();
   });
 
@@ -164,7 +180,15 @@ describe('runner', () => {
         {
           title: 'Record failed job',
           task: (ctx: any) => {
-            ctx.batch.failed.push('https://example.test/failed.git');
+            const source = 'https://example.test/failed.git';
+
+            ctx.batch.failed.push(source);
+            ctx.debug.analysisFailures.push({
+              source,
+              repositoryName: 'failed',
+              projectName: 'Failed project',
+              durationMs: 1234,
+            });
           },
         },
       ],
@@ -174,7 +198,95 @@ describe('runner', () => {
 
     expect(logger.info).not.toHaveBeenCalled();
     expect(logger.error).toHaveBeenCalledWith(
-      '[FAILED] https://example.test/failed.git'
+      '[FAILED] Failed project (1s 234ms) - https://example.test/failed.git'
+    );
+    expect(process.exitCode).toBe(0);
+  });
+
+  it('attributes collected batch errors using the exact repository task', async () => {
+    const logger = createLogger();
+    const appFailure = new Error('app failure');
+    const appShellFailure = new Error('app-shell failure');
+
+    await runner(
+      [
+        {
+          title: 'Run jobs',
+          task: (ctx: any, task) =>
+            task.newListr(
+              [
+                {
+                  title: '1 / 2 - app',
+                  rollback: (ctx: any) => {
+                    const source = 'https://example.test/app.git';
+
+                    ctx.batch.failed.push(source);
+                    ctx.debug.analysisFailures.push({
+                      source,
+                      repositoryName: 'app',
+                      projectName: 'App',
+                      durationMs: 1_000,
+                    });
+                  },
+                  task: (_ctx: any, task: any) =>
+                    task.newListr(
+                      [
+                        {
+                          title: 'Fail app',
+                          task: () => {
+                            throw appFailure;
+                          },
+                        },
+                      ],
+                      { collectErrors: 'minimal', exitOnError: true }
+                    ),
+                },
+                {
+                  title: '2 / 2 - app-shell',
+                  rollback: (ctx: any) => {
+                    const source = 'https://example.test/app-shell.git';
+
+                    ctx.batch.failed.push(source);
+                    ctx.debug.analysisFailures.push({
+                      source,
+                      repositoryName: 'app-shell',
+                      projectName: 'App Shell',
+                      durationMs: 2_000,
+                    });
+                  },
+                  task: (_ctx: any, task: any) =>
+                    task.newListr(
+                      [
+                        {
+                          title: 'Fail app shell',
+                          task: () => {
+                            throw appShellFailure;
+                          },
+                        },
+                      ],
+                      { collectErrors: 'minimal', exitOnError: true }
+                    ),
+                },
+              ],
+              { exitAfterRollback: false, exitOnError: false }
+            ),
+        },
+      ],
+      createOptions(),
+      logger
+    );
+
+    expect(vi.mocked(logger.error).mock.calls).toEqual(
+      expect.arrayContaining([
+        [
+          '[FAILED] App (1s) -',
+          expect.objectContaining({ message: 'app failure' }),
+        ],
+        [
+          '[FAILED] App Shell (2s) -',
+          expect.objectContaining({ message: 'app-shell failure' }),
+        ],
+      ])
     );
     expect(process.exitCode).toBe(0);
   });

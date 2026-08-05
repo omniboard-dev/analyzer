@@ -11,6 +11,8 @@ export const initJobStateTask: ListrTask = {
     ctx.control = { skipEverySubsequentTask: false };
     ctx.results = { checks: {} };
     ctx.handledCheckFailures = [];
+    ctx.debug.analysisStartedAt = Date.now();
+    ctx.debug.analysisFailures ??= [];
 
     // reset cwd
     if (!directoryExists(ctx.options.workspacePath)) {

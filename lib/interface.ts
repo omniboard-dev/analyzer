@@ -40,6 +40,7 @@ export interface Context {
   results: {
     name?: string;
     team?: string[];
+    analysisDurationMs?: number;
     projectSize?: ProjectSize;
     info?: ProjectInfo;
     checks?: {
@@ -49,8 +50,17 @@ export interface Context {
   handledCheckFailures: Error[];
   batch: Batch;
   debug: {
+    analysisStartedAt?: number;
+    analysisFailures?: AnalysisFailure[];
     [key: string]: any;
   };
+}
+
+export interface AnalysisFailure {
+  source: string;
+  repositoryName: string;
+  projectName: string;
+  durationMs: number;
 }
 
 export interface Batch {

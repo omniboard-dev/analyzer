@@ -13,5 +13,5 @@ export function formatTime(milliseconds: number) {
   if (ms) {
     result += ` ${ms}ms`;
   }
-  return result.trim();
+  return result.trim() || '0ms';
 }

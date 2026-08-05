@@ -23,6 +23,7 @@ function createContext(errorsAsWarnings: boolean): Context {
     },
     definitions: {},
     results: {
+      analysisDurationMs: 2_345,
       checks: {
         small: {
           name: 'small',
@@ -95,6 +96,7 @@ describe('saveProjectApiTask', () => {
     const task = await runSaveTask(ctx);
 
     expect(api.uploadProject).toHaveBeenCalledWith({
+      analysisDurationMs: 2_345,
       checks: {
         small: ctx.results.checks!.small,
       },

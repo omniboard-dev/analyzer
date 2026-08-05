@@ -4,6 +4,11 @@ import { Context } from '../../interface';
 import { writeJson } from '../../services/fs.service';
 import { getRepoNameFromUrl } from '../../services/git.service';
 
+import {
+  getAnalysisDurationMs,
+  recordAnalysisDurationTask,
+  startAnalysisDurationTask,
+} from '../../tasks/analysis-duration.task';
 import { projectInfoTask } from '../../tasks/project-info.task';
 import { handledCheckFailureInfoTask } from '../../tasks/handled-check-failure-info.tast';
 import { saveProjectApiTask } from '../../tasks/save-project-api.task';
@@ -22,8 +27,20 @@ export function runJobTaskFactory(
   return {
     title: `${index} / ${total} - ${getRepoNameFromUrl(job)}`,
     rollback: async (ctx: Context, task) => {
+      const repositoryName = getRepoNameFromUrl(job);
+      const durationMs = getAnalysisDurationMs(ctx);
+      ctx.debug.analysisFailures = [
+        ...(ctx.debug.analysisFailures ?? []),
+        {
+          source: job,
+          repositoryName,
+          projectName: ctx.results.name ?? repositoryName,
+          durationMs,
+        },
+      ];
+
       // update batch state
-      task.title = `${task.title} failed`;
+      task.title = `${task.title} failed (${durationMs}ms)`;
       ctx.batch.failed.push(job);
       ctx.batch.queue = ctx.batch.queue.filter((j) => j !== job);
 
@@ -37,8 +54,10 @@ export function runJobTaskFactory(
         [
           initJobStateTask,
           initJobRepo(job),
+          startAnalysisDurationTask,
           projectInfoTask,
           runChecksTask,
+          recordAnalysisDurationTask,
           batchSaveProjectJsonTaskFactory(job),
           saveProjectApiTask,
           handledCheckFailureInfoTask,
