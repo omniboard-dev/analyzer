@@ -16,7 +16,6 @@ export const handledCheckFailureInfoTask: ListrTask = {
     task.title = `${task.title} - ${summary}`;
 
     if (ctx.options.silent) {
-      logger.warning(summary);
       const projectName = ctx.results.name;
       const analysisDurationMs = ctx.results.analysisDurationMs;
       const projectPrefix = projectName
@@ -26,9 +25,11 @@ export const handledCheckFailureInfoTask: ListrTask = {
               : ` (${formatTime(analysisDurationMs)})`
           } `
         : '';
+      logger.warning(`${projectPrefix}${summary}`);
       ctx.handledCheckFailures.forEach((error) =>
-        logger.warning(`${projectPrefix}${error.message}`)
+        logger.warning(error.message)
       );
+      console.log();
     } else {
       ctx.handledCheckFailures.forEach((error) => {
         task.title = `${task.title}\n${chalk.yellow.bold(

@@ -27,7 +27,7 @@ function createContext(): Context {
 }
 
 describe('handledCheckFailureInfoTask', () => {
-  it('includes the project name and duration in silent pipeline warnings', async () => {
+  it('prints project metadata on the summary and a blank line after details', async () => {
     const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
     const tasks = new Listr([handledCheckFailureInfoTask], {
       renderer: 'silent',
@@ -35,14 +35,14 @@ describe('handledCheckFailureInfoTask', () => {
 
     await tasks.run(createContext());
 
-    expect(consoleLog.mock.calls).toEqual(
-      expect.arrayContaining([
-        expect.arrayContaining([
-          expect.stringContaining(
-            '[pipeline-project] (1s 234ms) [json] "hasDependency"'
-          ),
-        ]),
-      ])
-    );
+    expect(consoleLog.mock.calls).toEqual([
+      [
+        expect.stringContaining(
+          '[pipeline-project] (1s 234ms) 1 handled warning occurred'
+        ),
+      ],
+      [expect.stringContaining('[json] "hasDependency"')],
+      [],
+    ]);
   });
 });
