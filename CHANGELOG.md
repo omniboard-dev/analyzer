@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/omniboard-dev/analyzer/compare/v3.4.0...v3.5.0) (2026-08-05)
+
+
+### Features
+
+* additional analyzer telemetry ([a29b13b](https://github.com/omniboard-dev/analyzer/commit/a29b13bed4c41ede05baa67b3835d5112470ba0f))
+
 ## [3.4.0](https://github.com/omniboard-dev/analyzer/compare/v3.3.0...v3.4.0) (2026-08-05)
 
 
