@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.1](https://github.com/omniboard-dev/analyzer/compare/v3.5.0...v3.5.1) (2026-08-05)
+
+
+### Bug Fixes
+
+* git cwd resolution ([7ae1159](https://github.com/omniboard-dev/analyzer/commit/7ae115996626f07c12459d8a6df357e195f78008))
+
 ## [3.5.0](https://github.com/omniboard-dev/analyzer/compare/v3.4.0...v3.5.0) (2026-08-05)
 
 
