@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.2](https://github.com/omniboard-dev/analyzer/compare/v3.1.1...v3.1.2) (2026-08-05)
+
+
+### Bug Fixes
+
+* improved project name and duration for handled check failures ([7a5c5e8](https://github.com/omniboard-dev/analyzer/commit/7a5c5e8eefc35e81effea649edc3e7569f93fa41))
+
 ### [3.1.1](https://github.com/omniboard-dev/analyzer/compare/v3.1.0...v3.1.1) (2026-08-05)
 
 
