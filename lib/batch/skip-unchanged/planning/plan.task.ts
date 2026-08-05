@@ -3,6 +3,11 @@ import { ListrTask } from 'listr2';
 import { Context } from '../../../interface';
 import * as api from '../../../services/api.service';
 import { getRemoteHead } from '../../../services/git.service';
+import {
+  completeCachePlanning,
+  failCachePlanning,
+  startCachePlanning,
+} from '../../telemetry/state';
 
 import { isSkipUnchangedEnabled } from '../option';
 import { setAnalysisPlans } from '../state';
@@ -30,6 +35,7 @@ export const planUnchangedJobsTask: ListrTask = {
     return false;
   },
   task: async (ctx: Context, task) => {
+    startCachePlanning(ctx);
     setAnalysisPlans(ctx, undefined);
     const resolved = await mapWithConcurrency(
       ctx.batch.queue,
@@ -56,6 +62,11 @@ export const planUnchangedJobsTask: ListrTask = {
     );
 
     if (!candidates.length) {
+      completeCachePlanning(ctx, {
+        checkedProjects: 0,
+        cacheHitProjects: 0,
+        unresolvedHeadProjects: ctx.batch.queue.length,
+      });
       task.skip('No remote HEAD revisions could be resolved');
       return;
     }
@@ -94,10 +105,16 @@ export const planUnchangedJobsTask: ListrTask = {
       const unchanged = Object.values(plans).filter(
         (plan) => plan.unchanged
       ).length;
+      completeCachePlanning(ctx, {
+        checkedProjects: candidates.length,
+        cacheHitProjects: unchanged,
+        unresolvedHeadProjects: ctx.batch.queue.length - candidates.length,
+      });
       task.title = `${task.title}: ${unchanged} unchanged, ${
         ctx.batch.queue.length - unchanged
       } to analyze`;
     } catch {
+      failCachePlanning(ctx, ctx.batch.queue.length - candidates.length);
       task.skip('Analysis cache unavailable; all projects will be analyzed');
     }
   },

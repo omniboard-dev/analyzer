@@ -51,6 +51,7 @@ export interface Context {
   handledCheckFailures: Error[];
   batch: Batch;
   debug: {
+    commandStartedAt?: number;
     analysisStartedAt?: number;
     analysisFailures?: AnalysisFailure[];
     analyzerTelemetryEnabled?: boolean;

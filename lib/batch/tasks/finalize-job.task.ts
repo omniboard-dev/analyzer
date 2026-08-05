@@ -2,6 +2,8 @@ import { ListrTask } from 'listr2';
 
 import { writeJson } from '../../services/fs.service';
 import { Context, ParentTask } from '../../interface';
+import { getRepoNameFromUrl } from '../../services/git.service';
+import { finishBatchJob } from '../telemetry/state';
 
 export function finalizeJobTaskFactory(
   job: string,
@@ -11,6 +13,12 @@ export function finalizeJobTaskFactory(
     title: 'Finalize job',
     task: async (ctx: Context, task) => {
       const skipped = ctx.control.skipEverySubsequentTask;
+      finishBatchJob(
+        ctx,
+        job,
+        ctx.results.name ?? getRepoNameFromUrl(job),
+        skipped ? 'skipped' : 'succeeded'
+      );
 
       // reset job CTX state
       ctx.control = { skipEverySubsequentTask: false };

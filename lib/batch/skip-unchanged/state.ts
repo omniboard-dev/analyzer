@@ -1,9 +1,6 @@
 import { Context } from '../../interface';
 
-import {
-  AnalysisCacheEntry,
-  BatchAnalysisPlan,
-} from './planning/fingerprint';
+import { AnalysisCacheEntry, BatchAnalysisPlan } from './planning/fingerprint';
 
 const PLANS_KEY = 'skipUnchangedPlans';
 const CURRENT_ENTRY_KEY = 'skipUnchangedEntry';
@@ -38,7 +35,5 @@ export function setCurrentAnalysisEntry(
 function getAnalysisPlans(
   ctx: Context
 ): Record<string, BatchAnalysisPlan> | undefined {
-  return ctx.debug[PLANS_KEY] as
-    | Record<string, BatchAnalysisPlan>
-    | undefined;
+  return ctx.debug[PLANS_KEY] as Record<string, BatchAnalysisPlan> | undefined;
 }

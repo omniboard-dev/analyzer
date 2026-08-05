@@ -10,6 +10,7 @@ import { retrieveSettingsTask } from '../tasks/retrieve-settings.task';
 import { retrieveChecksTask } from '../tasks/retrieve-checks.task';
 
 import * as skipUnchanged from './skip-unchanged';
+import { reportBatchTelemetry } from './telemetry/reporter';
 
 const logger = createLogger('BATCH');
 
@@ -48,6 +49,12 @@ export const builder = (yargs: Argv) =>
       type: 'string',
       description: 'Run only checks matching the pattern',
     })
+    .option('sanitize-repo-url', {
+      alias: 'sru',
+      type: 'boolean',
+      default: true,
+      description: 'Sanitize authentication tokens in repository URLs',
+    })
     .option('telemetry', {
       type: 'boolean',
       default: true,
@@ -65,5 +72,6 @@ export const handler = async (argv: any) =>
       runJobsTask,
     ],
     argv,
-    logger
+    logger,
+    { onFinished: reportBatchTelemetry }
   );

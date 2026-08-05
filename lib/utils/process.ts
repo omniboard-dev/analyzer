@@ -10,6 +10,11 @@ import { reportFailedAnalysis } from '../services/analyzer-telemetry.service';
 import { formatTime } from './time';
 
 type RunnerRenderer = 'default' | 'simple' | 'silent' | 'verbose';
+export type RunnerOutcome = 'success' | 'partial' | 'failed';
+
+export interface RunnerHooks {
+  onFinished?: (ctx: Context, outcome: RunnerOutcome) => Promise<void> | void;
+}
 
 export function createRunnerRendererOptions(
   options: Options,
@@ -47,9 +52,11 @@ export function createRunnerRendererOptions(
 export const runner = async (
   tasks: ListrTask[],
   options: Options,
-  logger: Logger
+  logger: Logger,
+  hooks: RunnerHooks = {}
 ) => {
   const start = Date.now();
+  let outcome: RunnerOutcome = 'failed';
   if (!options.silent) {
     logger.info('Start');
   }
@@ -61,7 +68,11 @@ export const runner = async (
     results: { checks: {} },
     handledCheckFailures: [],
     batch: { queue: [], completed: [], failed: [] },
-    debug: { analysisStartedAt: start, analysisFailures: [] },
+    debug: {
+      commandStartedAt: start,
+      analysisStartedAt: start,
+      analysisFailures: [],
+    },
   };
   context.debug.analyzerTelemetryEnabled = Boolean(options.telemetry);
   const rootTasks = new Listr<Context, RunnerRenderer, 'simple'>(tasks, {
@@ -77,6 +88,11 @@ export const runner = async (
     }
 
     const { batch } = ctx;
+    outcome = batch.failed.length
+      ? batch.completed.length
+        ? 'partial'
+        : 'failed'
+      : 'success';
     if (batch.completed.length || batch.failed.length) {
       if (!options.silent) {
         logger.info(
@@ -146,6 +162,8 @@ export const runner = async (
     }
 
     return;
+  } finally {
+    await hooks.onFinished?.(context, outcome);
   }
 };
 

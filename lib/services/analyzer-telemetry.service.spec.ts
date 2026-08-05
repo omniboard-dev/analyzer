@@ -5,6 +5,7 @@ import * as api from './api.service';
 import {
   reportCompletedAnalysis,
   reportFailedAnalysis,
+  reportFinishedBatch,
 } from './analyzer-telemetry.service';
 
 vi.mock('./api.service', () => ({
@@ -111,6 +112,42 @@ describe('analyzer telemetry', () => {
         data: expect.objectContaining({
           errorName: 'TypeError',
           message: 'Clone failed',
+        }),
+      })
+    );
+  });
+
+  it('reports one correlated batch summary event', async () => {
+    await reportFinishedBatch(context(), {
+      runId: 'gitlab:12:456',
+      invocationId: 'd55beea5-43d8-4e88-b773-485081900519',
+      batchName: 'shard-2.json',
+      ciProvider: 'gitlab',
+      startedAt: '2026-08-05T10:00:00.000Z',
+      durationMs: 30_000,
+      status: 'partial',
+      projectsQueued: 50,
+      cachePlanningStatus: 'completed',
+      cachePlanningDurationMs: 500,
+      cacheCheckedProjects: 48,
+      cacheHitProjects: 35,
+      unresolvedHeadProjects: 2,
+      jobsStarted: 15,
+      jobsSucceeded: 14,
+      jobsFailed: 1,
+      jobsSkipped: 0,
+      slowestProjects: [],
+      shardIndex: 2,
+      shardCount: 4,
+    });
+
+    expect(api.uploadAnalyzerTelemetry).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'batch.finished',
+        projectName: 'shard-2.json',
+        data: expect.objectContaining({
+          runId: 'gitlab:12:456',
+          cacheHitProjects: 35,
         }),
       })
     );

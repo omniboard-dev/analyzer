@@ -101,6 +101,8 @@ For boolean options, passing the flag means `true` (for example, `--telemetry`).
 --workspace-path             Batch workspace                    [string] [default: "./omniboard-workspace"]
 --json                       Store results locally and skip upload          [boolean] [default: false]
 --check-pattern, --cp        Run only checks matching the pattern           [string]
+--sanitize-repo-url, --sru   Sanitize authentication tokens in repository URLs
+                                                                            [boolean] [default: true]
 --telemetry                  Report analyzer performance telemetry          [boolean] [default: true]
 ```
 

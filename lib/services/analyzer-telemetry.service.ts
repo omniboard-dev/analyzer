@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { basename } from 'node:path';
 
 import { CheckExecutionTimeoutError } from '../checks/engine/types';
+import { BatchTelemetryData } from '../batch/telemetry/types';
 import { Context } from '../interface';
 import { getAnalysisDurationMs } from '../tasks/analysis-duration.task';
 
@@ -19,6 +20,7 @@ const { version: analyzerVersion } = require('../../package.json') as {
 type AnalyzerTelemetryEventType =
   | 'analysis.completed'
   | 'analysis.failed'
+  | 'batch.finished'
   | 'check.timeout';
 
 interface AnalyzerTelemetryEvent {
@@ -118,6 +120,17 @@ export async function reportFailedAnalysis(
   }
 
   await send(ctx, 'analysis.failed', common, projectName);
+}
+
+export async function reportFinishedBatch(
+  ctx: Context,
+  data: BatchTelemetryData
+): Promise<void> {
+  if (!shouldReport(ctx)) {
+    return;
+  }
+
+  await send(ctx, 'batch.finished', { ...data }, data.batchName);
 }
 
 function shouldReport(ctx: Context): boolean {
