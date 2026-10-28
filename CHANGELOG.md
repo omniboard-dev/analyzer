@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/omniboard-dev/analyzer/compare/v3.6.1...v4.0.0) (2026-10-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Size checks and analyzerExcludeFilesPatternSize are no longer supported. Remove size-check definitions before upgrading.
+
+### Features
+
+* remove size-check support ([2f16769](https://github.com/omniboard-dev/analyzer/commit/2f1676963b949f64a5db8be86c4faf8c9a058a1c))
+
 ### [3.6.1](https://github.com/omniboard-dev/analyzer/compare/v3.6.0...v3.6.1) (2026-08-05)
 
 
