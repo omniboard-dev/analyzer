@@ -55,7 +55,6 @@ describe('runStreamingCheckEngine', () => {
       logicalCheckFileMatches: 9,
       evaluationsCompleted: 9,
       filesRead: 3,
-      statCalls: 0,
       jsonParses: 1,
       yamlParses: 1,
       domParses: 2,
@@ -182,18 +181,12 @@ describe('runStreamingCheckEngine', () => {
     );
   });
 
-  it('does not apply evaluator timeouts to file and size checks', async () => {
+  it('does not apply evaluator timeouts to file checks', async () => {
     createFixture({ 'source.ts': 'target' });
     const definitions: CheckDefinition[] = [
       {
         name: 'files',
         type: CheckType.FILE,
-        disabled: false,
-        filesPattern: '\\.ts$',
-      },
-      {
-        name: 'sizes',
-        type: CheckType.SIZE,
         disabled: false,
         filesPattern: '\\.ts$',
       },
@@ -204,8 +197,7 @@ describe('runStreamingCheckEngine', () => {
     const execution = await runStreamingCheckEngine(ctx, definitions);
 
     expect(execution.results['files'].value).toBe(true);
-    expect(execution.results['sizes'].value).toBe(true);
-    expect(execution.metrics.evaluationsCompleted).toBe(2);
+    expect(execution.metrics.evaluationsCompleted).toBe(1);
   });
 
   it('reports handled warnings in walking progress', async () => {

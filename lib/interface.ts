@@ -106,7 +106,6 @@ export interface Settings {
   analyzerIncludeFilesFlag?: string;
   analyzerExcludeFilesPatternXpath?: string;
   analyzerExcludeFilesPatternContent?: string;
-  analyzerExcludeFilesPatternSize?: string;
   analyzerExcludeFilesPatternFlags?: string;
   analyzerCheckExecutionTimeout?: number;
 }
@@ -133,24 +132,11 @@ export interface ProjectCheck {
   type: CheckType;
   value: boolean;
   matches?: ProjectCheckMatch[];
-  size?: ProjectCheckSize;
 }
 
 export interface ProjectCheckMatch {
   file: string;
   matches: ProjectCheckMatchDetails[];
-}
-
-export interface ProjectCheckSize {
-  total: number;
-  totalHumanReadable: string;
-  details: ProjectCheckSizeDetails[];
-}
-
-export interface ProjectCheckSizeDetails {
-  file: string;
-  size: number;
-  sizeHumanReadable: string;
 }
 
 export interface ProjectCheckMatchDetails {
@@ -197,9 +183,6 @@ export interface YAMLCheckDefinition
 export interface FileCheckDefinition
   extends BaseCheckDefinition<CheckType.FILE> {}
 
-export interface SizeCheckDefinition
-  extends BaseCheckDefinition<CheckType.SIZE> {}
-
 export interface MetaCheckDefinition
   extends BaseCheckDefinition<CheckType.META> {}
 
@@ -208,15 +191,13 @@ export type ExecutableCheckDefinition =
   | XPathCheckDefinition
   | JSONCheckDefinition
   | YAMLCheckDefinition
-  | FileCheckDefinition
-  | SizeCheckDefinition;
+  | FileCheckDefinition;
 
 export type CheckDefinition = ExecutableCheckDefinition | MetaCheckDefinition;
 
 export enum CheckType {
   CONTENT = 'content',
   XPATH = 'xpath',
-  SIZE = 'size',
   META = 'meta',
   FILE = 'file',
   JSON = 'json',

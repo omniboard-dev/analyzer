@@ -11,7 +11,6 @@ const FALLBACK_EXCLUDE_FILES_PATTERN_XPATH =
   '((^|\\/)\\.|node_modules|coverage|dist|.teamcity)';
 const FALLBACK_EXCLUDE_FILES_PATTERN_CONTENT =
   '((^|\\/)\\.|node_modules|coverage|dist)';
-const FALLBACK_EXCLUDE_FILES_PATTERN_SIZE = 'node_modules';
 
 export interface CheckHandlerEvaluation<
   TDefinition extends ExecutableCheckDefinition,
@@ -63,13 +62,6 @@ export function getDefaultXpathExcludePattern(ctx: Context): string {
   return (
     ctx.settings.analyzerExcludeFilesPatternXpath ||
     FALLBACK_EXCLUDE_FILES_PATTERN_XPATH
-  );
-}
-
-export function getDefaultSizeExcludePattern(ctx: Context): string {
-  return (
-    ctx.settings.analyzerExcludeFilesPatternSize ||
-    FALLBACK_EXCLUDE_FILES_PATTERN_SIZE
   );
 }
 

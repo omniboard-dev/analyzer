@@ -3,7 +3,6 @@ import {
   ExecutableCheckDefinition,
   ProjectCheck,
   ProjectCheckMatch,
-  ProjectCheckSizeDetails,
 } from '../../interface';
 
 import type { AnyCheckHandler } from './check-handler';
@@ -13,7 +12,6 @@ export { CheckDefinition };
 export interface CheckAccumulator {
   selectedFiles: number;
   matches: ProjectCheckMatch[];
-  sizeDetails: ProjectCheckSizeDetails[];
   errors: Error[];
   elapsedMs: number;
 }
@@ -42,7 +40,6 @@ export interface StreamingCheckMetrics {
   evaluationsCompleted: number;
   filesRead: number;
   bytesRead: number;
-  statCalls: number;
   jsonParses: number;
   yamlParses: number;
   domParses: number;

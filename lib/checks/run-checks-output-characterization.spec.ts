@@ -65,13 +65,6 @@ function createContext(): Context {
           filesPattern: '\\.ts$',
         },
         {
-          name: 'typescript-size',
-          type: CheckType.SIZE,
-          disabled: false,
-          filesPattern: '\\.ts$',
-          filesExcludePattern: '(^|/)(dist|node_modules)(/|$)',
-        },
-        {
           name: 'json-target',
           type: CheckType.JSON,
           disabled: false,
@@ -229,19 +222,6 @@ describe('runChecksTask output characterization', () => {
           { file: 'alpha.ts', matches: [] },
           { file: 'beta.ts', matches: [] },
         ],
-      },
-      'typescript-size': {
-        name: 'typescript-size',
-        type: CheckType.SIZE,
-        value: true,
-        size: {
-          total: 68,
-          totalHumanReadable: '68 B',
-          details: [
-            { file: 'alpha.ts', size: 44, sizeHumanReadable: '44 B' },
-            { file: 'beta.ts', size: 24, sizeHumanReadable: '24 B' },
-          ],
-        },
       },
       'json-target': {
         name: 'json-target',

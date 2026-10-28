@@ -17,7 +17,6 @@ const metrics: StreamingCheckMetrics = {
   evaluationsCompleted: 275,
   filesRead: 60,
   bytesRead: 4096,
-  statCalls: 3,
   jsonParses: 2,
   yamlParses: 1,
   domParses: 4,

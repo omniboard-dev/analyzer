@@ -8,7 +8,6 @@ const executableCheckTypes = [
   CheckType.CONTENT,
   CheckType.FILE,
   CheckType.JSON,
-  CheckType.SIZE,
   CheckType.XPATH,
   CheckType.YAML,
 ];
@@ -52,10 +51,6 @@ describe('check handler registry', () => {
       [CheckType.JSON]: {
         hasExecutionTimeout: true,
         warningPriority: 1,
-      },
-      [CheckType.SIZE]: {
-        hasExecutionTimeout: false,
-        warningPriority: 0,
       },
       [CheckType.XPATH]: {
         hasExecutionTimeout: true,

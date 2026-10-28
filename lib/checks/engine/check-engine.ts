@@ -121,7 +121,6 @@ export function prepareCheckRun(
       accumulator: {
         selectedFiles: 0,
         matches: [],
-        sizeDetails: [],
         errors: [],
         elapsedMs: 0,
       },
@@ -360,7 +359,6 @@ function createMetrics(): StreamingCheckMetrics {
     evaluationsCompleted: 0,
     filesRead: 0,
     bytesRead: 0,
-    statCalls: 0,
     jsonParses: 0,
     yamlParses: 0,
     domParses: 0,

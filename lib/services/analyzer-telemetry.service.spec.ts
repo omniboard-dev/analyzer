@@ -33,7 +33,6 @@ function context(): Context {
         evaluationsCompleted: 60,
         filesRead: 50,
         bytesRead: 1_000,
-        statCalls: 100,
         jsonParses: 0,
         yamlParses: 0,
         domParses: 0,

@@ -101,10 +101,6 @@ export function readFile(path: string) {
   return buffer.toString();
 }
 
-export function getFileSize(path: string) {
-  return fs.statSync(path).size;
-}
-
 export function getHumanReadableFileSize(size: number) {
   return filesize(size);
 }
